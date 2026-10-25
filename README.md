@@ -42,7 +42,7 @@ From the repository root:
 uv sync --locked
 uv run python src/main.py --tier s benchmark \
   --instances-dir src/instances/tier_s \
-  --output-dir src/results/tier_s/my_run \
+  --output-dir src/results/tier_s/reproduce \
   --no-optimize-pulses --backend emu-sv --shots 1000 --dt 10 --epsilon 0
 ```
 
