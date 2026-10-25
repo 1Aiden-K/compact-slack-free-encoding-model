@@ -8,6 +8,7 @@ import numpy as np
 from duquantum import config
 from duquantum.quantum.embedding import embed_register
 from duquantum.quantum.ising import _compare_ground_states, build_ising, make_pulse
+from duquantum.quantum.dmm import dmm_plan, make_dmm_device, validate_dmm_plan
 
 
 def build_sequence(
@@ -22,6 +23,7 @@ def build_sequence(
     restarts=config.EMBEDDING_RESTARTS,
     maxiter=config.MAX_ITERATIONS,
     check_ground_states=config.CHECK_GROUND_STATES,
+    use_dmm=False,
 ):
     """Return sequence, pulse, parameters, embedding, and final-energy diagnostics.
 
@@ -40,6 +42,10 @@ def build_sequence(
 
     if device is None:
         device = getattr(pulser, config.DEVICE)
+    if use_dmm:
+        device = make_dmm_device(device)
+        if not device.dmm_channels:
+            raise ValueError("DMM was requested but the device does not provide a DMM channel.")
     channel_id = "rydberg_global"
     if channel_id not in device.channels:
         raise ValueError("The selected device must expose a rydberg_global channel.")
@@ -69,6 +75,13 @@ def build_sequence(
     )
     if energy_scale is None:
         limits = [config.AUTO_SCALE_MAX]
+        if use_dmm:
+            dmm_channel = next(iter(device.dmm_channels.values()))
+            unit_plan = dmm_plan(unit["target_detunings"], duration_ns)
+            if dmm_channel.bottom_detuning is not None and unit_plan["amplitude"] > 0:
+                limits.append(config.HARDWARE_SAFETY_FACTOR * (-dmm_channel.bottom_detuning) / unit_plan["amplitude"])
+            if dmm_channel.total_bottom_detuning is not None and unit_plan["total_site_detuning"] > 0:
+                limits.append(config.HARDWARE_SAFETY_FACTOR * (-dmm_channel.total_bottom_detuning) / unit_plan["total_site_detuning"])
         if omega_peak is None and channel.max_amp is not None:
             limits.append(
                 config.HARDWARE_SAFETY_FACTOR * channel.max_amp / unit["omega_peak"]
@@ -98,6 +111,21 @@ def build_sequence(
         interaction_coeff=device.interaction_coeff,
         check_ground_states=check_ground_states,
     )
+    plan = None
+    if use_dmm:
+        plan = dmm_plan(parameters["target_detunings"], duration_ns)
+        dmm_channel = next(iter(device.dmm_channels.values()))
+        validate_dmm_plan(plan, dmm_channel)
+        parameters["delta_final"] = plan["global_final"]
+        parameters["detuning_samples"] = np.linspace(parameters["delta_initial"], plan["global_final"], duration_ns)
+        parameters["dmm_weights"] = plan["weights"]
+        parameters["dmm_samples"] = plan["samples"]
+        parameters["dmm_amplitude"] = plan["amplitude"]
+        # Site-specific final detuning exactly reproduces the requested diagonal.
+        parameters["global_q_matrix"] = parameters["interaction_matrix"] / 2
+        np.fill_diagonal(parameters["global_q_matrix"], -plan["global_final"])
+        parameters["dmm_q_matrix"] = parameters["interaction_matrix"] / 2
+        np.fill_diagonal(parameters["dmm_q_matrix"], -parameters["target_detunings"])
     if channel.max_amp is not None and parameters["omega_peak"] > channel.max_amp:
         raise ValueError(
             "Rabi peak exceeds the device maximum; reduce omega_peak or energy_scale."
@@ -118,7 +146,15 @@ def build_sequence(
     pulse = make_pulse(parameters)
     sequence = Sequence(embedding["register"], device)
     sequence.declare_channel("global", channel_id)
-    sequence.add(pulse, "global")
+    if use_dmm and plan["amplitude"] > 0:
+        from pulser import CustomWaveform
+        weights_by_qubit = {f"q{i}": float(w) for i, w in enumerate(plan["weights"])}
+        sequence.config_detuning_map(
+            embedding["register"].define_detuning_map(weights_by_qubit), "dmm_0")
+    # Both channels must begin at t=0, not be scheduled one after the other.
+    sequence.add(pulse, "global", protocol="no-delay" if use_dmm else "min-delay")
+    if use_dmm and plan["amplitude"] > 0:
+        sequence.add_dmm_detuning(CustomWaveform(plan["samples"]), "dmm_0", protocol="no-delay")
     sequence.measure("ground-rydberg")
     total_duration = sequence.get_duration(include_fall_time=True)
     if (
@@ -130,7 +166,8 @@ def build_sequence(
         )
 
     realized_matrix = embedding["realized_interactions"] / 2
-    np.fill_diagonal(realized_matrix, -parameters["delta_final"])
+    np.fill_diagonal(realized_matrix,
+                     -parameters["target_detunings"] if use_dmm else -parameters["delta_final"])
     target_matrix = parameters["energy_scale"] * parameters["q_matrix"]
     norm = np.linalg.norm(target_matrix)
     diagnostics = {
@@ -138,6 +175,10 @@ def build_sequence(
             np.linalg.norm(realized_matrix - target_matrix) / norm
         ),
         "relative_interaction_error": embedding["relative_interaction_error"],
+        "use_dmm": bool(use_dmm),
+        "dmm_plan": {"global_final": plan["global_final"],
+                     "amplitude": plan["amplitude"],
+                     "weights": plan["weights"].tolist()} if use_dmm else None,
         "target_vs_realized": _compare_ground_states(target_matrix, realized_matrix)
         if check_ground_states
         else None,

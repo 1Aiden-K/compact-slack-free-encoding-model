@@ -1,4 +1,4 @@
-"""Tier M global-drive simulation: 20-bit model, device embedding, and shots.
+"""Tier M analog simulation: 20-bit model, device embedding, and shots.
 
 The quantum circuit is built exactly as in Tier S, but expensive 2^20 exact
 bitstring comparisons and the dense final probability JSON are disabled.
@@ -38,6 +38,7 @@ def add_run_arguments(parser):
     parser.add_argument('--sample-seed', type=int, default=config.MEASUREMENT_SEED)
     parser.add_argument('--epsilon', type=float, default=config.EPSILON_PCT, help='reference gap threshold (percent)')
     parser.add_argument('--with-modulation', action='store_true')
+    parser.add_argument('--dmm', action='store_true', help='emulator-only detuning map for site-dependent linear QUBO coefficients')
     parser.add_argument('--prepare-only', action='store_true', help='compile pulse/register; do not simulate')
     parser.add_argument('--skip-evaluation', action='store_true', help='skip constrained reference enumeration')
     parser.add_argument('--ground-check', action='store_true', help='enumerate final Hamiltonian ground states (2^20)')
@@ -85,6 +86,7 @@ def make_run(model, args, *, sequence_builder=None, emulation_fn=None):
         omega_peak=args.omega_peak, delta_initial=args.delta_initial,
         seed=args.seed, restarts=args.restarts, maxiter=args.maxiter,
         check_ground_states=False,
+        **({"use_dmm": True} if args.dmm else {}),
     )
     reference = None if args.skip_evaluation else build_reference(model)
     parameters = program['parameters']
@@ -104,6 +106,8 @@ def make_run(model, args, *, sequence_builder=None, emulation_fn=None):
         'delta_final': float(parameters['delta_final']),
         'omega_peak': float(parameters['omega_peak']),
         'duration_ns': int(parameters['duration_ns']),
+        'use_dmm': bool(args.dmm),
+        'dmm_plan': diagnostics.get('dmm_plan'),
     }
     if args.ground_check:
         if reference is None:
@@ -113,6 +117,10 @@ def make_run(model, args, *, sequence_builder=None, emulation_fn=None):
             'global_detuning': _ground_report(parameters['global_q_matrix'], model, reference),
             'embedded': _ground_report(diagnostics['realized_q_matrix'], model, reference),
         }
+        if args.dmm:
+            encoding['ground_state_checks']['dmm_before_embedding'] = _ground_report(
+                parameters['dmm_q_matrix'], model, reference)
+
     payload = {
         'tier': 'M', 'track': 'A', 'objective': 'capacity_constrained_clustering',
         'instance': {'coordinates': model.coordinates.tolist(),
@@ -122,6 +130,7 @@ def make_run(model, args, *, sequence_builder=None, emulation_fn=None):
             'backend': args.backend, 'dt_ns': args.dt, 'shots': args.shots,
             'sample_seed': args.sample_seed, 'gpu': args.gpu,
             'with_modulation': args.with_modulation,
+            'dmm': bool(args.dmm),
             'mps_max_bond_dim': args.mps_bond_dim if args.backend == 'emu-mps' else None,
             'mps_precision': args.mps_precision if args.backend == 'emu-mps' else None,
             'prepare_only': args.prepare_only,
@@ -165,9 +174,13 @@ def main():
         print(f"Full matrix error: {100 * enc['relative_matrix_error']:.2f}%")
         print(f"Geometry: min separation {enc['min_separation_um']:.3f} um; "
               f"radius {enc['max_radius_um']:.3f} um")
+        if args.dmm and enc['dmm_plan']:
+            print(f"DMM (emulation-only): global final={enc['dmm_plan']['global_final']:.6g}, "
+                  f"maximum local detuning={enc['dmm_plan']['amplitude']:.6g} rad/us")
         if args.ground_check:
             checks = enc['ground_state_checks']
-            for stage in ('target', 'global_detuning', 'embedded'):
+            for stage in (('target', 'global_detuning', 'dmm_before_embedding', 'embedded')
+                          if args.dmm else ('target', 'global_detuning', 'embedded')):
                 item = checks[stage]
                 print(f"{stage}: {item['ground_feasible_assignments']}/"
                       f"{item['ground_assignment_count']} feasible ground states; "
