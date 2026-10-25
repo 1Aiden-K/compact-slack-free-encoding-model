@@ -1,3 +1,11 @@
+> **Branch `graphs-and-statistical-analysis` (analysis only, not meant to be merged).**
+> Statistics and figures for the Tier S results. Run `uv run python analysis/analyze.py` from the repository root.
+> It reads the three result tables in `analysis/data/` (1-bit baseline, 1-bit optimized, and the one-hot run copied from the `one-hot-model` branch) and writes:
+> - `analysis/stats.md`: means with 95% bootstrap intervals, paired Wilcoxon tests, the ground-state split, and Spearman correlations
+> - `analysis/figures/`: six PNGs (methods, ground-state split, one-hot vs 1-bit, pulse optimization, embedding error, optimizer history)
+>
+> The main README shows three of these figures; the rest live only here.
+
 # Capacitated Vehicle Routing Quantum Clustering Optimization Using Unbalanced Penalization
 https://arxiv.org/abs/2211.13914
 
