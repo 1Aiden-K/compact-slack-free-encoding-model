@@ -180,7 +180,7 @@ def emulate(sequence, *, shots=1000, seed=0, with_modulation=False):
         sampling_rate=1.0,
         with_modulation=with_modulation,
         prefer_device_noise_model=False,
-        noise_model=NoiseModel(noise_types=()),
+        noise_model=NoiseModel(),
     )
     results = QutipBackendV2(sequence, config=config).run()
     probability_map = results.final_state.bitstring_probabilities(
