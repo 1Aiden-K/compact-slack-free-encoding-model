@@ -49,8 +49,9 @@ def emulate(
     dt is the emulator integration timestep in ns; use a smaller value to check
     numerical convergence. gpu=True requests CUDA and is only for emu-sv.
     compact=True samples without constructing 2^N Python probability entries.
-    emu-mps uses tensor-network truncation and samples via MPS.sample(); its
-    shot-seed uses the local PyTorch CPU RNG, isolated from the caller's RNG.
+    emu-mps uses Pulser's BitStrings observable (not StateResult) to keep
+    optimize_qubit_ordering enabled; bitstrings are returned in register order.
+    Its measurement RNG is seeded within a temporary PyTorch CPU RNG scope.
     Explicit backend selection never silently switches emulator on failure.
     """
     if (
@@ -74,10 +75,17 @@ def emulate(
     # Import these only when emulation is requested, keeping pulses.py usable
     # without either emulator installed.
     from pulser import NoiseModel
-    from pulser.backend import StateResult
+    from pulser.backend import BitStrings, StateResult
 
+    # MPS state observation disables optimize_qubit_ordering and can make a
+    # 20-atom simulation substantially slower. Request only sampled bitstrings
+    # from MPS. State vectors remain available for emu-sv and QuTiP.
+    observable = (
+        BitStrings(evaluation_times=(1.0,), num_shots=int(shots), one_state="r")
+        if backend == "emu-mps" else StateResult(evaluation_times=(1.0,))
+    )
     config_options = {
-        "observables": (StateResult(evaluation_times=(1.0,)),),
+        "observables": (observable,),
         "default_evaluation_times": (1.0,),
         "with_modulation": with_modulation,
         "prefer_device_noise_model": False,
@@ -110,9 +118,15 @@ def emulate(
         backend_config = MPSConfig(
             dt=int(dt), precision=float(mps_precision),
             max_bond_dim=int(mps_max_bond_dim), num_gpus_to_use=0,
+            optimize_qubit_ordering=True,
             log_level=config.EMULATOR_LOG_LEVEL, **config_options,
         )
-        results = MPSBackend(sequence, config=backend_config).run()
+        # The BitStrings observable samples during run(), not afterward.
+        # Limit RNG changes to this call and preserve the caller's CPU RNG.
+        import torch
+        with torch.random.fork_rng(devices=[]):
+            torch.manual_seed(int(seed))
+            results = MPSBackend(sequence, config=backend_config).run()
     else:
         try:
             from pulser_simulation import QutipBackendV2, QutipConfig
@@ -126,17 +140,32 @@ def emulate(
         )
         results = QutipBackendV2(sequence, config=backend_config).run()
 
-    if tuple(results.atom_order) != tuple(sequence.register.qubits):
-        raise ValueError("Unexpected atom ordering in emulator results.")
-    n_qubits = len(sequence.register.qubits)
+    requested_order = tuple(sequence.register.qubits)
+    returned_order = tuple(results.atom_order)
+    n_qubits = len(requested_order)
     if backend == "emu-mps":
-        # MPS.sample() returns physical g=0,r=1 strings in atom order.
-        # Preserve the seeded sampling convention, without materializing 2^N entries.
-        import torch
-        with torch.random.fork_rng(devices=[]):
-            torch.manual_seed(seed)
-            counts = Counter(results.final_state.sample(num_shots=int(shots), one_state="r"))
+        # BitStrings yields counts directly; never request results.final_state.
+        # Pulser specifies that the bit positions follow results.atom_order.
+        # Reorder into the Q-matrix/register order if the MPS backend has
+        # exposed an optimized ordering of the atoms.
+        if len(returned_order) != n_qubits or set(returned_order) != set(requested_order):
+            raise ValueError("Emulator bitstrings have an unexpected atom set.")
+        raw_counts = results.final_bitstrings
+        if raw_counts is None:
+            raise ValueError("emu-mps did not return final bitstrings.")
+        permutation = [returned_order.index(atom) for atom in requested_order]
+        counts = Counter()
+        for bits, count in raw_counts.items():
+            if not isinstance(bits, str) or len(bits) != n_qubits or set(bits) - {"0", "1"}:
+                raise ValueError("emu-mps returned a malformed bitstring.")
+            if isinstance(count, (bool, np.bool_)) or not isinstance(count, (int, np.integer)) or count < 0:
+                raise ValueError("emu-mps returned an invalid bitstring count.")
+            counts["".join(bits[i] for i in permutation)] += int(count)
+        if sum(counts.values()) != shots:
+            raise ValueError("emu-mps returned a different number of shots than requested.")
         probability_map = None
+    elif returned_order != requested_order:
+        raise ValueError("Unexpected atom ordering in emulator results.")
     elif compact and backend == "emu-sv":
         amplitudes = results.final_state.data.detach().cpu().numpy().reshape(-1)
         if amplitudes.size != 2**n_qubits:
