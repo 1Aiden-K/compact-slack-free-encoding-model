@@ -16,7 +16,7 @@ COMMANDS = {
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Track A capacity-constrained clustering')
-    parser.add_argument('--tier', choices=('s',), default='s', help='instance tier (currently s)')
+    parser.add_argument('--tier', choices=('s', 'm'), default='s', help='instance tier (default: s)')
     commands = parser.add_subparsers(dest='command', required=True)
     for name in COMMANDS:
         commands.add_parser(name, add_help=False, help={
@@ -26,6 +26,9 @@ def main(argv=None):
             'classical': 'inspect the exact constrained and QUBO references',
         }[name])
     args, forwarded = parser.parse_known_args(argv)
+    if args.tier == 'm' and args.command not in ('generate', 'validate', 'classical', 'evaluate'):
+        parser.error('Tier M currently supports generate, validate, classical, and evaluate. '
+                     'Quantum execution and pulse optimization are not integrated yet.')
     module_name, prefix = COMMANDS[args.command]
     module = importlib.import_module(f'duquantum.tier_{args.tier}.{module_name}')
     old_argv = sys.argv
