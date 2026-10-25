@@ -23,11 +23,11 @@ From the repository root:
 uv sync --locked
 uv run python src/main.py --tier s benchmark \
   --instances-dir src/instances/tier_s \
-  --output-dir src/results/tier_s/reproduce \
+  --output-dir src/results/tier_s/my_run \
   --no-optimize-pulses --backend emu-sv --shots 1000 --dt 10 --epsilon 0
 ```
 
-This evaluates all 20 certified Tier S instances with four methods: exact clustering, exact QUBO, uniform random sampling and emu-sv emulation. It takes about 30 seconds on a laptop CPU. The output folder must be absent or empty; pick a new name for each run. Results go to `results.csv` (one row per instance and method), `summary.json`, `manifest.json` (settings and hashes), and one detail JSON per instance.
+This evaluates all 20 certified Tier S instances with four methods: exact clustering, exact QUBO, uniform random sampling and emu-sv emulation. It takes about 30 seconds on a laptop CPU. The output folder must be absent or empty, so pick a new name for each run; the committed folders listed under [Results files](#results-files) will be refused. Results go to `results.csv` (one row per instance and method), `summary.json`, `manifest.json` (settings and hashes), and one detail JSON per instance.
 
 To include pulse optimization (10 search evaluations per instance, slower):
 
@@ -46,7 +46,31 @@ uv run python src/main.py --tier s benchmark \
 | emu-sv, baseline pulse | 4 | 96.5% | 64.0% | 0% on all 20 |
 | emu-sv, optimized pulse | 4 | 93.4% | 69.0% | 0% on all 20 |
 
-Values are means over instances. "Optimal shots" is the fraction of all shots that equal the exact constrained clustering optimum. The baseline row comes from the quick-start command (also committed in `src/results/tier_s/baseline/`). The optimized row is `src/results/tier_s/optimized_10/`.
+Values are means over instances. "Optimal shots" is the fraction of all shots that equal the exact constrained clustering optimum. The baseline row is the quick-start command; its submitted output is `src/results/tier_s/submission_01/`. The optimized row is `src/results/tier_s/optimized_10/`.
+
+### Results files
+
+Each folder holds `results.csv` (one row per instance × method, with every metric from the challenge brief), `summary.json` (aggregates), `manifest.json` (settings, package versions and file hashes) and one detail JSON per instance. Column definitions are in [docs/tier_s_metrics.md](docs/tier_s_metrics.md).
+
+| Folder | What it is |
+|---|---|
+| [`src/results/tier_s/submission_01/`](src/results/tier_s/submission_01/results.csv) | **Submitted results:** baseline pulse, emu-sv, 20 instances (the headline row) |
+| [`src/results/tier_s/reproduce/`](src/results/tier_s/reproduce/results.csv) | A re-run of the quick-start command, confirming the submission reproduces |
+| [`src/results/tier_s/baseline/`](src/results/tier_s/baseline/results.csv) | Baseline pulse at a 1 ns integration step (same per-instance results) |
+| [`src/results/tier_s/optimized_10/`](src/results/tier_s/optimized_10/results.csv) | Pulse-optimized run, 10 search evaluations per instance |
+
+### Summarizing and visualizing results
+
+Two helper scripts read a `results.csv`:
+
+- **[`visualize_results.py`](visualize_results.py)** draws five charts and a click-through viewer: quantum vs random, optimal probability by seed, ground-state preservation, embedding error vs success, and CVRP gap by seed. The committed output is in [`demo_charts/`](demo_charts/); open `demo_charts/index.html` and use the arrow keys.
+  ```bash
+  uv run python visualize_results.py src/results/tier_s/submission_01/results.csv --output demo_charts
+  ```
+- **[`analysis/grok_summary.py`](analysis/grok_summary.py)** prints the mean, median, minimum and maximum of the optimal-shot and feasibility rates, plus how many instances keep the true optimum as the lowest-energy state (generated with Grok, reviewed by the team).
+  ```bash
+  uv run python analysis/grok_summary.py
+  ```
 
 **Known limitation.** The register uses one global detuning, but this QUBO's linear coefficients differ per customer. We set the detuning to their mean. On 8 of 20 instances, this averaging alone moves the register's lowest-energy state away from the true optimum. After embedding, 6 instances still have the wrong lowest-energy state, and on 5 of those the optimal-shot rate falls below 4%. This is recorded per instance in the `global_all_ground_states_original_optimal` and `embedded_all_ground_states_original_optimal` columns of `results.csv`.
 
@@ -149,7 +173,10 @@ src/main.py                command-line entry point
 src/duquantum/quantum/     Ising mapping, embedding, pulses, emulator, pulse optimization
 src/duquantum/tier_s/      Tier S model, instances, classical references, evaluation, benchmark
 src/instances/tier_s/      the 20 certified instances
-src/results/tier_s/        committed benchmark outputs (baseline, optimized_10)
+src/results/tier_s/        committed benchmark outputs (submission_01, reproduce, baseline, optimized_10)
+visualize_results.py       charts from a results.csv; output in demo_charts/
+analysis/grok_summary.py   short text summary of the baseline results
+*.pdf (repository root)    the report
 ```
 
 ## Requirements
