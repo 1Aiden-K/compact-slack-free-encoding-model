@@ -1,4 +1,4 @@
-# Unbalanced Penalization QUBO Model
+# Capacitated Vehicle Routing Quantum Clustering Optimization Using Unbalanced Penalization
 https://arxiv.org/abs/2211.13914
 
 ### Team: Psychics

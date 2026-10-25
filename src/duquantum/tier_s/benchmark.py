@@ -17,14 +17,20 @@ import sys
 import time
 import traceback
 from collections import Counter
+from functools import lru_cache
 from importlib import metadata
+from itertools import permutations
+from math import dist, isclose
 from pathlib import Path
 
 import numpy as np
 
-from duquantum.tier_s.instances import load_instance
 from duquantum.tier_s.config import bind_instance as _bind_instance
-from duquantum.tier_s.optimization import add_optimization_arguments, validate_optimization_settings
+from duquantum.tier_s.instances import load_instance
+from duquantum.tier_s.optimization import (
+    add_optimization_arguments,
+    validate_optimization_settings,
+)
 
 DEFAULTS = {
     "penalty_weight": 0.1,
@@ -64,13 +70,19 @@ COLUMNS = [
     "largest_demand_ratio",
     "reference_status",
     "clustering_reference_cost",
+    "cvrp_reference_status",
+    "cvrp_reference_cost",
+    "epsilon_pct",
     "feasibility_rate",
     "optimal_probability",
     "reference_probability",
+    "cvrp_reference_probability",
     "predicted_feasibility_rate",
     "predicted_optimal_probability",
     "predicted_reference_probability",
     "best_model_gap_pct",
+    "best_cvrp_gap_pct",
+    "best_cvrp_cost",
     "best_clustering_cost",
     "target_all_ground_states_original_optimal",
     "global_all_ground_states_original_optimal",
@@ -109,6 +121,86 @@ def _json(path, data):
     path.write_text(json.dumps(data, indent=2, allow_nan=False) + "\n")
 
 
+def _build_cvrp_reference(instance, clustering_reference):
+    """Exact Tier S CVRP reference by enumerating feasible clusters and tours.
+
+    Each route starts and ends at the fixed depot. Empty vehicles cost zero.
+    Vehicle-label permutations remain in the lookup because sampled bitstrings
+    are labeled, though the optimum is unchanged by swapping vehicle labels.
+    """
+    coordinates = instance["coordinates"]
+    depot = instance["depot"]
+    n = clustering_reference["n_bits"]
+    if n != instance["n_customers"] or instance.get("vehicles", 2) != 2:
+        raise ValueError(
+            "Tier S CVRP reference expects two vehicles and matching customers."
+        )
+
+    @lru_cache(maxsize=None)
+    def route_cost(customer_ids):
+        if not customer_ids:
+            return 0.0
+        best = float("inf")
+        for order in permutations(customer_ids):
+            total = dist(depot, coordinates[order[0]])
+            total += sum(
+                dist(coordinates[a], coordinates[b]) for a, b in zip(order, order[1:])
+            )
+            total += dist(coordinates[order[-1]], depot)
+            best = min(best, total)
+        return best
+
+    routed_costs = {}
+    for bits, record in clustering_reference["assignments"].items():
+        if not record["feasible"]:
+            continue
+        first = tuple(i for i, bit in enumerate(bits) if bit == "1")
+        second = tuple(i for i, bit in enumerate(bits) if bit == "0")
+        routed_costs[bits] = route_cost(first) + route_cost(second)
+
+    optimum = min(routed_costs.values(), default=None)
+    return {
+        "status": "proven_optimum" if optimum is not None else "infeasible_instance",
+        "optimal_cost": optimum,
+        "routed_costs": routed_costs,
+    }
+
+
+def _score_cvrp_samples(counts, cvrp_reference, epsilon_pct):
+    """Score only feasible observed bitstrings, using all shots as denominator."""
+    total_shots = sum(counts.values())
+    if total_shots <= 0:
+        raise ValueError("Counts must contain at least one shot.")
+    reference_cost = cvrp_reference["optimal_cost"]
+    costs = cvrp_reference["routed_costs"]
+    observed = {
+        bits: int(count)
+        for bits, count in counts.items()
+        if count > 0 and bits in costs
+    }
+
+    def gap(cost):
+        if cost is None or reference_cost is None:
+            return None
+        if isclose(cost, reference_cost, rel_tol=1e-10, abs_tol=1e-9):
+            return 0.0
+        if reference_cost == 0:
+            return None
+        return 100.0 * (cost - reference_cost) / reference_cost
+
+    best_cost = min((costs[bits] for bits in observed), default=None)
+    reference_hits = sum(
+        count
+        for bits, count in observed.items()
+        if (shot_gap := gap(costs[bits])) is not None and shot_gap <= epsilon_pct
+    )
+    return {
+        "best_feasible_cvrp_cost": best_cost,
+        "best_cvrp_gap_pct": gap(best_cost),
+        "cvrp_reference_probability": (
+            reference_hits / total_shots if reference_cost is not None else None
+        ),
+    }
 
 
 def assess_instance(path, settings):
@@ -118,12 +210,17 @@ def assess_instance(path, settings):
         validate_optimization_settings(settings)
     instance = load_instance(path)
     _bind_instance(instance)
-    from duquantum.tier_s.evaluation import build_reference, encoding_from_program, evaluate_samples
     from duquantum.quantum.ising import build_ising
+    from duquantum.tier_s.evaluation import (
+        build_reference,
+        encoding_from_program,
+        evaluate_samples,
+    )
 
     start = time.perf_counter()
     reference = build_reference(settings["penalty_weight"])
     reference_seconds = time.perf_counter() - start
+    cvrp_reference = _build_cvrp_reference(instance, reference)
     if reference["status"] != "proven_optimum":
         raise ValueError(
             "A certified instance unexpectedly has no feasible clustering reference."
@@ -163,8 +260,10 @@ def assess_instance(path, settings):
                 from duquantum.tier_s.optimization import optimize_program
 
                 program, optimization = optimize_program(
-                    program, coordinates=instance["coordinates"],
-                    demands=instance["demands"], capacity=instance["capacity"],
+                    program,
+                    coordinates=instance["coordinates"],
+                    demands=instance["demands"],
+                    capacity=instance["capacity"],
                     settings=settings,
                 )
             encoding = encoding_from_program(program)
@@ -277,8 +376,21 @@ def assess_instance(path, settings):
                     "traceback": traceback.format_exc(),
                 },
             }
+    # Classical CVRP reference/costs are computed only for reporting. These
+    # values never influence the quantum program or its pulse optimization.
+    for method_result in methods.values():
+        if method_result.get("report") is not None:
+            method_result["cvrp_metrics"] = _score_cvrp_samples(
+                method_result["counts"], cvrp_reference, settings["epsilon_pct"]
+            )
+
     return {
-        "track": "A", "objective": "capacity_constrained_clustering",
+        "cvrp_reference": {
+            "status": cvrp_reference["status"],
+            "optimal_cost": cvrp_reference["optimal_cost"],
+        },
+        "track": "A",
+        "objective": "capacity_constrained_clustering",
         "instance": instance,
         "settings": settings,
         "program": program_data,
@@ -300,6 +412,8 @@ def _row(payload, method, detail_file):
     diagnostics = report or baseline or {}
     stages = diagnostics.get("stages", {})
     sampled = report["sampled"] if report else {}
+    cvrp = result.get("cvrp_metrics") or {}
+    cvrp_reference = payload.get("cvrp_reference") or {}
     predicted = (report.get("predicted") or {}) if report else {}
     reference = diagnostics.get("reference", {})
     encoding = (payload.get("program") or {}).get("encoding", {})
@@ -316,13 +430,19 @@ def _row(payload, method, detail_file):
         "largest_demand_ratio": instance["largest_demand_ratio"],
         "reference_status": reference.get("status"),
         "clustering_reference_cost": reference.get("optimal_cost"),
+        "cvrp_reference_status": cvrp_reference.get("status"),
+        "cvrp_reference_cost": cvrp_reference.get("optimal_cost"),
+        "epsilon_pct": settings["epsilon_pct"],
         "feasibility_rate": sampled.get("feasibility_rate"),
         "optimal_probability": sampled.get("optimal_probability"),
         "reference_probability": sampled.get("reference_probability"),
+        "cvrp_reference_probability": cvrp.get("cvrp_reference_probability"),
         "predicted_feasibility_rate": predicted.get("feasibility_rate"),
         "predicted_optimal_probability": predicted.get("optimal_probability"),
         "predicted_reference_probability": predicted.get("reference_probability"),
         "best_model_gap_pct": sampled.get("best_model_gap_pct"),
+        "best_cvrp_gap_pct": cvrp.get("best_cvrp_gap_pct"),
+        "best_cvrp_cost": cvrp.get("best_feasible_cvrp_cost"),
         "best_clustering_cost": sampled.get("best_feasible_cost"),
         "target_all_ground_states_original_optimal": stages.get("target_qubo", {}).get(
             "all_ground_states_original_optimal"
@@ -346,8 +466,11 @@ def _row(payload, method, detail_file):
         "penalty_weight": settings["penalty_weight"],
         "scaling_policy": "automatic" if settings["energy_scale"] is None else "fixed",
         "energy_scale": (payload.get("program") or {}).get("energy_scale"),
-        "duration_ns": (payload.get("program") or {}).get("duration_ns", settings["duration_ns"])
-        if is_quantum else None,
+        "duration_ns": (payload.get("program") or {}).get(
+            "duration_ns", settings["duration_ns"]
+        )
+        if is_quantum
+        else None,
         "dt_ns": settings["dt_ns"] if is_quantum and method == "emu-sv" else None,
         "embedding_seed": settings["embedding_seed"] if is_quantum else None,
         "sample_seed": settings["sample_seed"]
@@ -364,13 +487,32 @@ def _row(payload, method, detail_file):
         "emulation_seconds": payload["timings"]["emulation_seconds"]
         if is_quantum
         else None,
-        "pulse_optimized": settings.get("optimize_pulses", False) if is_quantum else None,
-        "optimization_seconds": (payload.get("optimization") or {}).get("seconds") if is_quantum else None,
-        "optimization_evaluations": (payload.get("optimization") or {}).get("evaluations") if is_quantum else None,
-        "optimization_simulations": (payload.get("optimization") or {}).get("simulations") if is_quantum else None,
-        "optimization_training_shots": (payload.get("optimization") or {}).get("training_shots") if is_quantum else None,
-        "total_emulator_runs": ((payload.get("optimization") or {}).get("simulations", 0) + 1)
-        if is_quantum and payload["timings"].get("emulation_seconds") is not None else None,
+        "pulse_optimized": settings.get("optimize_pulses", False)
+        if is_quantum
+        else None,
+        "optimization_seconds": (payload.get("optimization") or {}).get("seconds")
+        if is_quantum
+        else None,
+        "optimization_evaluations": (payload.get("optimization") or {}).get(
+            "evaluations"
+        )
+        if is_quantum
+        else None,
+        "optimization_simulations": (payload.get("optimization") or {}).get(
+            "simulations"
+        )
+        if is_quantum
+        else None,
+        "optimization_training_shots": (payload.get("optimization") or {}).get(
+            "training_shots"
+        )
+        if is_quantum
+        else None,
+        "total_emulator_runs": (
+            (payload.get("optimization") or {}).get("simulations", 0) + 1
+        )
+        if is_quantum and payload["timings"].get("emulation_seconds") is not None
+        else None,
         "detail_file": detail_file,
     }
     return row
@@ -384,6 +526,8 @@ def summarize(rows):
         "optimal_probability",
         "predicted_optimal_probability",
         "best_model_gap_pct",
+        "best_cvrp_gap_pct",
+        "cvrp_reference_probability",
     )
     for method in sorted({row["method"] for row in rows}):
         group = [row for row in rows if row["method"] == method]
@@ -453,7 +597,9 @@ def main():
         "instances", type=Path, nargs="*", help="optional explicit instance paths"
     )
     parser.add_argument("--instances-dir", type=Path, default=Path("instances/tier_s"))
-    parser.add_argument("--output-dir", type=Path, default=Path("results/tier_s/benchmark"))
+    parser.add_argument(
+        "--output-dir", type=Path, default=Path("results/tier_s/benchmark")
+    )
     parser.add_argument(
         "--lambda",
         dest="penalty_weight",
@@ -552,9 +698,10 @@ def main():
                 "path": spec.origin,
                 "sha256": hashlib.sha256(Path(spec.origin).read_bytes()).hexdigest(),
             }
-    lock = Path(__file__).resolve().parents[2] / "uv.lock"
+    lock = Path(__file__).resolve().parents[3] / "uv.lock"
     manifest = {
-        "track": "A", "objective": "capacity_constrained_clustering",
+        "track": "A",
+        "objective": "capacity_constrained_clustering",
         "settings": settings,
         "environment": _environment(),
         "sources": sources,
@@ -579,7 +726,13 @@ def main():
         for index, (path, item) in enumerate(items, 1):
             environment = dict(os.environ)
             result = subprocess.run(
-                [sys.executable, "-m", "duquantum.tier_s.benchmark", "--worker", str(path)],
+                [
+                    sys.executable,
+                    "-m",
+                    "duquantum.tier_s.benchmark",
+                    "--worker",
+                    str(path),
+                ],
                 input=json.dumps(settings),
                 text=True,
                 capture_output=True,
