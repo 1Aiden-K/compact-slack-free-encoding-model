@@ -1,0 +1,118 @@
+"""Exhaustively evaluate the QUBO and the original constrained problem.
+
+Run: python classical.py --lambda 0.1
+Requires numpy, qubo.py, and your unchanged config.py in the same directory.
+Runtime is exponential in N; intended for small instances.
+"""
+
+import argparse
+from itertools import product
+from math import isclose
+
+import numpy as np
+
+from qubo import CAPACITY, N_BITS, build_q_matrix, build_qubo, evaluate_assignment
+
+
+def solve_classically(penalty_weight=0.1):
+    """Return every assignment, ordered by QUBO energy (including c).
+
+    Each record contains bits, energy, original cost, vehicle loads, and
+    original capacity feasibility. All 2**N_BITS assignments are evaluated.
+    """
+    c, h, J = build_qubo(penalty_weight)
+    results = []
+    for bits in product((0, 1), repeat=N_BITS):
+        z = np.asarray(bits, dtype=int)
+        cost, loads, feasible = evaluate_assignment(z)
+        results.append(
+            {
+                "bits": bits,
+                "energy": float(c + h @ z + z @ J @ z),
+                "cost": cost,
+                "loads": loads,
+                "feasible": feasible,
+            }
+        )
+    return sorted(results, key=lambda result: result["energy"])
+
+
+def tied(a, b):
+    """Numerical tie rule for reported optima."""
+    return isclose(a, b, rel_tol=1e-10, abs_tol=1e-9)
+
+
+def show_assignment(result):
+    bits = result["bits"]
+    print(f"Bits: {list(bits)}; F = {result['energy']:.6f}; C = {result['cost']:.6f}")
+    print(f"Capacity feasible: {result['feasible']}")
+    for vehicle, bit in ((1, 1), (2, 0)):
+        locations = [i for i, value in enumerate(bits) if value == bit]
+        load = result["loads"][vehicle - 1]
+        print(f"Vehicle {vehicle}: locations {locations}, load {load:g}/{CAPACITY:g}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--lambda",
+        dest="penalty_weight",
+        type=float,
+        default=0.1,
+        help="positive load-balancing weight (default: 0.1)",
+    )
+    parser.add_argument(
+        "--show-all", action="store_true", help="print every assignment"
+    )
+    args = parser.parse_args()
+    try:
+        c, h, J = build_qubo(args.penalty_weight)
+    except ValueError as error:
+        parser.error(str(error))
+
+    np.set_printoptions(precision=6, suppress=True)
+    print(f"Variables: {N_BITS}; lambda: {args.penalty_weight:g}")
+    print(f"Constant offset c: {c:.6f}")
+    print("Linear coefficients h:")
+    print(h)
+    print("Pair coefficients J (strictly upper triangular):")
+    print(J)
+    print("Symmetric QUBO matrix M:")
+    print(build_q_matrix(args.penalty_weight))
+
+    results = solve_classically(args.penalty_weight)
+    ground = [r for r in results if tied(r["energy"], results[0]["energy"])]
+    feasible = [r for r in results if r["feasible"]]
+    print(
+        f"\nFeasible assignments: {len(feasible)}/{len(results)} (exhaustive enumeration)"
+    )
+    print(f"QUBO minimum F: {results[0]['energy']:.6f}; ground states: {len(ground)}")
+    print(f"Feasible ground states: {sum(r['feasible'] for r in ground)}/{len(ground)}")
+    for result in ground:
+        show_assignment(result)
+
+    if feasible:
+        optimum = min(r["cost"] for r in feasible)
+        original_optima = [r for r in feasible if tied(r["cost"], optimum)]
+        preserved = sum(r["feasible"] and tied(r["cost"], optimum) for r in ground)
+        print(f"\nOriginal constrained minimum C: {optimum:.6f}")
+        print(f"Originally optimal QUBO ground states: {preserved}/{len(ground)}")
+        print("Best original solution (representative; vehicle labels may be swapped):")
+        show_assignment(original_optima[0])
+        print("Lowest-QUBO-energy feasible solution (representative):")
+        show_assignment(feasible[0])
+    else:
+        print("\nNo assignment satisfies the original capacity constraints.")
+
+    if args.show_all:
+        print("\nAll assignments, sorted by F:")
+        print("Bits | F | C | Loads (V1, V2) | Feasible")
+        for r in results:
+            print(
+                f"{list(r['bits'])} | {r['energy']:.6f} | {r['cost']:.6f} | "
+                f"{r['loads']} | {r['feasible']}"
+            )
+
+
+if __name__ == "__main__":
+    main()
