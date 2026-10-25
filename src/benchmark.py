@@ -3,7 +3,7 @@
     uv run --locked benchmark.py --instances-dir instances --output-dir benchmark_results
     uv run --locked benchmark.py --instances-dir instances --classical-only --output-dir classical_results
 
-Methods: exact constrained clustering, exact QUBO, exact CVRP, uniform random sampling,
+Track A methods: exact constrained clustering, exact QUBO, uniform random sampling,
 and the selected Pulser emulator. By default each instance optimizes its pulse,
 then emulates the selected sequence again for final measurements. Use
 --no-optimize-pulses to reproduce the original fixed-pulse protocol.
@@ -63,7 +63,7 @@ DEFAULTS = {
     "duration_bounds": None,
 }
 
-BASELINES = ("exact_clustering", "exact_qubo", "exact_cvrp", "uniform_random")
+BASELINES = ("exact_clustering", "exact_qubo", "uniform_random")
 
 COLUMNS = [
     "instance_id",
@@ -76,7 +76,6 @@ COLUMNS = [
     "largest_demand_ratio",
     "reference_status",
     "clustering_reference_cost",
-    "cvrp_reference_cost",
     "feasibility_rate",
     "optimal_probability",
     "reference_probability",
@@ -85,13 +84,6 @@ COLUMNS = [
     "predicted_reference_probability",
     "best_model_gap_pct",
     "best_clustering_cost",
-    "cvrp_optimal_probability",
-    "cvrp_reference_probability",
-    "predicted_cvrp_optimal_probability",
-    "predicted_cvrp_reference_probability",
-    "best_cvrp_gap_pct",
-    "best_routed_cost",
-    "cvrp_gap_of_best_model_shot_pct",
     "target_all_ground_states_original_optimal",
     "global_all_ground_states_original_optimal",
     "embedded_all_ground_states_original_optimal",
@@ -202,11 +194,8 @@ def assess_instance(path, settings):
                 from optimize_pulses import optimize_program
 
                 program, optimization = optimize_program(
-                    program,
-                    coordinates=instance["coordinates"],
-                    demands=instance["demands"],
-                    capacity=instance["capacity"],
-                    depot=instance["depot"],
+                    program, coordinates=instance["coordinates"],
+                    demands=instance["demands"], capacity=instance["capacity"],
                     settings=settings,
                 )
             encoding = encoding_from_program(program)
@@ -255,7 +244,6 @@ def assess_instance(path, settings):
         )
 
     model_bits = reference["optimal_clusterings"][0]
-    cvrp_bits = reference["routing"]["optimal_clusterings"][0]
     labels = sorted(reference["assignments"])
     uniform = np.full(len(labels), 1 / len(labels))
     draws = np.random.default_rng(settings["sample_seed"]).multinomial(
@@ -267,7 +255,6 @@ def assess_instance(path, settings):
     inputs = {
         "exact_clustering": ({model_bits: 1}, None),
         "exact_qubo": ({qubo_bits: 1}, None),
-        "exact_cvrp": ({cvrp_bits: 1}, None),
         "uniform_random": (random_counts, dict(zip(labels, uniform.tolist()))),
     }
     methods = {}
@@ -322,6 +309,7 @@ def assess_instance(path, settings):
                 },
             }
     return {
+        "track": "A", "objective": "capacity_constrained_clustering",
         "instance": instance,
         "settings": settings,
         "program": program_data,
@@ -344,12 +332,7 @@ def _row(payload, method, detail_file):
     stages = diagnostics.get("stages", {})
     sampled = report["sampled"] if report else {}
     predicted = (report.get("predicted") or {}) if report else {}
-    routing = (report.get("routing") or {}) if report else {}
-    routed = routing.get("sampled", {})
-    routed_prediction = routing.get("predicted") or {}
-    model_shot = routed.get("best_model_shot") or {}
     reference = diagnostics.get("reference", {})
-    routing_reference = (diagnostics.get("routing") or {}).get("reference", {})
     encoding = (payload.get("program") or {}).get("encoding", {})
     error = result.get("error") or {}
     is_quantum = method == settings["backend"]
@@ -364,7 +347,6 @@ def _row(payload, method, detail_file):
         "largest_demand_ratio": instance["largest_demand_ratio"],
         "reference_status": reference.get("status"),
         "clustering_reference_cost": reference.get("optimal_cost"),
-        "cvrp_reference_cost": routing_reference.get("optimal_cost"),
         "feasibility_rate": sampled.get("feasibility_rate"),
         "optimal_probability": sampled.get("optimal_probability"),
         "reference_probability": sampled.get("reference_probability"),
@@ -373,17 +355,6 @@ def _row(payload, method, detail_file):
         "predicted_reference_probability": predicted.get("reference_probability"),
         "best_model_gap_pct": sampled.get("best_model_gap_pct"),
         "best_clustering_cost": sampled.get("best_feasible_cost"),
-        "cvrp_optimal_probability": routed.get("optimal_probability"),
-        "cvrp_reference_probability": routed.get("reference_probability"),
-        "predicted_cvrp_optimal_probability": routed_prediction.get(
-            "optimal_probability"
-        ),
-        "predicted_cvrp_reference_probability": routed_prediction.get(
-            "reference_probability"
-        ),
-        "best_cvrp_gap_pct": routed.get("best_cvrp_gap_pct"),
-        "best_routed_cost": routed.get("best_feasible_cost"),
-        "cvrp_gap_of_best_model_shot_pct": model_shot.get("cvrp_gap_pct"),
         "target_all_ground_states_original_optimal": stages.get("target_qubo", {}).get(
             "all_ground_states_original_optimal"
         ),
@@ -406,11 +377,8 @@ def _row(payload, method, detail_file):
         "penalty_weight": settings["penalty_weight"],
         "scaling_policy": "automatic" if settings["energy_scale"] is None else "fixed",
         "energy_scale": (payload.get("program") or {}).get("energy_scale"),
-        "duration_ns": (payload.get("program") or {}).get(
-            "duration_ns", settings["duration_ns"]
-        )
-        if is_quantum
-        else None,
+        "duration_ns": (payload.get("program") or {}).get("duration_ns", settings["duration_ns"])
+        if is_quantum else None,
         "dt_ns": settings["dt_ns"] if is_quantum and method == "emu-sv" else None,
         "embedding_seed": settings["embedding_seed"] if is_quantum else None,
         "sample_seed": settings["sample_seed"]
@@ -427,32 +395,13 @@ def _row(payload, method, detail_file):
         "emulation_seconds": payload["timings"]["emulation_seconds"]
         if is_quantum
         else None,
-        "pulse_optimized": settings.get("optimize_pulses", False)
-        if is_quantum
-        else None,
-        "optimization_seconds": (payload.get("optimization") or {}).get("seconds")
-        if is_quantum
-        else None,
-        "optimization_evaluations": (payload.get("optimization") or {}).get(
-            "evaluations"
-        )
-        if is_quantum
-        else None,
-        "optimization_simulations": (payload.get("optimization") or {}).get(
-            "simulations"
-        )
-        if is_quantum
-        else None,
-        "optimization_training_shots": (payload.get("optimization") or {}).get(
-            "training_shots"
-        )
-        if is_quantum
-        else None,
-        "total_emulator_runs": (
-            (payload.get("optimization") or {}).get("simulations", 0) + 1
-        )
-        if is_quantum and payload["timings"].get("emulation_seconds") is not None
-        else None,
+        "pulse_optimized": settings.get("optimize_pulses", False) if is_quantum else None,
+        "optimization_seconds": (payload.get("optimization") or {}).get("seconds") if is_quantum else None,
+        "optimization_evaluations": (payload.get("optimization") or {}).get("evaluations") if is_quantum else None,
+        "optimization_simulations": (payload.get("optimization") or {}).get("simulations") if is_quantum else None,
+        "optimization_training_shots": (payload.get("optimization") or {}).get("training_shots") if is_quantum else None,
+        "total_emulator_runs": ((payload.get("optimization") or {}).get("simulations", 0) + 1)
+        if is_quantum and payload["timings"].get("emulation_seconds") is not None else None,
         "detail_file": detail_file,
     }
     return row
@@ -466,10 +415,6 @@ def summarize(rows):
         "optimal_probability",
         "predicted_optimal_probability",
         "best_model_gap_pct",
-        "cvrp_optimal_probability",
-        "predicted_cvrp_optimal_probability",
-        "best_cvrp_gap_pct",
-        "cvrp_gap_of_best_model_shot_pct",
     )
     for method in sorted({row["method"] for row in rows}):
         group = [row for row in rows if row["method"] == method]
@@ -625,7 +570,6 @@ def main():
         "emulate",
         "optimize_pulses",
         "evaluator",
-        "routing",
         "config",
     ):
         try:
@@ -639,6 +583,7 @@ def main():
             }
     lock = Path(__file__).resolve().with_name("uv.lock")
     manifest = {
+        "track": "A", "objective": "capacity_constrained_clustering",
         "settings": settings,
         "environment": _environment(),
         "sources": sources,

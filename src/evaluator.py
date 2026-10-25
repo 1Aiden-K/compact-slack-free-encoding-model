@@ -9,8 +9,8 @@ baselines; enumeration does not select or repair the reported quantum shots.
 
 Input is either a JSON bitstring-to-count mapping or an emulate.py --output
 file. epsilon_pct / --epsilon is a relative model-gap threshold in percent.
-Set config.DEPOT or pass --depot X Y to include exact classical routing and
-CVRP gaps. The selected depot is fixed, independent of clustering.
+Track A clustering is the default. Optional routing diagnostics are available
+only through build_reference(include_routing=True) for separate use.
 Only feasible shots can reach the reference. Vehicle label swaps are the same
 clustering, but every shot still contributes to the probability denominator.
 """
@@ -58,15 +58,16 @@ def configured_depot(depot=None):
 
 
 def build_reference(
-    penalty_weight=config.LAMBDA, *, max_bits=config.MAX_EXACT_BITS, depot=None
+    penalty_weight=config.LAMBDA, *, max_bits=config.MAX_EXACT_BITS, depot=None,
+    include_routing=False,
 ):
     """Enumerate the constrained problem and target QUBO once per instance.
 
     All settings come from the existing config.py through qubo.py. References
     can be reused across pulse/embedding runs with the same instance and lambda.
     An infeasible instance is recorded explicitly; gaps then remain undefined.
-    A depot supplied explicitly or as config.DEPOT also enables exact TSP/CVRP
-    evaluation. The private router cache is not JSON-serializable; reports are.
+    Track A clustering is evaluated by default. Optional routing diagnostics
+    require include_routing=True. The private router cache is not serializable.
     """
     from classical import solve_classically
     from qubo import CAPACITY, COORDINATES, DEMANDS, N_BITS, build_q_matrix, build_qubo
@@ -107,7 +108,7 @@ def build_reference(
         "status": "proven_optimum" if feasible else "infeasible_instance",
         "q_matrix": build_q_matrix(penalty_weight).tolist(),
         "qubo_offset": float(build_qubo(penalty_weight)[0]),
-        "depot": configured_depot(depot),
+        "depot": configured_depot(depot) if include_routing else None,
         "routing": None,
     }
     if reference["depot"] is not None:
@@ -559,7 +560,7 @@ def print_evaluation(report):
         )
     routing = report["routing"]
     if routing is None:
-        print("Exact routing/CVRP gap: disabled; set config.DEPOT or pass --depot X Y.")
+        print("Track A: capacity-constrained clustering.")
         return
     print(f"\nExact classical routing; depot: {routing['reference']['depot']}")
     print(
@@ -619,7 +620,7 @@ def main():
         type=float,
         nargs=2,
         default=None,
-        help="fixed depot X Y; otherwise use the saved run depot or config.DEPOT",
+        help="legacy depot metadata; unused for Track A clustering",
     )
     parser.add_argument(
         "--output",

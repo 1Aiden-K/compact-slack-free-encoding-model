@@ -1,0 +1,189 @@
+{
+  "track": "A",
+  "objective": "capacity_constrained_clustering",
+  "settings": {
+    "penalty_weight": 0.1,
+    "duration_ns": 4000,
+    "energy_scale": null,
+    "backend": "emu-sv",
+    "dt_ns": 1,
+    "embedding_seed": 0,
+    "sample_seed": 0,
+    "restarts": 8,
+    "maxiter": 1500,
+    "shots": 1000,
+    "epsilon_pct": 0.0,
+    "with_modulation": false,
+    "gpu": false,
+    "classical_only": false,
+    "optimize_pulses": true,
+    "evaluations": 10,
+    "search_seed": 0,
+    "training_seed": 10000,
+    "training_shots": 1000,
+    "score_mode": "sampled",
+    "metric": "reference-probability",
+    "duration_bounds": null
+  },
+  "environment": {
+    "python": "3.13.14 (main, Jun 23 2026, 15:20:43) [Clang 22.1.3 ]",
+    "platform": "macOS-14.8.9-arm64-arm-64bit-Mach-O",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "pulser-core": "1.9.1",
+      "pulser-simulation": "1.9.1",
+      "emu-sv": "2.10.0",
+      "qutip": "5.3.1"
+    }
+  },
+  "sources": {
+    "benchmark": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/benchmark.py",
+      "sha256": "56440611b2711f02936c60a30549406ed72ec92693a675ea0782fcf28d3535f1"
+    },
+    "instance_generator": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instance_generator.py",
+      "sha256": "0e8d4a0a4462815da2f07f995aea44b4c16cfbe39b70e084a2633251d33074ba"
+    },
+    "qubo": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/qubo.py",
+      "sha256": "6187e03499ac6f2969131bfee5b8343fbe083809f5465041a4cbd336ab02c16f"
+    },
+    "classical": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/classical.py",
+      "sha256": "775272fe59e5d1b54548ba380c35e56dd539f57146d5a3ee97a087f1cb7f6489"
+    },
+    "ising": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/ising.py",
+      "sha256": "b8042452adb876b761dc42b92a1aee666216e5bd5e872a9de6d708634b6cd099"
+    },
+    "embedding": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/embedding.py",
+      "sha256": "07183a00764c7f900b2f2d16fc74c9c8280de4181eb2f4891098405f7b3616c1"
+    },
+    "pulses": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/pulses.py",
+      "sha256": "276ff9b38e2a95e7bca2279cfa964be1987bfde739d4c54bae639b89111ba961"
+    },
+    "emulate": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/emulate.py",
+      "sha256": "03e2978916967422546b1b34ef4790ee2efcfc02ae570716d62d45bd06fe1513"
+    },
+    "optimize_pulses": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/optimize_pulses.py",
+      "sha256": "0556e5e2cabd6c7d4ff5b9370dcd27023ed75280e8ee0c11ef0d61aca6336b1f"
+    },
+    "evaluator": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/evaluator.py",
+      "sha256": "7d10046c2a5f45d3117ab8ef85f1086587afecaa081b24a7233b3e80ccf21a92"
+    },
+    "config": {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/config.py",
+      "sha256": "1d442d81910804c3b6d2d1c25c56ec950d9cc0494ddf6b8730784309390213ff"
+    }
+  },
+  "uv_lock_sha256": null,
+  "instances": [
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0000.json",
+      "seed": 0,
+      "sha256": "1673a2eee5fd9b7641f33acb4b79a1cd5e45b04fcbad5194ac3efad24f5a53a9"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0001.json",
+      "seed": 1,
+      "sha256": "702eabb5b501cf319c3c3b9a36b97a61b9512ef268860c9cb14493d47fa832df"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0002.json",
+      "seed": 2,
+      "sha256": "1dc224964ba8be0e015b16a6adb1deb044bd588e3225afb8ae8a70d65781fccf"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0003.json",
+      "seed": 3,
+      "sha256": "ee908baa7e4001a24b112e390653bb753753be64c8270e02e636a233b864f6ff"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0004.json",
+      "seed": 4,
+      "sha256": "069c847da1d8e8511f2feecb482472a03fbea0d988a4a8f0490853a26861c56f"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0005.json",
+      "seed": 5,
+      "sha256": "70ede47be0a49480cb2b532a362455e24353cbdaa5d4f72e8fc51fb923746a71"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0006.json",
+      "seed": 6,
+      "sha256": "7c7b8a9a03bb5b876f9fa3e897dde4c40c2efc5deb580868481f8da589633809"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0007.json",
+      "seed": 7,
+      "sha256": "637448048af59ecfd8089b4f4e9ca0e5105f30f5857284a5d2c1140cb65bed1e"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0008.json",
+      "seed": 8,
+      "sha256": "965d058141f796ab6404e5496fb88461c2b05dbe2c3e54937a404df1c690bef1"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0009.json",
+      "seed": 9,
+      "sha256": "de6cdd7251e67bd9864d326922399e1103fab2a0eddec64f09d23bf7a72bbb30"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0010.json",
+      "seed": 10,
+      "sha256": "ff71f5f1f7dc0a64cab2e040e1eb61ce88b94688d53a519a3b959de16783b873"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0011.json",
+      "seed": 11,
+      "sha256": "cee8cdab159e6675daafe3e1e2606f9e084adfa431f29a687086171cc3ab32f7"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0012.json",
+      "seed": 12,
+      "sha256": "b1232dc1203e62bc1945288547295298b78fb120c522a0944cb834ba3781cb5a"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0013.json",
+      "seed": 13,
+      "sha256": "8646efe5a384ae933f7fc5bd9e554031820c0fd67459b7691894f9058ab53f89"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0014.json",
+      "seed": 14,
+      "sha256": "81b57432b0514a7227f195c6274b852e2f4b1793d6de1901692af3bab5b4af67"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0015.json",
+      "seed": 15,
+      "sha256": "00c1240dc89a402b983e02b2e91e37e4b54eb0d3cd220170aecfe72343de047a"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0016.json",
+      "seed": 16,
+      "sha256": "80b5b8279c3ccb4ad011127d2ce03a56402e030b1de79e09b8ef54fc89893d04"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0017.json",
+      "seed": 17,
+      "sha256": "c7e5f284eea19a6d73769474ab9a71d3a91a8c6eb4d9a56dd9a0287b23ac4bfc"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0018.json",
+      "seed": 18,
+      "sha256": "c3eacb29b06bc5748c9da4909ca0fa7d74d868e1cbea87ef14079eb8adbeb371"
+    },
+    {
+      "path": "/Users/aidenkhanna/Desktop/Repos/DuQuantum/unbalanced-penalization-model/src/instances/tier_s_seed_0019.json",
+      "seed": 19,
+      "sha256": "a0bf8b107959af14e58d6ee30e5d9d439dfd5f470fcc2e7d93b0f88bcdfc3c5f"
+    }
+  ]
+}

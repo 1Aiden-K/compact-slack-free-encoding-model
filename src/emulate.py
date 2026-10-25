@@ -166,11 +166,7 @@ def emulate(
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     add_sequence_arguments(parser)
-    from optimize_pulses import (
-        add_optimization_arguments,
-        validate_optimization_settings,
-    )
-
+    from optimize_pulses import add_optimization_arguments, validate_optimization_settings
     add_optimization_arguments(parser)
     parser.add_argument(
         "--backend", choices=("emu-sv", "qutip"), default=config.EMULATOR
@@ -203,14 +199,14 @@ def main():
         "--epsilon",
         type=float,
         default=config.EPSILON_PCT,
-        help="model and CVRP reference-gap tolerance in percent (default: %(default)s)",
+        help="Track A clustering reference-gap tolerance in percent (default: %(default)s)",
     )
     parser.add_argument(
         "--depot",
         type=float,
         nargs=2,
         default=config.DEPOT,
-        help="fixed depot X Y for exact routing; otherwise use config.DEPOT",
+        help="legacy metadata option; unused for Track A clustering",
     )
     parser.add_argument(
         "--skip-evaluation",
@@ -237,26 +233,21 @@ def main():
 
     try:
         optimization_settings = {
-            **vars(args),
-            "epsilon_pct": args.epsilon,
-            "dt_ns": args.dt,
+            **vars(args), "epsilon_pct": args.epsilon, "dt_ns": args.dt,
         }
         validate_optimization_settings(optimization_settings)
         if args.optimize_pulses and args.skip_evaluation:
-            raise ValueError(
-                "Pulse optimization requires the exact routing reference; use --no-skip-evaluation."
-            )
+            raise ValueError("Pulse optimization requires the exact clustering reference; use --no-skip-evaluation.")
         from evaluator import (
             build_reference,
-            configured_depot,
             encoding_from_program,
             evaluate_samples,
             print_evaluation,
         )
 
-        # The routing reference cost is also used for good-shot pulse scoring
+        # The clustering reference cost is also used for good-shot pulse scoring
         # when optimization is enabled. Geometry and endpoint remain fixed.
-        depot = configured_depot(args.depot)
+        depot = None  # Track A does not require a depot or route solver.
         reference = (
             None
             if args.skip_evaluation
@@ -269,12 +260,8 @@ def main():
             from qubo import CAPACITY, COORDINATES, DEMANDS
 
             program, optimization = optimize_program(
-                program,
-                coordinates=COORDINATES,
-                demands=DEMANDS,
-                capacity=CAPACITY,
-                depot=depot,
-                settings=optimization_settings,
+                program, coordinates=COORDINATES, demands=DEMANDS,
+                capacity=CAPACITY, settings=optimization_settings,
             )
         print_program(program, penalty_weight=args.penalty_weight)
         print(f"Running {args.backend} emulation...")
@@ -319,6 +306,7 @@ def main():
         from qubo import CAPACITY, COORDINATES, DEMANDS
 
         payload = {
+            "track": "A", "objective": "capacity_constrained_clustering",
             "counts": dict(output["counts"]),
             "probabilities": output["probabilities"],
             "instance": {
