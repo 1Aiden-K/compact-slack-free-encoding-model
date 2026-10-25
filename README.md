@@ -405,6 +405,19 @@ R_{ij}^{*}
 \left(\frac{\widetilde C_6}{2\gamma M_{ij}}\right)^{1/6}.
 ```
 
+## Global Detuning
+*Exact direct matching with global detuning requires equal $M_{ii}$*
+We can fix the diagonals with mean target detuning.
+```math
+\bar m=\frac1N\sum_i M_{ii}
+```
+
+Pasqal’s solver also uses mean target detuning when DMM is disabled, with its own coefficient normalization.
+
+```math
+\delta_f=-\gamma\bar m
+```
+
 
 
 ## Requirements
