@@ -20,6 +20,8 @@ from itertools import product
 
 import numpy as np
 
+import config
+
 
 def _positive(value, name):
     value = float(value)
@@ -30,13 +32,19 @@ def _positive(value, name):
 
 def _compare_ground_states(target, encoded):
     """Compare diagonal energies in bit order z[0], ..., z[N-1]."""
+    if len(target) > config.MAX_EXACT_BITS:
+        raise ValueError(
+            f"Ground-state checks support at most {config.MAX_EXACT_BITS} bits."
+        )
     bits = np.asarray(list(product((0, 1), repeat=len(target))), dtype=int)
     target_energy = np.einsum("bi,ij,bj->b", bits, target, bits)
     encoded_energy = np.einsum("bi,ij,bj->b", bits, encoded, bits)
 
     # Scale tolerance to each Hamiltonian, including when energy_scale is tiny.
     def minima(energies, matrix):
-        tolerance = 1e-10 * max(float(np.abs(matrix).sum()), np.finfo(float).tiny)
+        tolerance = config.GROUND_STATE_REL_TOL * max(
+            float(np.abs(matrix).sum()), np.finfo(float).tiny
+        )
         return np.abs(energies - energies.min()) <= tolerance
 
     original = minima(target_energy, target)
@@ -52,13 +60,13 @@ def _compare_ground_states(target, encoded):
 def build_ising(
     q_matrix,
     *,
-    energy_scale=1.0,
-    duration_ns=4000,
-    omega_peak=None,
-    delta_initial=None,
-    interaction_coeff=None,
+    energy_scale=config.ISING_ENERGY_SCALE,
+    duration_ns=config.PULSE_DURATION,
+    omega_peak=config.OMEGA_PEAK,
+    delta_initial=config.DELTA_INITIAL,
+    interaction_coeff=config.INTERACTION_COEFF,
     qubo_offset=0.0,
-    check_ground_states=True,
+    check_ground_states=config.CHECK_GROUND_STATES,
 ):
     """Return a dictionary of target Hamiltonian and pulse parameters.
 
@@ -72,7 +80,7 @@ def build_ising(
         required only to calculate ideal pair separations.
     qubo_offset: optional c, used only for the exact Pauli-Ising constant.
     check_ground_states: exhaustive comparison before geometric embedding;
-        limited to 16 bits. It checks QUBO optima, not original capacities.
+        limited by config.MAX_EXACT_BITS. Checks QUBO optima, not capacities.
 
     Important returned keys:
       interaction_matrix: symmetric physical V, zero diagonal; each unordered
@@ -95,13 +103,15 @@ def build_ising(
     M = np.array(q_matrix, dtype=float, copy=True)
     if M.ndim != 2 or M.shape[0] == 0 or M.shape[0] != M.shape[1]:
         raise ValueError("q_matrix must be a nonempty square matrix.")
-    if not np.isfinite(M).all() or not np.allclose(M, M.T, rtol=1e-10, atol=1e-12):
+    if not np.isfinite(M).all() or not np.allclose(
+        M, M.T, rtol=config.MATRIX_REL_TOL, atol=config.MATRIX_ABS_TOL
+    ):
         raise ValueError("q_matrix must be finite and symmetric.")
     M = (M + M.T) / 2
     n = len(M)
-    if check_ground_states and n > 16:
+    if check_ground_states and n > config.MAX_EXACT_BITS:
         raise ValueError(
-            "Exhaustive checks support at most 16 bits; set check_ground_states=False."
+            f"Exhaustive checks support at most {config.MAX_EXACT_BITS} bits; set check_ground_states=False."
         )
     scale = _positive(energy_scale, "energy_scale")
     if (
@@ -163,7 +173,7 @@ def build_ising(
         "delta_initial": delta_initial,
         "delta_final": delta_final,
         "omega_peak": omega_peak,
-        "phase": 0.0,
+        "phase": float(config.PULSE_PHASE),
         "duration_ns": duration_ns,
         "rabi_samples": rabi_samples,
         "detuning_samples": delta_initial + (delta_final - delta_initial) * u,
@@ -176,7 +186,9 @@ def build_ising(
         "global_q_matrix": global_matrix,
         "diagonal_error": np.diag(global_matrix) - linear,
         "exact_global_diagonal": bool(
-            np.allclose(target_detunings, delta_final, rtol=1e-10, atol=0.0)
+            np.allclose(
+                target_detunings, delta_final, rtol=config.MATRIX_REL_TOL, atol=0.0
+            )
         ),
         "ground_state_check": _compare_ground_states(scale * M, global_matrix)
         if check_ground_states
@@ -201,14 +213,24 @@ def make_pulse(parameters):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--lambda", dest="penalty_weight", type=float, default=0.1)
-    parser.add_argument("--scale", type=float, default=1.0)
     parser.add_argument(
-        "--duration", type=int, default=4000, help="pulse duration in ns"
+        "--lambda", dest="penalty_weight", type=float, default=config.LAMBDA
     )
-    parser.add_argument("--omega-peak", type=float, default=None, help="rad/us")
+    parser.add_argument("--scale", type=float, default=config.ISING_ENERGY_SCALE)
     parser.add_argument(
-        "--interaction-coeff", type=float, default=None, help="device.interaction_coeff"
+        "--duration",
+        type=int,
+        default=config.PULSE_DURATION,
+        help="pulse duration in ns",
+    )
+    parser.add_argument(
+        "--omega-peak", type=float, default=config.OMEGA_PEAK, help="rad/us"
+    )
+    parser.add_argument(
+        "--interaction-coeff",
+        type=float,
+        default=config.INTERACTION_COEFF,
+        help="device.interaction_coeff",
     )
     args = parser.parse_args()
     from qubo import build_q_matrix, build_qubo
@@ -224,7 +246,9 @@ def main():
         )
     except ValueError as error:
         parser.error(str(error))
-    np.set_printoptions(precision=6, suppress=True)
+    np.set_printoptions(
+        precision=config.PRINT_PRECISION, suppress=config.PRINT_SUPPRESS
+    )
     for key in (
         "n_qubits",
         "energy_scale",

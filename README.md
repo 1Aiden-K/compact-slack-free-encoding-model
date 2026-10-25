@@ -361,7 +361,7 @@ This separates the surrogate QUBO optimization from the evaluation of capacity f
 ## Ising Hamiltonian
 Our QUBO matrix is of the form:
 ```math
-F(z)=c+\sum_i M_{ii}z_i+2\sum_{i<j}M_{ij}z_iz_j
+F(z)=c+\sum_i M_{ii}z_i+2\sum_{i \lt j}M_{ij}z_iz_j
 ```
 
 Represent each bit with one atom:
@@ -371,25 +371,21 @@ Represent each bit with one atom:
 
 Ignoring c (not required for optimization) gives:  
 ```math
-{
 \frac{H_{\mathrm{target}}}{\hbar}
 =
 \gamma\sum_i M_{ii}\hat n_i
 +
 2\gamma\sum_{i<j}M_{ij}\hat n_i\hat n_j
-}
 ```
 
 ### Neutral Atom Hamiltonian
 
 ```math
-{
 \frac{H(t)}{\hbar}
 =
 \frac{\Omega(t)}2\sum_i X_i
 -\delta(t)\sum_i\hat n_i
 +\sum_{i<j}V_{ij}\hat n_i\hat n_j
-}
 ```
 
 where:

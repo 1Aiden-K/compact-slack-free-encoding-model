@@ -7,12 +7,14 @@ exact CVRP optimum for two identical vehicles, including unused vehicles.
 This is classical evaluation of quantum-selected clusters, not quantum routing.
 Customer indices match config.COORDINATES; the depot is a separate location,
 even when it coincides with a customer. No delivery splitting or reloading.
-Requires only NumPy. Time O(N**2 * 2**N), memory O(N * 2**N), limit 16 customers.
+Requires only NumPy. Time O(N**2 * 2**N), memory O(N * 2**N), limit set by config.MAX_ROUTING_CUSTOMERS.
 """
 
 from numbers import Integral
 
 import numpy as np
+
+import config
 
 
 def validate_depot(coordinates, depot):
@@ -31,7 +33,7 @@ def validate_depot(coordinates, depot):
 
 
 class ExactRouter:
-    """Cache exact closed tours for every subset of up to 16 customers.
+    """Cache exact closed tours for every subset of up to the configured customer limit.
 
     D[mask, j] is the cheapest path starting at the depot, visiting exactly
     mask, and ending at customer j. The return-to-depot edge is added only
@@ -39,7 +41,9 @@ class ExactRouter:
     Symmetric tours may have ties; one minimizing order is returned.
     """
 
-    def __init__(self, coordinates, depot, *, max_customers=16):
+    def __init__(
+        self, coordinates, depot, *, max_customers=config.MAX_ROUTING_CUSTOMERS
+    ):
         self.coordinates = np.array(coordinates, dtype=float, copy=True)
         self.depot = validate_depot(self.coordinates, depot).copy()
         self.n = len(self.coordinates)
@@ -180,7 +184,9 @@ class ExactRouter:
             optimum = min(optimum, cost)
         optimal_bits = set()
         for mask, cost in candidates:
-            if np.isclose(cost, optimum, rtol=1e-10, atol=1e-9):
+            if np.isclose(
+                cost, optimum, rtol=config.COST_REL_TOL, atol=config.COST_ABS_TOL
+            ):
                 optimal_bits.update((self._bits(mask), self._bits(full ^ mask)))
 
         def canonical(bits):

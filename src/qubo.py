@@ -15,6 +15,7 @@ Capacity is checked separately; it does not enter these QUBO coefficients.
 
 import numpy as np
 
+import config
 from config import CAPACITY, COORDINATES, DEMANDS
 
 COORDINATES = np.asarray(COORDINATES, dtype=float)
@@ -37,7 +38,7 @@ T = float(DEMANDS.sum())
 DISTANCES = np.linalg.norm(COORDINATES[:, None, :] - COORDINATES[None, :, :], axis=2)
 
 
-def build_qubo(penalty_weight=0.1):
+def build_qubo(penalty_weight=config.LAMBDA):
     """Return (c, h, J) for F(z) = c + h @ z + z @ J @ z.
 
     J[i, j] contains the full pair coefficient for i < j; all other
@@ -53,7 +54,7 @@ def build_qubo(penalty_weight=0.1):
     return c, h, J
 
 
-def build_q_matrix(penalty_weight=0.1):
+def build_q_matrix(penalty_weight=config.LAMBDA):
     """Return symmetric M for F(z) = c + z @ M @ z.
 
     Use build_qubo(penalty_weight)[0] for the constant offset c.

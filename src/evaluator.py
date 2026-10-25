@@ -1,7 +1,7 @@
 """Evaluate two-vehicle clustering samples against the original problem.
 
 Requires NumPy and the existing classical.py / qubo.py / config.py, but no
-emulator. Exact references enumerate at most 16 bits. They are validation
+emulator. Exact references use config.MAX_EXACT_BITS as their limit. They are validation
 baselines; enumeration does not select or repair the reported quantum shots.
 
     uv run evaluator.py run.json
@@ -25,9 +25,13 @@ from pathlib import Path
 
 import numpy as np
 
+import config
+
 
 def _tied(a, b):
-    return isclose(float(a), float(b), rel_tol=1e-10, abs_tol=1e-9)
+    return isclose(
+        float(a), float(b), rel_tol=config.COST_REL_TOL, abs_tol=config.COST_ABS_TOL
+    )
 
 
 def _canonical(bits):
@@ -46,15 +50,16 @@ def _gap(cost, optimum):
 
 def configured_depot(depot=None):
     """Resolve an explicit depot or config.DEPOT; never invent a depot location."""
-    import config
     from qubo import COORDINATES
     from routing import validate_depot
 
-    selected = getattr(config, "DEPOT", None) if depot is None else depot
+    selected = config.DEPOT if depot is None else depot
     return None if selected is None else validate_depot(COORDINATES, selected).tolist()
 
 
-def build_reference(penalty_weight=0.1, *, max_bits=16, depot=None):
+def build_reference(
+    penalty_weight=config.LAMBDA, *, max_bits=config.MAX_EXACT_BITS, depot=None
+):
     """Enumerate the constrained problem and target QUBO once per instance.
 
     All settings come from the existing config.py through qubo.py. References
@@ -108,7 +113,11 @@ def build_reference(penalty_weight=0.1, *, max_bits=16, depot=None):
     if reference["depot"] is not None:
         from routing import ExactRouter
 
-        router = ExactRouter(COORDINATES, reference["depot"], max_customers=max_bits)
+        router = ExactRouter(
+            COORDINATES,
+            reference["depot"],
+            max_customers=min(max_bits, config.MAX_ROUTING_CUSTOMERS),
+        )
         reference["_router"] = router
         reference["routing"] = router.solve_cvrp(DEMANDS, CAPACITY)
         for bits, record in records.items():
@@ -160,7 +169,9 @@ def _validate_weights(weights, n_bits, *, counts):
     if total <= 0:
         raise ValueError("Counts/probabilities must have positive total weight.")
     if not counts:
-        if not np.isfinite(total) or not isclose(total, 1.0, rel_tol=0, abs_tol=1e-8):
+        if not np.isfinite(total) or not isclose(
+            total, 1.0, rel_tol=0, abs_tol=config.PROBABILITY_ABS_TOL
+        ):
             raise ValueError(
                 "Probabilities must sum to one; incomplete distributions are not accepted."
             )
@@ -295,14 +306,18 @@ def _ground_states(matrix, reference, sampled, predicted):
     if (
         matrix.shape != (n, n)
         or not np.isfinite(matrix).all()
-        or not np.allclose(matrix, matrix.T, rtol=1e-10, atol=1e-12)
+        or not np.allclose(
+            matrix, matrix.T, rtol=config.MATRIX_REL_TOL, atol=config.MATRIX_ABS_TOL
+        )
     ):
         raise ValueError(
             "Hamiltonian matrices must be finite, symmetric, and match the instance."
         )
     bits = np.asarray(list(product((0, 1), repeat=n)), dtype=int)
     energies = np.einsum("bi,ij,bj->b", bits, matrix, bits)
-    tolerance = 1e-10 * max(float(np.abs(matrix).sum()), np.finfo(float).tiny)
+    tolerance = config.GROUND_STATE_REL_TOL * max(
+        float(np.abs(matrix).sum()), np.finfo(float).tiny
+    )
     ground = [
         "".join(map(str, row))
         for row in bits[np.abs(energies - energies.min()) <= tolerance]
@@ -339,10 +354,10 @@ def evaluate_samples(
     counts,
     *,
     probabilities=None,
-    penalty_weight=0.1,
+    penalty_weight=config.LAMBDA,
     reference=None,
     encoding=None,
-    epsilon_pct=0.0,
+    epsilon_pct=config.EPSILON_PCT,
     depot=None,
 ):
     """Evaluate raw samples without repairing or discarding infeasible shots.
@@ -591,10 +606,13 @@ def main():
         dest="penalty_weight",
         type=float,
         default=None,
-        help="defaults to saved run lambda, or 0.1 for raw counts",
+        help="defaults to saved run lambda, or config.LAMBDA for raw counts",
     )
     parser.add_argument(
-        "--epsilon", type=float, default=0.0, help="reference gap tolerance in percent"
+        "--epsilon",
+        type=float,
+        default=config.EPSILON_PCT,
+        help="reference gap tolerance in percent",
     )
     parser.add_argument(
         "--depot",
@@ -603,7 +621,12 @@ def main():
         default=None,
         help="fixed depot X Y; otherwise use the saved run depot or config.DEPOT",
     )
-    parser.add_argument("--output", type=Path, help="write the evaluation as JSON")
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=config.EVALUATION_OUTPUT,
+        help="write the evaluation as JSON",
+    )
     args = parser.parse_args()
     try:
         payload = json.loads(args.input.read_text())
@@ -613,7 +636,7 @@ def main():
         settings = payload.get("settings", {}) if is_run else {}
         saved_lambda = settings.get("penalty_weight")
         lam = args.penalty_weight if args.penalty_weight is not None else saved_lambda
-        lam = 0.1 if lam is None else lam
+        lam = config.LAMBDA if lam is None else lam
         if saved_lambda is not None and float(lam) != float(saved_lambda):
             raise ValueError(
                 "--lambda does not match the saved run; evaluate using its original lambda."
@@ -645,7 +668,9 @@ def main():
         )
         print_evaluation(report)
         if args.output is not None:
-            args.output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
+            args.output.write_text(
+                json.dumps(report, indent=config.JSON_INDENT, allow_nan=False) + "\n"
+            )
     except (ValueError, OSError, ImportError, KeyError, TypeError) as error:
         parser.error(str(error))
 

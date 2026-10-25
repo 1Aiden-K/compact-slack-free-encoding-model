@@ -16,6 +16,8 @@ import numpy as np
 from scipy.optimize import minimize
 from scipy.spatial.distance import pdist, squareform
 
+import config
+
 
 def realized_interactions(positions_um, interaction_coeff):
     """Return symmetric V_ij = interaction_coeff / R_ij**6, zero diagonal."""
@@ -37,11 +39,11 @@ def optimize_positions(
     target_interactions,
     *,
     interaction_coeff,
-    min_atom_distance=5.0,
-    max_radial_distance=38.0,
-    seed=0,
-    restarts=8,
-    maxiter=1500,
+    min_atom_distance=config.MIN_ATOM_DISTANCE,
+    max_radial_distance=config.MAX_RADIAL_DISTANCE,
+    seed=config.EMBEDDING_SEED,
+    restarts=config.EMBEDDING_RESTARTS,
+    maxiter=config.MAX_ITERATIONS,
 ):
     """Numerically fit a legal planar layout; requires NumPy and SciPy only.
 
@@ -57,7 +59,7 @@ def optimize_positions(
     if target.ndim != 2 or target.shape[0] != target.shape[1] or len(target) < 2:
         raise ValueError("Expected a square target interaction matrix with N >= 2.")
     if not np.isfinite(target).all() or not np.allclose(
-        target, target.T, rtol=1e-10, atol=1e-12
+        target, target.T, rtol=config.MATRIX_REL_TOL, atol=config.MATRIX_ABS_TOL
     ):
         raise ValueError("Target interactions must be finite and symmetric.")
     if np.any(target < 0) or np.any(np.diag(target) != 0):
@@ -86,7 +88,7 @@ def optimize_positions(
     denominator = float(desired @ desired)
     if denominator == 0:
         raise ValueError("An all-zero target has no relative-error scale.")
-    gap = min_sep * 1e-4
+    gap = min_sep * config.GEOMETRIC_MARGIN
     lower, upper = min_sep + gap, radius - gap
     if upper <= 0 or lower > 2 * upper:
         raise ValueError(
@@ -95,7 +97,9 @@ def optimize_positions(
     rng = np.random.default_rng(seed)
 
     def objective(flat):
-        distances = np.maximum(pdist(flat.reshape(n, 2)), min_sep * 0.1)
+        distances = np.maximum(
+            pdist(flat.reshape(n, 2)), min_sep * config.DISTANCE_FLOOR_FRACTION
+        )
         residual = coeff / distances**6 - desired
         return float(residual @ residual / denominator)
 
@@ -118,8 +122,11 @@ def optimize_positions(
 
     def random_start():
         # Random placements at a target-informed scale; reject close pairs.
-        disk_radius = min(upper * 0.45, max(characteristic_distance, lower))
-        for _ in range(200):
+        disk_radius = min(
+            upper * config.INITIAL_DISK_RADIUS_FRACTION,
+            max(characteristic_distance, lower),
+        )
+        for _ in range(config.INITIAL_PLACEMENT_ATTEMPTS):
             angles = rng.uniform(0, 2 * np.pi, n)
             lengths = disk_radius * np.sqrt(rng.random(n))
             positions = np.column_stack(
@@ -145,7 +152,10 @@ def optimize_positions(
 
     # Classical multidimensional scaling gives an informed first placement.
     distances = np.zeros_like(target)
-    distances[pairs] = (coeff / np.maximum(desired, positive.min() * 1e-3)) ** (1 / 6)
+    distances[pairs] = (
+        coeff
+        / np.maximum(desired, positive.min() * config.MDS_INTERACTION_FLOOR_FRACTION)
+    ) ** (1 / 6)
     distances += distances.T
     centering = np.eye(n) - np.ones((n, n)) / n
     eigenvalues, eigenvectors = np.linalg.eigh(
@@ -153,7 +163,7 @@ def optimize_positions(
     )
     initial = eigenvectors[:, -2:] * np.sqrt(np.maximum(eigenvalues[-2:], 0))
     if pdist(initial).min() > 0:
-        initial *= max(1.0, lower * 1.001 / pdist(initial).min())
+        initial *= max(1.0, lower * config.MDS_SPACING_FACTOR / pdist(initial).min())
 
     best = None
     for restart in range(int(restarts)):
@@ -161,10 +171,10 @@ def optimize_positions(
         result = minimize(
             objective,
             start.ravel(),
-            method="SLSQP",
+            method=config.EMBEDDING_METHOD,
             bounds=[(-upper, upper)] * (2 * n),
             constraints=constraints,
-            options={"maxiter": int(maxiter), "ftol": 1e-12},
+            options={"maxiter": int(maxiter), "ftol": config.EMBEDDING_FTOL},
         )
         fitted = result.x.reshape(n, 2)
         fitted -= fitted.mean(axis=0)
@@ -197,17 +207,23 @@ def optimize_positions(
 
 
 def embed_register(
-    target_interactions, *, device=None, seed=0, restarts=8, maxiter=1500
+    target_interactions,
+    *,
+    device=None,
+    seed=config.EMBEDDING_SEED,
+    restarts=config.EMBEDDING_RESTARTS,
+    maxiter=config.MAX_ITERATIONS,
 ):
     """Fit positions using device limits, construct and validate a Pulser Register.
 
     Register IDs q0, q1, ... follow the Q-matrix row order. No atom relabeling
     is performed after fitting. The physical coefficient comes from the device.
     """
-    from pulser import AnalogDevice, Register
+    import pulser
+    from pulser import Register
 
     if device is None:
-        device = AnalogDevice
+        device = getattr(pulser, config.DEVICE)
     n = len(target_interactions)
     if device.max_atom_num is not None and n > device.max_atom_num:
         raise ValueError(

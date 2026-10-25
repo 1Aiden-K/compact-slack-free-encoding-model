@@ -1,4 +1,4 @@
-"""Build a global-detuning AnalogDevice sequence from a symmetric Q matrix.
+"""Build a global-detuning sequence on the configured device from a symmetric Q matrix.
 
 Requires numpy, scipy, pulser-core, and the local ising.py / embedding.py.
 No emulation is performed here. No DMM or local driving.
@@ -16,6 +16,7 @@ import argparse
 
 import numpy as np
 
+import config
 from embedding import embed_register
 from ising import _compare_ground_states, build_ising, make_pulse
 
@@ -24,18 +25,18 @@ def build_sequence(
     q_matrix,
     *,
     device=None,
-    energy_scale=None,
-    duration_ns=4000,
-    omega_peak=None,
-    delta_initial=None,
-    seed=0,
-    restarts=8,
-    maxiter=1500,
+    energy_scale=config.ENERGY_SCALE,
+    duration_ns=config.PULSE_DURATION,
+    omega_peak=config.OMEGA_PEAK,
+    delta_initial=config.DELTA_INITIAL,
+    seed=config.EMBEDDING_SEED,
+    restarts=config.EMBEDDING_RESTARTS,
+    maxiter=config.MAX_ITERATIONS,
 ):
     """Return sequence, pulse, parameters, embedding, and final-energy diagnostics.
 
     q_matrix follows c + z.T @ M @ z. energy_scale=None chooses a conservative
-    common scale <= 1 using the device's amplitude, detuning, and strongest
+    common scale <= config.AUTO_SCALE_MAX using the device's amplitude, detuning, and strongest
     realizable pair interaction. It does not optimize lambda or pulse quality.
     omega_peak/delta_initial overrides, if supplied, are physical rad/us values.
     No coefficient is independently clipped. Invalid overrides raise an error.
@@ -44,10 +45,11 @@ def build_sequence(
     diagnostics uses the commanded pulse endpoint and actual embedded couplings;
     it does not predict dynamical sampling probabilities or modulation effects.
     """
-    from pulser import AnalogDevice, Sequence
+    import pulser
+    from pulser import Sequence
 
     if device is None:
-        device = AnalogDevice
+        device = getattr(pulser, config.DEVICE)
     channel_id = "rydberg_global"
     if channel_id not in device.channels:
         raise ValueError("The selected device must expose a rydberg_global channel.")
@@ -68,25 +70,32 @@ def build_sequence(
 
     unit = build_ising(
         q_matrix,
+        energy_scale=1.0,
+        interaction_coeff=None,
         omega_peak=omega_peak,
         delta_initial=delta_initial,
         duration_ns=duration_ns,
     )
     if energy_scale is None:
-        limits = [1.0]
+        limits = [config.AUTO_SCALE_MAX]
         if omega_peak is None and channel.max_amp is not None:
-            limits.append(0.9 * channel.max_amp / unit["omega_peak"])
+            limits.append(
+                config.HARDWARE_SAFETY_FACTOR * channel.max_amp / unit["omega_peak"]
+            )
         if channel.max_abs_detuning is not None:
             # The automatic starting detuning and final mean both scale with M.
             required = float(np.max(np.abs(unit["target_detunings"])))
             if required > 0:
-                limits.append(0.9 * channel.max_abs_detuning / required)
+                limits.append(
+                    config.HARDWARE_SAFETY_FACTOR * channel.max_abs_detuning / required
+                )
         strongest = float(unit["interaction_matrix"].max())
         if strongest > 0:
             max_pair = (
-                device.interaction_coeff / (device.min_atom_distance * 1.0001) ** 6
+                device.interaction_coeff
+                / (device.min_atom_distance * (1 + config.GEOMETRIC_MARGIN)) ** 6
             )
-            limits.append(0.9 * max_pair / strongest)
+            limits.append(config.HARDWARE_SAFETY_FACTOR * max_pair / strongest)
         energy_scale = min(limits)
 
     parameters = build_ising(
@@ -137,10 +146,14 @@ def build_sequence(
             np.linalg.norm(realized_matrix - target_matrix) / norm
         ),
         "relative_interaction_error": embedding["relative_interaction_error"],
-        "target_vs_realized": _compare_ground_states(target_matrix, realized_matrix),
+        "target_vs_realized": _compare_ground_states(target_matrix, realized_matrix)
+        if config.CHECK_GROUND_STATES
+        else None,
         "global_ideal_vs_realized": _compare_ground_states(
             parameters["global_q_matrix"], realized_matrix
-        ),
+        )
+        if config.CHECK_GROUND_STATES
+        else None,
         "realized_q_matrix": realized_matrix,
         "duration_with_fall_ns": total_duration,
     }
@@ -155,14 +168,27 @@ def build_sequence(
 
 def add_sequence_arguments(parser):
     """Add shared model, embedding, and pulse options to a CLI parser."""
-    parser.add_argument("--lambda", dest="penalty_weight", type=float, default=0.1)
     parser.add_argument(
-        "--scale", type=float, default=None, help="default: automatic common scaling"
+        "--lambda", dest="penalty_weight", type=float, default=config.LAMBDA
     )
-    parser.add_argument("--duration", type=int, default=4000, help="ns")
-    parser.add_argument("--omega-peak", type=float, default=None, help="rad/us")
-    parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--restarts", type=int, default=8)
+    parser.add_argument(
+        "--scale",
+        type=float,
+        default=config.ENERGY_SCALE,
+        help="common scaling; config default may select automatic scaling",
+    )
+    parser.add_argument(
+        "--duration", type=int, default=config.PULSE_DURATION, help="ns"
+    )
+    parser.add_argument(
+        "--omega-peak", type=float, default=config.OMEGA_PEAK, help="rad/us"
+    )
+    parser.add_argument("--seed", type=int, default=config.EMBEDDING_SEED)
+    parser.add_argument("--restarts", type=int, default=config.EMBEDDING_RESTARTS)
+    parser.add_argument("--maxiter", type=int, default=config.MAX_ITERATIONS)
+    parser.add_argument(
+        "--delta-initial", type=float, default=config.DELTA_INITIAL, help="rad/us"
+    )
 
 
 def build_from_args(args):
@@ -176,12 +202,16 @@ def build_from_args(args):
         omega_peak=args.omega_peak,
         seed=args.seed,
         restarts=args.restarts,
+        maxiter=args.maxiter,
+        delta_initial=args.delta_initial,
     )
 
 
 def print_program(program, *, penalty_weight):
     """Print the model, pulse, register, and final-energy diagnostics."""
-    np.set_printoptions(precision=6, suppress=True)
+    np.set_printoptions(
+        precision=config.PRINT_PRECISION, suppress=config.PRINT_SUPPRESS
+    )
     p, e, d = program["parameters"], program["embedding"], program["diagnostics"]
     print(f"Atoms: {p['n_qubits']}; global detuning only; lambda: {penalty_weight:g}")
     print(f"Energy scale: {p['energy_scale']:.6g}; duration: {p['duration_ns']} ns")

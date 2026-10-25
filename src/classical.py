@@ -11,10 +11,11 @@ from math import isclose
 
 import numpy as np
 
+import config
 from qubo import CAPACITY, N_BITS, build_q_matrix, build_qubo, evaluate_assignment
 
 
-def solve_classically(penalty_weight=0.1):
+def solve_classically(penalty_weight=config.LAMBDA):
     """Return every assignment, ordered by QUBO energy (including c).
 
     Each record contains bits, energy, original cost, vehicle loads, and
@@ -39,7 +40,7 @@ def solve_classically(penalty_weight=0.1):
 
 def tied(a, b):
     """Numerical tie rule for reported optima."""
-    return isclose(a, b, rel_tol=1e-10, abs_tol=1e-9)
+    return isclose(a, b, rel_tol=config.COST_REL_TOL, abs_tol=config.COST_ABS_TOL)
 
 
 def show_assignment(result):
@@ -58,11 +59,14 @@ def main():
         "--lambda",
         dest="penalty_weight",
         type=float,
-        default=0.1,
-        help="positive load-balancing weight (default: 0.1)",
+        default=config.LAMBDA,
+        help="positive load-balancing weight (default: %(default)s)",
     )
     parser.add_argument(
-        "--show-all", action="store_true", help="print every assignment"
+        "--show-all",
+        action=argparse.BooleanOptionalAction,
+        default=config.SHOW_ALL,
+        help="print every assignment",
     )
     args = parser.parse_args()
     try:
@@ -70,7 +74,9 @@ def main():
     except ValueError as error:
         parser.error(str(error))
 
-    np.set_printoptions(precision=6, suppress=True)
+    np.set_printoptions(
+        precision=config.PRINT_PRECISION, suppress=config.PRINT_SUPPRESS
+    )
     print(f"Variables: {N_BITS}; lambda: {args.penalty_weight:g}")
     print(f"Constant offset c: {c:.6f}")
     print("Linear coefficients h:")

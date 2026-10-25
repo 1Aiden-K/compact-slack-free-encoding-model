@@ -15,12 +15,12 @@ https://pulser.readthedocs.io/en/stable/tutorials/backends.html
 
 import argparse
 import json
-import logging
 from collections import Counter
 from pathlib import Path
 
 import numpy as np
 
+import config
 from pulses import add_sequence_arguments, build_from_args, print_program
 
 
@@ -48,12 +48,12 @@ def _sv_probabilities(state, n_qubits):
 def emulate(
     sequence,
     *,
-    shots=1000,
-    seed=0,
-    backend="emu-sv",
-    with_modulation=False,
-    dt=10,
-    gpu=False,
+    shots=config.SHOTS,
+    seed=config.MEASUREMENT_SEED,
+    backend=config.EMULATOR,
+    with_modulation=config.MODULATION,
+    dt=config.EMULATOR_DT,
+    gpu=config.GPU,
 ):
     """Evolve a Pulser sequence and draw reproducible final measurements.
 
@@ -107,10 +107,10 @@ def emulate(
                 "or use '--backend qutip' with pulser-simulation installed. "
                 f"Original error: {error}"
             ) from error
-        config = SVConfig(
-            dt=int(dt), gpu=gpu, log_level=logging.WARNING, **config_options
+        backend_config = SVConfig(
+            dt=int(dt), gpu=gpu, log_level=config.EMULATOR_LOG_LEVEL, **config_options
         )
-        results = SVBackend(sequence, config=config).run()
+        results = SVBackend(sequence, config=backend_config).run()
     else:
         try:
             from pulser_simulation import QutipBackendV2, QutipConfig
@@ -119,8 +119,10 @@ def emulate(
                 "Could not import pulser-simulation. Install it with "
                 f"'uv add pulser-simulation'. Original error: {error}"
             ) from error
-        config = QutipConfig(sampling_rate=1.0, **config_options)
-        results = QutipBackendV2(sequence, config=config).run()
+        backend_config = QutipConfig(
+            sampling_rate=config.QUTIP_SAMPLING_RATE, **config_options
+        )
+        results = QutipBackendV2(sequence, config=backend_config).run()
 
     if tuple(results.atom_order) != tuple(sequence.register.qubits):
         raise ValueError("Unexpected atom ordering in emulator results.")
@@ -162,42 +164,56 @@ def emulate(
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     add_sequence_arguments(parser)
-    parser.add_argument("--backend", choices=("emu-sv", "qutip"), default="emu-sv")
-    parser.add_argument("--shots", type=int, default=1000)
+    parser.add_argument(
+        "--backend", choices=("emu-sv", "qutip"), default=config.EMULATOR
+    )
+    parser.add_argument("--shots", type=int, default=config.SHOTS)
     parser.add_argument(
         "--sample-seed",
         type=int,
-        default=None,
-        help="measurement seed; defaults to --seed (which also seeds embedding)",
-    )
-    parser.add_argument("--with-modulation", action="store_true")
-    parser.add_argument(
-        "--dt", type=int, default=10, help="emu-sv timestep in ns (default: 10)"
+        default=config.MEASUREMENT_SEED,
+        help="measurement seed (default: config.MEASUREMENT_SEED)",
     )
     parser.add_argument(
-        "--gpu", action="store_true", help="request CUDA for emu-sv; default: CPU"
+        "--with-modulation",
+        action=argparse.BooleanOptionalAction,
+        default=config.MODULATION,
+    )
+    parser.add_argument(
+        "--dt",
+        type=int,
+        default=config.EMULATOR_DT,
+        help="emu-sv timestep in ns (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--gpu",
+        action=argparse.BooleanOptionalAction,
+        default=config.GPU,
+        help="request CUDA for emu-sv",
     )
     parser.add_argument(
         "--epsilon",
         type=float,
-        default=0.0,
-        help="model and CVRP reference-gap tolerance in percent (default: exact optimum)",
+        default=config.EPSILON_PCT,
+        help="model and CVRP reference-gap tolerance in percent (default: %(default)s)",
     )
     parser.add_argument(
         "--depot",
         type=float,
         nargs=2,
-        default=None,
+        default=config.DEPOT,
         help="fixed depot X Y for exact routing; otherwise use config.DEPOT",
     )
     parser.add_argument(
         "--skip-evaluation",
-        action="store_true",
-        help="omit the exhaustive reference and evaluator (required above 16 bits)",
+        action=argparse.BooleanOptionalAction,
+        default=config.SKIP_EVALUATION,
+        help="omit the exhaustive reference and evaluator when the configured exact-bit limit is exceeded",
     )
     parser.add_argument(
         "--output",
         type=Path,
+        default=config.RUN_OUTPUT,
         help="save counts, probabilities, instance, settings, encoding, and evaluation as JSON",
     )
     args = parser.parse_args()
@@ -209,7 +225,7 @@ def main():
         parser.error("--gpu is only supported by --backend emu-sv.")
     if not np.isfinite(args.epsilon) or args.epsilon < 0:
         parser.error("--epsilon must be finite and nonnegative.")
-    sample_seed = args.seed if args.sample_seed is None else args.sample_seed
+    sample_seed = args.sample_seed
 
     try:
         from evaluator import (
@@ -289,6 +305,7 @@ def main():
                 "delta_final": program["parameters"]["delta_final"],
                 "embedding_seed": args.seed,
                 "embedding_restarts": args.restarts,
+                "embedding_maxiter": args.maxiter,
                 "sample_seed": sample_seed,
                 "shots": args.shots,
                 "backend": output["backend"],
@@ -302,7 +319,7 @@ def main():
         }
         try:
             args.output.write_text(
-                json.dumps(payload, indent=2, allow_nan=False) + "\n"
+                json.dumps(payload, indent=config.JSON_INDENT, allow_nan=False) + "\n"
             )
         except (OSError, ValueError) as error:
             parser.error(f"Could not save run: {error}")
