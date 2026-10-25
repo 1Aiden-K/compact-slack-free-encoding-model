@@ -331,6 +331,31 @@ Therefore, valid combinations contribute zero assignment penalty, while invalid 
 
 Unlike the capacity penalty, the assignment penalty can guarantee valid vehicle assignments when its weight is sufficiently large.
 
+### Adaptive Penalty Weight     
+
+Rather than using a fixed penalty weight, we compute an instance-dependent $\lambda$ using total demand and mean pairwise customer distance.
+
+```math
+T = \sum_{i=1}^{N} d_i
+```
+
+```math
+\overline{D} = \frac{2}{N(N-1)}\sum_{i<j}D_{ij}
+```
+
+The adaptive penalty is defined as
+
+```math
+\lambda = \operatorname{clip}\left(
+0.3\frac{\overline D}{50}e^{0.4(T-48)},
+\ 0.001,\ 100
+\right)
+```
+
+The exponential factor increases the penalty as total demand approaches the fleet's capacity, while the distance factor scales it with the clustering objective.
+
+The coefficients were selected empirically using Tier M benchmark instances. Computing \(\lambda\) requires only instance parameters, not knowledge of the optimal clustering.
+
 ### Complete QUBO
 
 The complete QUBO objective combines the clustering cost, load-balancing penalty, and assignment penalty.
