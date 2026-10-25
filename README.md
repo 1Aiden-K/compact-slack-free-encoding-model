@@ -1,3 +1,13 @@
+> **Branch `one-hot-model` (comparison experiment, not meant to be merged).**
+> `src/onehot_tier_s.py` runs a one-hot version of the Tier S model: one atom per (customer, vehicle), so 8 atoms instead of 4.
+> It uses the same objective, λ = 0.1, instances, embedding, pulse and emulator settings as the main model's baseline run, so only the encoding differs.
+> On every valid assignment, its cost equals the main model's cost plus a constant.
+> Choosing the one-vehicle penalty as `A_i = A + λ d_i²` gives every atom the same linear term, so a single global detuning is **exact**; the main model has to average it.
+>
+> Run from `src/`: `uv run python onehot_tier_s.py` (all 20 instances, about 3 minutes; add `--limit 1` for one instance). Results: `src/results/tier_s/onehot_baseline/results.csv`.
+>
+> **Trade-off (baseline pulse, 20 instances):** 8 atoms with exact detuning reaches 37.1% optimal shots on average, never below 10%. The main model reaches 64.0% with 4 atoms, but collapses on the instances where averaging moves its lowest-energy state. On those 6 instances, one-hot averages 39.4% against 14.7%. We kept the 4-atom model as the main submission; this branch documents the alternative.
+
 # Capacitated Vehicle Routing Quantum Clustering Optimization Using Unbalanced Penalization
 https://arxiv.org/abs/2211.13914
 
