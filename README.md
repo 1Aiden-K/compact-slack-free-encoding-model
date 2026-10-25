@@ -358,6 +358,55 @@ C(z)=\sum_{i < j}D_{ij}(1-z_i-z_j+2z_iz_j)
 
 This separates the surrogate QUBO optimization from the evaluation of capacity feasibility and the original clustering objective.
 
+## Ising Hamiltonian
+Our QUBO matrix is of the form:
+```math
+F(z)=c+\sum_i M_{ii}z_i+2\sum_{i<j}M_{ij}z_iz_j
+```
+
+Represent each bit with one atom:
+```math
+|0\rangle=|g\rangle,\qquad |1\rangle=|r\rangle, \qquad \hat n_i=|r\rangle_i\langle r|
+```
+
+Ignoring c (not required for optimization) gives:  
+```math
+{
+\frac{H_{\mathrm{target}}}{\hbar}
+=
+\gamma\sum_i M_{ii}\hat n_i
++
+2\gamma\sum_{i<j}M_{ij}\hat n_i\hat n_j
+}
+```
+
+### Neutral Atom Hamiltonian
+
+```math
+{
+\frac{H(t)}{\hbar}
+=
+\frac{\Omega(t)}2\sum_i X_i
+-\delta(t)\sum_i\hat n_i
++\sum_{i<j}V_{ij}\hat n_i\hat n_j
+}
+```
+
+where:
+
+```math
+V_{ij}=\frac{\widetilde C_6}{R_{ij}^{6}}, \qquad \widetilde C_6=C_6/\hbar
+```
+
+*Note the factor of 1/2, as each off diagonal pair is counted twice in our QUBO matrix*
+```math
+R_{ij}^{*}
+=
+\left(\frac{\widetilde C_6}{2\gamma M_{ij}}\right)^{1/6}.
+```
+
+
+
 ## Requirements
 
 - **Python:** 3.13 or later
