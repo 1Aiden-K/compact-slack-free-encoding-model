@@ -1,0 +1,337 @@
+{
+  "emu-sv": {
+    "total_runs": 20,
+    "status_counts": {
+      "ok": 20
+    },
+    "metrics": {
+      "feasibility_rate": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.8084999999999999,
+        "minimum": 0.348,
+        "maximum": 1.0
+      },
+      "optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.4008,
+        "minimum": 0.057,
+        "maximum": 0.975
+      },
+      "predicted_optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.39691080496829007,
+        "minimum": 0.05129980100109914,
+        "maximum": 0.9660332085794537
+      },
+      "best_model_gap_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "cvrp_optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.41105,
+        "minimum": 0.101,
+        "maximum": 0.975
+      },
+      "predicted_cvrp_optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.41202004539867765,
+        "minimum": 0.11083095343504505,
+        "maximum": 0.9660332085794537
+      },
+      "best_cvrp_gap_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "cvrp_gap_of_best_model_shot_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 9.662301833295732,
+        "minimum": 0.0,
+        "maximum": 67.45122733869886
+      }
+    }
+  },
+  "exact_clustering": {
+    "total_runs": 20,
+    "status_counts": {
+      "ok": 20
+    },
+    "metrics": {
+      "feasibility_rate": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 1.0,
+        "minimum": 1.0,
+        "maximum": 1.0
+      },
+      "optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 1.0,
+        "minimum": 1.0,
+        "maximum": 1.0
+      },
+      "predicted_optimal_probability": {
+        "defined_runs": 0,
+        "undefined_runs": 20,
+        "mean": null,
+        "minimum": null,
+        "maximum": null
+      },
+      "best_model_gap_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "cvrp_optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.45,
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "predicted_cvrp_optimal_probability": {
+        "defined_runs": 0,
+        "undefined_runs": 20,
+        "mean": null,
+        "minimum": null,
+        "maximum": null
+      },
+      "best_cvrp_gap_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 9.662301833295732,
+        "minimum": 0.0,
+        "maximum": 67.45122733869886
+      },
+      "cvrp_gap_of_best_model_shot_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 9.662301833295732,
+        "minimum": 0.0,
+        "maximum": 67.45122733869886
+      }
+    }
+  },
+  "exact_cvrp": {
+    "total_runs": 20,
+    "status_counts": {
+      "ok": 20
+    },
+    "metrics": {
+      "feasibility_rate": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 1.0,
+        "minimum": 1.0,
+        "maximum": 1.0
+      },
+      "optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.45,
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "predicted_optimal_probability": {
+        "defined_runs": 0,
+        "undefined_runs": 20,
+        "mean": null,
+        "minimum": null,
+        "maximum": null
+      },
+      "best_model_gap_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 76.43951247236997,
+        "minimum": 0.0,
+        "maximum": 332.0093602872668
+      },
+      "cvrp_optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 1.0,
+        "minimum": 1.0,
+        "maximum": 1.0
+      },
+      "predicted_cvrp_optimal_probability": {
+        "defined_runs": 0,
+        "undefined_runs": 20,
+        "mean": null,
+        "minimum": null,
+        "maximum": null
+      },
+      "best_cvrp_gap_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "cvrp_gap_of_best_model_shot_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      }
+    }
+  },
+  "exact_qubo": {
+    "total_runs": 20,
+    "status_counts": {
+      "ok": 19,
+      "no_feasible_samples": 1
+    },
+    "metrics": {
+      "feasibility_rate": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.95,
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.95,
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "predicted_optimal_probability": {
+        "defined_runs": 0,
+        "undefined_runs": 20,
+        "mean": null,
+        "minimum": null,
+        "maximum": null
+      },
+      "best_model_gap_pct": {
+        "defined_runs": 19,
+        "undefined_runs": 1,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "cvrp_optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.45,
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "predicted_cvrp_optimal_probability": {
+        "defined_runs": 0,
+        "undefined_runs": 20,
+        "mean": null,
+        "minimum": null,
+        "maximum": null
+      },
+      "best_cvrp_gap_pct": {
+        "defined_runs": 19,
+        "undefined_runs": 1,
+        "mean": 9.950924052455537,
+        "minimum": 0.0,
+        "maximum": 67.45122733869886
+      },
+      "cvrp_gap_of_best_model_shot_pct": {
+        "defined_runs": 19,
+        "undefined_runs": 1,
+        "mean": 9.950924052455537,
+        "minimum": 0.0,
+        "maximum": 67.45122733869886
+      }
+    }
+  },
+  "uniform_random": {
+    "total_runs": 20,
+    "status_counts": {
+      "ok": 20
+    },
+    "metrics": {
+      "feasibility_rate": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.58655,
+        "minimum": 0.253,
+        "maximum": 1.0
+      },
+      "optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.13094999999999996,
+        "minimum": 0.098,
+        "maximum": 0.155
+      },
+      "predicted_optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.125,
+        "minimum": 0.125,
+        "maximum": 0.125
+      },
+      "best_model_gap_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "cvrp_optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.1276,
+        "minimum": 0.098,
+        "maximum": 0.155
+      },
+      "predicted_cvrp_optimal_probability": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.125,
+        "minimum": 0.125,
+        "maximum": 0.125
+      },
+      "best_cvrp_gap_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "cvrp_gap_of_best_model_shot_pct": {
+        "defined_runs": 20,
+        "undefined_runs": 0,
+        "mean": 9.662301833295732,
+        "minimum": 0.0,
+        "maximum": 67.45122733869886
+      }
+    }
+  },
+  "encoding_checks": {
+    "target_all_ground_states_original_optimal": {
+      "checked": 20,
+      "preserved": 19
+    },
+    "global_all_ground_states_original_optimal": {
+      "checked": 20,
+      "preserved": 12
+    },
+    "embedded_all_ground_states_original_optimal": {
+      "checked": 20,
+      "preserved": 14
+    }
+  }
+}

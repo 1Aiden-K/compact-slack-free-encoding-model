@@ -38,7 +38,8 @@ for emulator development; best-gap is still measured on the finite training
 batch. The best-gap primary metric requires sampled mode. Exact CVRP reference
 COST is used explicitly for challenge scoring, never to set pulse parameters
 or supply a bitstring to the search. ExactRouter remains classical routing.
-Final counts use --final-seed, never pooled with training samples. This is
+Final runs re-emulate each reported sequence with --final-seed; training
+distributions and shots are never substituted for the final run. This is
 per-instance optimization; include its full search budget in comparisons.
 
 --evaluations includes the original pulse and rejected candidate attempts.
@@ -533,6 +534,132 @@ def optimize_pulses(
     return search
 
 
+def add_optimization_arguments(parser):
+    """Shared controls for the integrated benchmark and emulator paths."""
+    parser.add_argument(
+        "--optimize-pulses",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="optimize before final emulation (default: enabled)",
+    )
+    parser.add_argument(
+        "--evaluations",
+        type=int,
+        default=40,
+        help="search attempts including baseline, per instance",
+    )
+    parser.add_argument("--search-seed", type=int, default=0)
+    parser.add_argument(
+        "--training-seed",
+        type=int,
+        default=10000,
+        help="training measurement seed; must differ from --sample-seed",
+    )
+    parser.add_argument("--training-shots", type=int, default=1000)
+    parser.add_argument(
+        "--score-mode", choices=("sampled", "probabilities"), default="sampled"
+    )
+    parser.add_argument(
+        "--metric",
+        choices=("reference-probability", "best-gap", "feasibility"),
+        default="reference-probability",
+    )
+    parser.add_argument(
+        "--duration-bounds", type=int, nargs=2, metavar=("MIN_NS", "MAX_NS")
+    )
+
+
+def validate_optimization_settings(settings):
+    if not settings["optimize_pulses"]:
+        return
+    for name in ("evaluations", "training_shots"):
+        if settings[name] < 1:
+            raise ValueError(f"{name} must be positive.")
+    if settings["search_seed"] < 0 or settings["training_seed"] < 0:
+        raise ValueError("Optimization seeds must be nonnegative.")
+    if settings["training_seed"] == settings["sample_seed"]:
+        raise ValueError("--training-seed must differ from --sample-seed.")
+    if settings["metric"] == "best-gap" and settings["score_mode"] != "sampled":
+        raise ValueError("--metric best-gap requires --score-mode sampled.")
+    bounds = settings["duration_bounds"]
+    if bounds is not None and not (0 < bounds[0] <= bounds[1]):
+        raise ValueError("--duration-bounds must be positive and ordered.")
+
+
+def optimize_program(
+    baseline, *, coordinates, demands, capacity, depot, settings, emulator=None
+):
+    """Select an emulated pulse; the caller must emulate it for final reporting.
+
+    Returns the actual selected Pulser program and JSON-safe search accounting.
+    Training distributions and counts never substitute for the final run.
+    """
+    validate_optimization_settings(settings)
+    scorer = RouteScorer(
+        coordinates, demands, capacity, depot, epsilon_pct=settings["epsilon_pct"]
+    )
+
+    def progress(entry, best):
+        print(
+            f"Pulse search {entry['evaluation']}/{settings['evaluations']}: "
+            f"loss={entry['loss']:.6f}; best={best['loss']:.6f}",
+            flush=True,
+        )
+
+    search = optimize_pulses(
+        baseline,
+        scorer,
+        evaluations=settings["evaluations"],
+        search_seed=settings["search_seed"],
+        sample_seed=settings["training_seed"],
+        training_shots=settings["training_shots"],
+        score_mode=settings["score_mode"],
+        metric=settings["metric"],
+        backend=settings["backend"],
+        dt=settings["dt_ns"],
+        gpu=settings["gpu"],
+        with_modulation=settings["with_modulation"],
+        duration_bounds=settings["duration_bounds"],
+        progress=progress,
+        emulator=emulator,
+    )
+    best = search["best"]
+    program = best["payload"]["program"]
+    history = [
+        {
+            "evaluation": entry["evaluation"],
+            "loss": entry["loss"],
+            "parameters": entry["parameters"],
+            "controls": entry["payload"]["controls"],
+            "metrics": entry["payload"].get("metrics"),
+            "predicted_metrics": entry["payload"].get("predicted_metrics"),
+            "error": entry["payload"].get("error"),
+        }
+        for entry in search["history"]
+    ]
+    metadata = {
+        "status": search["status"],
+        "budget": settings["evaluations"],
+        "evaluations": len(history),
+        "simulations": search["simulations"],
+        "training_shots": search["simulations"] * settings["training_shots"],
+        "seconds": search["seconds"],
+        "metric": settings["metric"],
+        "score_mode": settings["score_mode"],
+        "reference_cost": scorer.reference_cost,
+        "uses_reference_cost": True,
+        "selected_evaluation": best["evaluation"],
+        "baseline_retained": best is search["baseline"],
+        "baseline_metrics": search["baseline"]["payload"]["metrics"],
+        "selected_metrics": best["payload"]["metrics"],
+        "fixed_final_detuning_rad_us": baseline["parameters"]["delta_final"],
+        "bounds": search["bounds"],
+        "history": history,
+        "selected_sequence": json.loads(program["sequence"].to_abstract_repr()),
+    }
+    return program, metadata
+
+
 def resample(probabilities, shots, seed):
     """Fresh final measurements; training shots are never reused or pooled."""
     labels = sorted(probabilities)
@@ -730,10 +857,21 @@ def main(argv=None):
             data = entry["payload"]
             program = data["program"]
             encoding = encoding_from_program(program)
-            counts = resample(data["probabilities"], args.shots, args.final_seed)
+            from emulate import emulate
+
+            final = emulate(
+                program["sequence"],
+                shots=args.shots,
+                seed=args.final_seed,
+                backend=args.backend,
+                dt=args.dt,
+                gpu=args.gpu,
+                with_modulation=args.with_modulation,
+            )
+            counts = dict(final["counts"])
             evaluation = evaluate_samples(
                 counts,
-                probabilities=data["probabilities"],
+                probabilities=final["probabilities"],
                 penalty_weight=args.penalty_weight,
                 reference=reference,
                 encoding=encoding,
@@ -746,7 +884,7 @@ def main(argv=None):
                 "predicted_metrics": data["predicted_metrics"],
                 "final_metrics": scorer.metrics(counts),
                 "counts": counts,
-                "probabilities": data["probabilities"],
+                "probabilities": final["probabilities"],
                 "encoding": encoding,
                 "evaluation": evaluation,
             }
@@ -801,6 +939,8 @@ def main(argv=None):
                 "evaluations": len(history),
                 "simulations": search["simulations"],
                 "training_shot_budget": search["simulations"] * args.training_shots,
+                "final_simulations": 2,
+                "total_emulator_runs": search["simulations"] + 2,
                 "seconds": search["seconds"],
                 "score_mode": args.score_mode,
                 "metric": args.metric,

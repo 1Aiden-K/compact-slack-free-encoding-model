@@ -7,6 +7,8 @@ Run with your existing config.py and model modules:
 Install emu-sv with `uv add emu-sv`. QuTiP is an optional alternative,
 installed with `uv add pulser-simulation`. Only the selected backend is imported.
 emu-sv runs on CPU by default; --gpu requests a supported CUDA GPU.
+By default the pulse is optimized on this instance before final emulation.
+Use --evaluations to set the search budget or --no-optimize-pulses for baseline.
 
 Sources:
 https://pasqal-io.github.io/emulators/latest/emu_sv/api/
@@ -164,6 +166,12 @@ def emulate(
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     add_sequence_arguments(parser)
+    from optimize_pulses import (
+        add_optimization_arguments,
+        validate_optimization_settings,
+    )
+
+    add_optimization_arguments(parser)
     parser.add_argument(
         "--backend", choices=("emu-sv", "qutip"), default=config.EMULATOR
     )
@@ -228,6 +236,16 @@ def main():
     sample_seed = args.sample_seed
 
     try:
+        optimization_settings = {
+            **vars(args),
+            "epsilon_pct": args.epsilon,
+            "dt_ns": args.dt,
+        }
+        validate_optimization_settings(optimization_settings)
+        if args.optimize_pulses and args.skip_evaluation:
+            raise ValueError(
+                "Pulse optimization requires the exact routing reference; use --no-skip-evaluation."
+            )
         from evaluator import (
             build_reference,
             configured_depot,
@@ -236,8 +254,8 @@ def main():
             print_evaluation,
         )
 
-        # The reference is for validation only. It is never used by the builder,
-        # embedding optimizer, pulse generation, or state evolution.
+        # The routing reference cost is also used for good-shot pulse scoring
+        # when optimization is enabled. Geometry and endpoint remain fixed.
         depot = configured_depot(args.depot)
         reference = (
             None
@@ -245,6 +263,19 @@ def main():
             else build_reference(args.penalty_weight, depot=depot)
         )
         program = build_from_args(args)
+        optimization = None
+        if args.optimize_pulses:
+            from optimize_pulses import optimize_program
+            from qubo import CAPACITY, COORDINATES, DEMANDS
+
+            program, optimization = optimize_program(
+                program,
+                coordinates=COORDINATES,
+                demands=DEMANDS,
+                capacity=CAPACITY,
+                depot=depot,
+                settings=optimization_settings,
+            )
         print_program(program, penalty_weight=args.penalty_weight)
         print(f"Running {args.backend} emulation...")
         output = emulate(
@@ -312,7 +343,16 @@ def main():
                 "dt_ns": output["dt_ns"],
                 "gpu": output["gpu"],
                 "with_modulation": args.with_modulation,
+                "optimize_pulses": args.optimize_pulses,
+                "search_seed": args.search_seed,
+                "training_seed": args.training_seed,
+                "training_shots": args.training_shots,
+                "evaluations": args.evaluations,
+                "score_mode": args.score_mode,
+                "metric": args.metric,
+                "duration_bounds": args.duration_bounds,
             },
+            "optimization": optimization,
             "positions_um": program["embedding"]["positions_um"].tolist(),
             "encoding": encoding,
             "evaluation": evaluation,

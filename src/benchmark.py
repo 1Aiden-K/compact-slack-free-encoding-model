@@ -1,13 +1,16 @@
-"""Compare a frozen Tier S protocol across seeded instances.
+"""Benchmark Tier S solvers with integrated pulse optimization.
 
     uv run --locked benchmark.py --instances-dir instances --output-dir benchmark_results
     uv run --locked benchmark.py --instances-dir instances --classical-only --output-dir classical_results
 
 Methods: exact constrained clustering, exact QUBO, exact CVRP, uniform random sampling,
-and the selected Pulser emulator. Each instance runs in a fresh Python process
+and the selected Pulser emulator. By default each instance optimizes its pulse,
+then emulates the selected sequence again for final measurements. Use
+--no-optimize-pulses to reproduce the original fixed-pulse protocol.
+Each instance runs in a fresh Python process
 so qubo.py/classical.py cannot retain another instance's module-level data.
 Only instance fields are replaced in memory; config.py is never rewritten.
-The explicit protocol defaults below match the frozen baseline in this project.
+With --no-optimize-pulses, protocol defaults match the frozen project baseline.
 CSV rates are fractions in [0,1]; gap columns are percentages. Blank means
 undefined/unavailable, not zero. Runtime failures retain their rows and logs.
 """
@@ -33,6 +36,7 @@ from types import ModuleType
 import numpy as np
 
 from instance_generator import load_instance
+from optimize_pulses import add_optimization_arguments, validate_optimization_settings
 
 DEFAULTS = {
     "penalty_weight": 0.1,
@@ -49,6 +53,14 @@ DEFAULTS = {
     "with_modulation": False,
     "gpu": False,
     "classical_only": False,
+    "optimize_pulses": True,
+    "evaluations": 40,
+    "search_seed": 0,
+    "training_seed": 10000,
+    "training_shots": 1000,
+    "score_mode": "sampled",
+    "metric": "reference-probability",
+    "duration_bounds": None,
 }
 
 BASELINES = ("exact_clustering", "exact_qubo", "exact_cvrp", "uniform_random")
@@ -103,6 +115,12 @@ COLUMNS = [
     "reference_seconds",
     "sequence_seconds",
     "emulation_seconds",
+    "pulse_optimized",
+    "optimization_seconds",
+    "optimization_evaluations",
+    "optimization_simulations",
+    "optimization_training_shots",
+    "total_emulator_runs",
     "detail_file",
 ]
 
@@ -134,6 +152,9 @@ def _bind_instance(instance):
 
 def assess_instance(path, settings):
     """Assess one instance in a dedicated worker, retaining classical results on emulator failure."""
+    settings = {**DEFAULTS, **settings}
+    if not settings["classical_only"]:
+        validate_optimization_settings(settings)
     instance = load_instance(path)
     _bind_instance(instance)
     from evaluator import build_reference, encoding_from_program, evaluate_samples
@@ -160,6 +181,7 @@ def assess_instance(path, settings):
     quantum = None
     quantum_error = None
     quantum_stage = None
+    optimization = None
     if not settings["classical_only"]:
         try:
             quantum_stage = "sequence_construction"
@@ -175,6 +197,18 @@ def assess_instance(path, settings):
                 maxiter=settings["maxiter"],
             )
             sequence_seconds = time.perf_counter() - start
+            if settings["optimize_pulses"]:
+                quantum_stage = "pulse_optimization"
+                from optimize_pulses import optimize_program
+
+                program, optimization = optimize_program(
+                    program,
+                    coordinates=instance["coordinates"],
+                    demands=instance["demands"],
+                    capacity=instance["capacity"],
+                    depot=instance["depot"],
+                    settings=settings,
+                )
             encoding = encoding_from_program(program)
             parameters = program["parameters"]
             program_data = {
@@ -182,6 +216,7 @@ def assess_instance(path, settings):
                     program["embedding"]["positions_um"]
                 ).tolist(),
                 "energy_scale": float(parameters["energy_scale"]),
+                "duration_ns": int(parameters["duration_ns"]),
                 "omega_peak": float(parameters["omega_peak"]),
                 "delta_initial": float(parameters["delta_initial"]),
                 "delta_final": float(parameters["delta_final"]),
@@ -290,6 +325,7 @@ def assess_instance(path, settings):
         "instance": instance,
         "settings": settings,
         "program": program_data,
+        "optimization": optimization,
         "timings": {
             "reference_seconds": reference_seconds,
             "sequence_seconds": sequence_seconds,
@@ -370,7 +406,11 @@ def _row(payload, method, detail_file):
         "penalty_weight": settings["penalty_weight"],
         "scaling_policy": "automatic" if settings["energy_scale"] is None else "fixed",
         "energy_scale": (payload.get("program") or {}).get("energy_scale"),
-        "duration_ns": settings["duration_ns"] if is_quantum else None,
+        "duration_ns": (payload.get("program") or {}).get(
+            "duration_ns", settings["duration_ns"]
+        )
+        if is_quantum
+        else None,
         "dt_ns": settings["dt_ns"] if is_quantum and method == "emu-sv" else None,
         "embedding_seed": settings["embedding_seed"] if is_quantum else None,
         "sample_seed": settings["sample_seed"]
@@ -386,6 +426,32 @@ def _row(payload, method, detail_file):
         else None,
         "emulation_seconds": payload["timings"]["emulation_seconds"]
         if is_quantum
+        else None,
+        "pulse_optimized": settings.get("optimize_pulses", False)
+        if is_quantum
+        else None,
+        "optimization_seconds": (payload.get("optimization") or {}).get("seconds")
+        if is_quantum
+        else None,
+        "optimization_evaluations": (payload.get("optimization") or {}).get(
+            "evaluations"
+        )
+        if is_quantum
+        else None,
+        "optimization_simulations": (payload.get("optimization") or {}).get(
+            "simulations"
+        )
+        if is_quantum
+        else None,
+        "optimization_training_shots": (payload.get("optimization") or {}).get(
+            "training_shots"
+        )
+        if is_quantum
+        else None,
+        "total_emulator_runs": (
+            (payload.get("optimization") or {}).get("simulations", 0) + 1
+        )
+        if is_quantum and payload["timings"].get("emulation_seconds") is not None
         else None,
         "detail_file": detail_file,
     }
@@ -468,6 +534,7 @@ def main():
         _worker(Path(sys.argv[2]))
         return 0
     parser = argparse.ArgumentParser(description=__doc__)
+    add_optimization_arguments(parser)
     parser.add_argument(
         "instances", type=Path, nargs="*", help="optional explicit instance paths"
     )
@@ -511,6 +578,8 @@ def main():
     args = parser.parse_args()
     settings = {key: getattr(args, key) for key in DEFAULTS}
     try:
+        if not settings["classical_only"]:
+            validate_optimization_settings(settings)
         if (
             not np.isfinite(settings["penalty_weight"])
             or settings["penalty_weight"] <= 0
@@ -554,6 +623,7 @@ def main():
         "embedding",
         "pulses",
         "emulate",
+        "optimize_pulses",
         "evaluator",
         "routing",
         "config",
