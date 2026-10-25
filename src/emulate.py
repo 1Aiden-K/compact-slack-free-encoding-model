@@ -25,26 +25,22 @@ from pulses import add_sequence_arguments, build_from_args, print_program
 
 
 def _sv_probabilities(state, n_qubits):
-    """Convert emu-sv's state-vector basis to bitstrings with r=1 and g=0.
+    """Read emu-sv's physical computational indices: g=0 and r=1.
 
-    Newer states expose Pulser's probability API directly. Otherwise use
-    emu-sv's documented data tensor and explicit eigenstate ordering; never
-    assume that vector index zero corresponds to the all-ground state.
+    emu-sv's StateVector.make() constructs the all-ground state with data[0]=1.
+    Its tensor indices already encode physical excitation bitstrings. Do not
+    reinterpret those indices through eigenstates metadata: versions exposing
+    ('r', 'g') there would complement every bit, despite the physical tensor
+    convention being g=0. QuTiP's separate conversion remains unchanged.
+
+    Source: https://pasqal-io.github.io/emulators/latest/emu_sv/api/#statevectormake
     """
-    if hasattr(state, "bitstring_probabilities"):
-        return state.bitstring_probabilities(one_state="r", cutoff=0.0)
-    basis = tuple(state.eigenstates)
-    if len(basis) != 2 or set(basis) != {"r", "g"}:
-        raise ValueError(f"Unexpected emu-sv eigenstates: {basis!r}.")
     amplitudes = state.data.detach().cpu().numpy().reshape(-1)
     if amplitudes.size != 2**n_qubits:
         raise ValueError("emu-sv returned a state vector with an unexpected size.")
     probabilities = np.abs(amplitudes) ** 2
     return {
-        "".join(
-            "1" if basis[int(bit)] == "r" else "0"
-            for bit in format(index, f"0{n_qubits}b")
-        ): float(probability)
+        format(index, f"0{n_qubits}b"): float(probability)
         for index, probability in enumerate(probabilities)
     }
 
