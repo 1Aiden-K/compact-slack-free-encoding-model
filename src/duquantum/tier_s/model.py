@@ -1,22 +1,13 @@
-"""Load-balancing QUBO for two vehicles, with one bit per location.
+"""Tier S two-vehicle load-balancing QUBO, one bit per customer.
 
-Requires numpy and config.py defining COORDINATES, DEMANDS, and CAPACITY.
-No optimization runs when this module is imported.
-
-Standard form (J is strictly upper triangular):
-    F(z) = c + h @ z + z @ J @ z
-Symmetric matrix form:
-    F(z) = c + z @ M @ z
-Direct model:
-    F(z) = C(z) + 2 * penalty_weight * (DEMANDS @ z - T / 2)**2
-
-Capacity is checked separately; it does not enter these QUBO coefficients.
-"""
+F(z) = C(z) + 2*lambda*(d @ z - sum(d)/2)**2.
+Capacity is checked separately; it does not enter the QUBO coefficients."""
 
 import numpy as np
 
-import config
-from config import CAPACITY, COORDINATES, DEMANDS
+from duquantum import config
+from duquantum.tier_s import config as tier_config
+from duquantum.tier_s.config import CAPACITY, COORDINATES, DEMANDS
 
 COORDINATES = np.asarray(COORDINATES, dtype=float)
 DEMANDS = np.asarray(DEMANDS, dtype=float)
@@ -38,7 +29,7 @@ T = float(DEMANDS.sum())
 DISTANCES = np.linalg.norm(COORDINATES[:, None, :] - COORDINATES[None, :, :], axis=2)
 
 
-def build_qubo(penalty_weight=config.LAMBDA):
+def build_qubo(penalty_weight=tier_config.LAMBDA):
     """Return (c, h, J) for F(z) = c + h @ z + z @ J @ z.
 
     J[i, j] contains the full pair coefficient for i < j; all other
@@ -54,7 +45,7 @@ def build_qubo(penalty_weight=config.LAMBDA):
     return c, h, J
 
 
-def build_q_matrix(penalty_weight=config.LAMBDA):
+def build_q_matrix(penalty_weight=tier_config.LAMBDA):
     """Return symmetric M for F(z) = c + z @ M @ z.
 
     Use build_qubo(penalty_weight)[0] for the constant offset c.

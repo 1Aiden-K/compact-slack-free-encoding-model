@@ -1,19 +1,8 @@
-"""Evaluate two-vehicle clustering samples against the original problem.
+"""Evaluate Tier S clustering samples, capacity feasibility, and encoding quality.
 
-Requires NumPy and the existing classical.py / qubo.py / config.py, but no
-emulator. Exact references use config.MAX_EXACT_BITS as their limit. They are validation
-baselines; enumeration does not select or repair the reported quantum shots.
-
-    uv run evaluator.py run.json
-    uv run evaluator.py counts.json --lambda 0.1 --output evaluation.json
-
-Input is either a JSON bitstring-to-count mapping or an emulate.py --output
-file. epsilon_pct / --epsilon is a relative model-gap threshold in percent.
-Set config.DEPOT or pass --depot X Y to include exact classical routing and
-CVRP gaps. The selected depot is fixed, independent of clustering.
-Only feasible shots can reach the reference. Vehicle label swaps are the same
-clustering, but every shot still contributes to the probability denominator.
-"""
+Run through: python main.py evaluate run.json
+Only feasible shots can reach the reference; every shot contributes to rates.
+A saved instance is bound before its exact reference is constructed."""
 
 import argparse
 import json
@@ -25,7 +14,8 @@ from pathlib import Path
 
 import numpy as np
 
-import config
+from duquantum import config
+from duquantum.tier_s import config as tier_config
 
 
 def _tied(a, b):
@@ -48,28 +38,19 @@ def _gap(cost, optimum):
     return None if optimum == 0 else 100.0 * (cost - optimum) / optimum
 
 
-def configured_depot(depot=None):
-    """Resolve an explicit depot or config.DEPOT; never invent a depot location."""
-    from qubo import COORDINATES
-    from routing import validate_depot
-
-    selected = config.DEPOT if depot is None else depot
-    return None if selected is None else validate_depot(COORDINATES, selected).tolist()
 
 
 def build_reference(
-    penalty_weight=config.LAMBDA, *, max_bits=config.MAX_EXACT_BITS, depot=None
+    penalty_weight=tier_config.LAMBDA, *, max_bits=config.MAX_EXACT_BITS,
 ):
     """Enumerate the constrained problem and target QUBO once per instance.
 
-    All settings come from the existing config.py through qubo.py. References
+    Instance data comes from tier_s.config through tier_s.model. References
     can be reused across pulse/embedding runs with the same instance and lambda.
     An infeasible instance is recorded explicitly; gaps then remain undefined.
-    A depot supplied explicitly or as config.DEPOT also enables exact TSP/CVRP
-    evaluation. The private router cache is not JSON-serializable; reports are.
     """
-    from classical import solve_classically
-    from qubo import CAPACITY, COORDINATES, DEMANDS, N_BITS, build_q_matrix, build_qubo
+    from duquantum.tier_s.classical import solve_classically
+    from duquantum.tier_s.model import CAPACITY, COORDINATES, DEMANDS, N_BITS, build_q_matrix, build_qubo
 
     if isinstance(max_bits, bool) or not isinstance(max_bits, Integral) or max_bits < 1:
         raise ValueError("max_bits must be a positive integer.")
@@ -107,23 +88,7 @@ def build_reference(
         "status": "proven_optimum" if feasible else "infeasible_instance",
         "q_matrix": build_q_matrix(penalty_weight).tolist(),
         "qubo_offset": float(build_qubo(penalty_weight)[0]),
-        "depot": configured_depot(depot),
-        "routing": None,
     }
-    if reference["depot"] is not None:
-        from routing import ExactRouter
-
-        router = ExactRouter(
-            COORDINATES,
-            reference["depot"],
-            max_customers=min(max_bits, config.MAX_ROUTING_CUSTOMERS),
-        )
-        reference["_router"] = router
-        reference["routing"] = router.solve_cvrp(DEMANDS, CAPACITY)
-        for bits, record in records.items():
-            record["route_cost"] = (
-                router.assignment_cost(bits) if record["feasible"] else None
-            )
     return reference
 
 
@@ -179,12 +144,10 @@ def _validate_weights(weights, n_bits, *, counts):
     return validated
 
 
-def _rates(weights, reference, epsilon_pct, *, routing=False):
+def _rates(weights, reference, epsilon_pct):
     records = reference["assignments"]
-    objective = reference["routing"] if routing else reference
-    cost_key = "route_cost" if routing else "cost"
-    optimal_bits = set(objective["optimal_bitstrings"])
-    optimum = objective["optimal_cost"]
+    optimal_bits = set(reference["optimal_bitstrings"])
+    optimum = reference["optimal_cost"]
     total = sum(weights.values())
     feasible_weight = sum(
         weight for bits, weight in weights.items() if records[bits]["feasible"]
@@ -196,7 +159,7 @@ def _rates(weights, reference, epsilon_pct, *, routing=False):
     for bits, weight in weights.items():
         record = records[bits]
         if record["feasible"]:
-            gap = _gap(record[cost_key], optimum)
+            gap = _gap(record["cost"], optimum)
             if gap is not None and gap <= epsilon_pct:
                 reached_weight += weight
     return {
@@ -207,7 +170,7 @@ def _rates(weights, reference, epsilon_pct, *, routing=False):
         else None,
         "mean_feasible_cost": (
             sum(
-                records[bits][cost_key] * weight
+                records[bits]["cost"] * weight
                 for bits, weight in weights.items()
                 if records[bits]["feasible"]
             )
@@ -218,86 +181,6 @@ def _rates(weights, reference, epsilon_pct, *, routing=False):
     }
 
 
-def _routing_report(counts, predicted, reference, epsilon_pct, best_model_solutions):
-    """Keep selection by clustering cost separate from selection by tour length."""
-    records = reference["assignments"]
-    routing = reference["routing"]
-    optimum = routing["optimal_cost"]
-
-    def solution(bits):
-        record = records[bits]
-        return {
-            "bits": bits,
-            "clustering_cost": record["cost"],
-            "route_cost": record["route_cost"],
-            "loads": record["loads"],
-            "cvrp_gap_pct": _gap(record["route_cost"], optimum),
-            "routes": reference["_router"].route_assignment(bits),
-        }
-
-    feasible = [
-        bits
-        for bits, count in counts.items()
-        if count > 0 and records[bits]["feasible"]
-    ]
-    best_cost = min((records[bits]["route_cost"] for bits in feasible), default=None)
-    representatives = {}
-    for bits in sorted(feasible):
-        if _tied(records[bits]["route_cost"], best_cost):
-            representatives.setdefault(_canonical(bits), bits)
-    sampled = _rates(counts, reference, epsilon_pct, routing=True)
-    optimal_bits = set(routing["optimal_bitstrings"])
-    sampled.update(
-        {
-            "best_feasible_cost": best_cost,
-            "best_cvrp_gap_pct": _gap(best_cost, optimum)
-            if best_cost is not None
-            else None,
-            "optimal_shots": sum(
-                count for bits, count in counts.items() if bits in optimal_bits
-            ),
-            "best_solutions": [
-                solution(representatives[key]) for key in sorted(representatives)
-            ],
-            # Select the best clustering cost first, then the lexicographically
-            # smallest canonical partition. Route length does not break this tie.
-            "best_model_shot": (
-                solution(
-                    min(best_model_solutions, key=lambda r: _canonical(r["bits"]))[
-                        "bits"
-                    ]
-                )
-                if best_model_solutions
-                else None
-            ),
-        }
-    )
-    model_optimum_route_costs = [
-        records[bits]["route_cost"] for bits in reference["optimal_clusterings"]
-    ]
-    route_range = (
-        [min(model_optimum_route_costs), max(model_optimum_route_costs)]
-        if model_optimum_route_costs
-        else None
-    )
-    return {
-        "reference": routing,
-        "sampled": sampled,
-        "predicted": _rates(predicted, reference, epsilon_pct, routing=True)
-        if predicted is not None
-        else None,
-        "uniform_baseline": _rates(
-            {bits: 1 for bits in records}, reference, epsilon_pct, routing=True
-        ),
-        "model_optimum_route_cost_range": route_range,
-        "model_optimum_cvrp_gap_range_pct": (
-            [_gap(cost, optimum) for cost in route_range]
-            if route_range is not None
-            else None
-        ),
-        "selection": "Best CVRP shot minimizes exact route length among observed feasible shots; "
-        "best model shot minimizes clustering cost, breaking ties by canonical partition.",
-    }
 
 
 def _ground_states(matrix, reference, sampled, predicted):
@@ -354,11 +237,10 @@ def evaluate_samples(
     counts,
     *,
     probabilities=None,
-    penalty_weight=config.LAMBDA,
+    penalty_weight=tier_config.LAMBDA,
     reference=None,
     encoding=None,
     epsilon_pct=config.EPSILON_PCT,
-    depot=None,
 ):
     """Evaluate raw samples without repairing or discarding infeasible shots.
 
@@ -371,9 +253,7 @@ def evaluate_samples(
     if not np.isfinite(epsilon_pct) or epsilon_pct < 0:
         raise ValueError("epsilon_pct must be finite and nonnegative.")
     if reference is None:
-        reference = build_reference(penalty_weight, depot=depot)
-    elif depot is not None and configured_depot(depot) != reference["depot"]:
-        raise ValueError("Reference depot does not match the requested depot.")
+        reference = build_reference(penalty_weight)
     if float(penalty_weight) != reference["penalty_weight"]:
         raise ValueError("Reference lambda does not match penalty_weight.")
     n = reference["n_bits"]
@@ -461,12 +341,6 @@ def evaluate_samples(
                 else None,
             }
         )
-        if reference["routing"] is not None:
-            rows[-1]["cvrp_gap_pct"] = (
-                _gap(record["route_cost"], reference["routing"]["optimal_cost"])
-                if record["feasible"]
-                else None
-            )
     return {
         "reference": {
             key: reference[key]
@@ -480,7 +354,6 @@ def evaluate_samples(
                 "optimal_cost",
                 "optimal_bitstrings",
                 "optimal_clusterings",
-                "depot",
             )
         },
         "epsilon_pct": float(epsilon_pct),
@@ -494,11 +367,7 @@ def evaluate_samples(
         "stages": stages,
         "encoding": encoding,
         "bitstrings": rows,
-        "routing": (
-            _routing_report(counts, predicted, reference, epsilon_pct, best_solutions)
-            if reference["routing"] is not None
-            else None
-        ),
+
     }
 
 
@@ -557,69 +426,25 @@ def print_evaluation(report):
             f"{len(stage['ground_bitstrings'])} ground bitstrings originally optimal; "
             f"sampled ground-state probability {percent(stage['sampled_ground_state_probability'])}"
         )
-    routing = report["routing"]
-    if routing is None:
-        print("Exact routing/CVRP gap: disabled; set config.DEPOT or pass --depot X Y.")
-        return
-    print(f"\nExact classical routing; depot: {routing['reference']['depot']}")
-    print(
-        f"CVRP reference: {routing['reference']['status']}; "
-        f"cost: {number(routing['reference']['optimal_cost'])}; "
-        f"distinct optimal partitions: {len(routing['reference']['optimal_clusterings'])}"
-    )
-    routed = routing["sampled"]
-    print(
-        f"Best routed feasible shot: {number(routed['best_feasible_cost'])}; "
-        f"best CVRP gap: {number(routed['best_cvrp_gap_pct'])}%"
-    )
-    model_shot = routed["best_model_shot"]
-    if model_shot is not None:
-        print(
-            f"Best clustering shot ({model_shot['bits']}), routed exactly: "
-            f"{number(model_shot['route_cost'])}; CVRP gap: {number(model_shot['cvrp_gap_pct'])}%"
-        )
-    for name, values in (
-        ("Sampled", routed),
-        ("Final-state probabilities", routing["predicted"]),
-        ("Uniform random baseline", routing["uniform_baseline"]),
-    ):
-        if values is not None:
-            print(
-                f"{name} CVRP: optimal {percent(values['optimal_probability'])}; "
-                f"within epsilon {percent(values['reference_probability'])}"
-            )
-    for result in routed["best_solutions"]:
-        print(f"Best routed bits: {result['bits']}; loads: {result['loads']}")
-        for vehicle, route in enumerate(result["routes"], 1):
-            print(
-                f"  Vehicle {vehicle}: {route['stops']}; distance: {number(route['length'])}"
-            )
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "input", type=Path, help="raw counts JSON or emulate.py --output JSON"
+        "input", type=Path, help="raw counts JSON or a saved main.py run/optimize result"
     )
     parser.add_argument(
         "--lambda",
         dest="penalty_weight",
         type=float,
         default=None,
-        help="defaults to saved run lambda, or config.LAMBDA for raw counts",
+        help="defaults to saved run lambda, or tier_config.LAMBDA for raw counts",
     )
     parser.add_argument(
         "--epsilon",
         type=float,
         default=config.EPSILON_PCT,
         help="reference gap tolerance in percent",
-    )
-    parser.add_argument(
-        "--depot",
-        type=float,
-        nargs=2,
-        default=None,
-        help="fixed depot X Y; otherwise use the saved run depot or config.DEPOT",
     )
     parser.add_argument(
         "--output",
@@ -636,28 +461,21 @@ def main():
         settings = payload.get("settings", {}) if is_run else {}
         saved_lambda = settings.get("penalty_weight")
         lam = args.penalty_weight if args.penalty_weight is not None else saved_lambda
-        lam = config.LAMBDA if lam is None else lam
+        lam = tier_config.LAMBDA if lam is None else lam
         if saved_lambda is not None and float(lam) != float(saved_lambda):
             raise ValueError(
                 "--lambda does not match the saved run; evaluate using its original lambda."
             )
         saved_instance = payload.get("instance") if is_run else None
-        saved_depot = (
-            saved_instance.get("depot") if saved_instance is not None else None
-        )
-        if (
-            args.depot is not None
-            and saved_depot is not None
-            and args.depot != saved_depot
-        ):
-            raise ValueError("--depot does not match the saved run's fixed depot.")
-        depot = args.depot if args.depot is not None else saved_depot
-        reference = build_reference(lam, depot=depot)
-        # Saved run instance metadata guards against evaluating with a different config.py.
+        if saved_instance is not None:
+            from duquantum.tier_s.config import bind_instance
+            bind_instance(saved_instance)
+        reference = build_reference(lam)
+        # Confirm the model was built from the saved instance metadata.
         if saved_instance is not None:
             for key in ("coordinates", "demands", "capacity"):
                 if saved_instance[key] != reference[key]:
-                    raise ValueError(f"Saved instance {key} differs from config.py.")
+                    raise ValueError(f"Saved instance {key} differs from the constructed model.")
         report = evaluate_samples(
             payload["counts"] if is_run else payload,
             probabilities=payload.get("probabilities") if is_run else None,

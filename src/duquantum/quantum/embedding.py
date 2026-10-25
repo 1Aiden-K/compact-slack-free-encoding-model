@@ -16,7 +16,7 @@ import numpy as np
 from scipy.optimize import minimize
 from scipy.spatial.distance import pdist, squareform
 
-import config
+from duquantum import config
 
 
 def realized_interactions(positions_um, interaction_coeff):

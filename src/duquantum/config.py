@@ -1,21 +1,8 @@
-"""User settings shared by the model, builders, emulators, and evaluation CLIs.
+"""Shared hardware, numerical, and output defaults.
 
-CLI options and explicit function arguments override these defaults. Edit settings
-before starting Python; defaults and derived instance arrays load at import time.
-None selects an automatic value where documented. Physical hardware limits come
-from DEVICE, rather than overriding device specifications with local settings.
-"""
+Tier S instance and model settings live in duquantum/tier_s/config.py."""
 
 import logging
-
-import numpy as np
-
-# Problem instance. The binary model represents exactly two vehicles.
-COORDINATES = np.array([[0.0, 0.0], [2.0, 1.0], [6.0, 0.0], [7.0, 2.0]])
-DEMANDS = np.array([1, 2, 3, 4], dtype=int)
-CAPACITY = 7
-DEPOT = [0, 0]  # None disables exact routing.
-LAMBDA = 0.1
 
 # Pulse construction. DEVICE names a device exported by pulser.
 DEVICE = "AnalogDevice"
@@ -58,7 +45,6 @@ QUTIP_SAMPLING_RATE = 1.0
 
 # Exact references and numerical comparisons.
 MAX_EXACT_BITS = 16
-MAX_ROUTING_CUSTOMERS = 16
 EPSILON_PCT = 0.0
 COST_REL_TOL = 1e-10
 COST_ABS_TOL = 1e-9

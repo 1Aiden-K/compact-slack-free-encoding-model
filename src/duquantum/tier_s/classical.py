@@ -1,9 +1,6 @@
-"""Exhaustively evaluate the QUBO and the original constrained problem.
+"""Exact reference for the Tier S QUBO and constrained clustering.
 
-Run: python classical.py --lambda 0.1
-Requires numpy, qubo.py, and your unchanged config.py in the same directory.
-Runtime is exponential in N; intended for small instances.
-"""
+Run through: python main.py classical"""
 
 import argparse
 from itertools import product
@@ -11,11 +8,12 @@ from math import isclose
 
 import numpy as np
 
-import config
-from qubo import CAPACITY, N_BITS, build_q_matrix, build_qubo, evaluate_assignment
+from duquantum import config
+from duquantum.tier_s import config as tier_config
+from duquantum.tier_s.model import CAPACITY, N_BITS, build_q_matrix, build_qubo, evaluate_assignment
 
 
-def solve_classically(penalty_weight=config.LAMBDA):
+def solve_classically(penalty_weight=tier_config.LAMBDA):
     """Return every assignment, ordered by QUBO energy (including c).
 
     Each record contains bits, energy, original cost, vehicle loads, and
@@ -59,7 +57,7 @@ def main():
         "--lambda",
         dest="penalty_weight",
         type=float,
-        default=config.LAMBDA,
+        default=tier_config.LAMBDA,
         help="positive load-balancing weight (default: %(default)s)",
     )
     parser.add_argument(

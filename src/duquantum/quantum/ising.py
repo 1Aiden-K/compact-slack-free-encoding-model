@@ -1,26 +1,13 @@
-"""Convert qubo.py's symmetric Q matrix into global-drive Pulser parameters.
+"""Convert a symmetric Q matrix to global-drive Hamiltonian parameters.
 
-Convention: F(z) = c + z.T @ M @ z, z_i = n_i = (1 - Z_i) / 2.
-With phase zero, the physical Hamiltonian is
-    H(t)/hbar = Omega(t)/2 * sum(X_i) - delta(t) * sum(n_i)
-                + sum_{i<j} V[i,j] * n_i * n_j.
+F(z) = c + z.T @ M @ z; H/hbar = Omega/2 sum(X) - delta sum(n)
++ sum(i<j) V_ij n_i n_j. Frequencies: rad/us; durations: ns; distances: um."""
 
-Frequencies and H/hbar coefficients are in rad/us; durations are in ns;
-register distances are in um. energy_scale converts QUBO cost units to rad/us.
-Only the mean diagonal is implemented by the global detuning. Pair couplings
-still need geometric embedding; ideal distances need not fit a planar register.
-
-Sources:
-https://pulser.readthedocs.io/en/stable/tutorials/qubo.html
-https://pulser.readthedocs.io/en/stable/pulses.html
-"""
-
-import argparse
 from itertools import product
 
 import numpy as np
 
-import config
+from duquantum import config
 
 
 def _positive(value, name):
@@ -70,7 +57,7 @@ def build_ising(
 ):
     """Return a dictionary of target Hamiltonian and pulse parameters.
 
-    q_matrix: symmetric M from qubo.build_q_matrix(); positive pair entries only
+    q_matrix: symmetric M for c + z.T @ M @ z; positive pair entries only
         (zero entries are allowed but imply infinite ideal pair separation).
     energy_scale: positive gamma applied to ALL target coefficients together.
     omega_peak: rad/us; defaults to the median positive target pair interaction.
@@ -209,68 +196,3 @@ def make_pulse(parameters):
         CustomWaveform(parameters["detuning_samples"]),
         parameters["phase"],
     )
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--lambda", dest="penalty_weight", type=float, default=config.LAMBDA
-    )
-    parser.add_argument("--scale", type=float, default=config.ISING_ENERGY_SCALE)
-    parser.add_argument(
-        "--duration",
-        type=int,
-        default=config.PULSE_DURATION,
-        help="pulse duration in ns",
-    )
-    parser.add_argument(
-        "--omega-peak", type=float, default=config.OMEGA_PEAK, help="rad/us"
-    )
-    parser.add_argument(
-        "--interaction-coeff",
-        type=float,
-        default=config.INTERACTION_COEFF,
-        help="device.interaction_coeff",
-    )
-    args = parser.parse_args()
-    from qubo import build_q_matrix, build_qubo
-
-    try:
-        parameters = build_ising(
-            build_q_matrix(args.penalty_weight),
-            energy_scale=args.scale,
-            duration_ns=args.duration,
-            omega_peak=args.omega_peak,
-            interaction_coeff=args.interaction_coeff,
-            qubo_offset=build_qubo(args.penalty_weight)[0],
-        )
-    except ValueError as error:
-        parser.error(str(error))
-    np.set_printoptions(
-        precision=config.PRINT_PRECISION, suppress=config.PRINT_SUPPRESS
-    )
-    for key in (
-        "n_qubits",
-        "energy_scale",
-        "target_detunings",
-        "delta_initial",
-        "delta_final",
-        "omega_peak",
-        "duration_ns",
-        "interaction_matrix",
-        "target_distances_um",
-        "ising_fields",
-        "ising_couplings",
-        "ising_offset",
-        "exact_global_diagonal",
-        "diagonal_error",
-        "ground_state_check",
-    ):
-        print(f"{key}:\n{parameters[key]}")
-    print(
-        "Ground-state comparison assumes exact pair interactions; recheck after embedding."
-    )
-
-
-if __name__ == "__main__":
-    main()

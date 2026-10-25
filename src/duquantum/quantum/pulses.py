@@ -1,24 +1,13 @@
-"""Build a global-detuning sequence on the configured device from a symmetric Q matrix.
+"""Build and validate a global-detuning Pulser sequence from a symmetric Q matrix.
 
-Requires numpy, scipy, pulser-core, and the local ising.py / embedding.py.
-No emulation is performed here. No DMM or local driving.
+No model selection or emulation is performed in this module."""
 
-Run with your existing config.py:
-    python pulses.py --lambda 0.1 --seed 0
-    python emulate.py --lambda 0.1 --seed 0 --shots 1000
-
-Sources:
-https://pulser.readthedocs.io/en/stable/tutorials/qubo.html
-https://pulser.readthedocs.io/en/stable/pulses.html
-"""
-
-import argparse
 
 import numpy as np
 
-import config
-from embedding import embed_register
-from ising import _compare_ground_states, build_ising, make_pulse
+from duquantum import config
+from duquantum.quantum.embedding import embed_register
+from duquantum.quantum.ising import _compare_ground_states, build_ising, make_pulse
 
 
 def build_sequence(
@@ -166,45 +155,8 @@ def build_sequence(
     }
 
 
-def add_sequence_arguments(parser):
-    """Add shared model, embedding, and pulse options to a CLI parser."""
-    parser.add_argument(
-        "--lambda", dest="penalty_weight", type=float, default=config.LAMBDA
-    )
-    parser.add_argument(
-        "--scale",
-        type=float,
-        default=config.ENERGY_SCALE,
-        help="common scaling; config default may select automatic scaling",
-    )
-    parser.add_argument(
-        "--duration", type=int, default=config.PULSE_DURATION, help="ns"
-    )
-    parser.add_argument(
-        "--omega-peak", type=float, default=config.OMEGA_PEAK, help="rad/us"
-    )
-    parser.add_argument("--seed", type=int, default=config.EMBEDDING_SEED)
-    parser.add_argument("--restarts", type=int, default=config.EMBEDDING_RESTARTS)
-    parser.add_argument("--maxiter", type=int, default=config.MAX_ITERATIONS)
-    parser.add_argument(
-        "--delta-initial", type=float, default=config.DELTA_INITIAL, help="rad/us"
-    )
 
 
-def build_from_args(args):
-    """Build a program using the shared CLI options and the user's config.py."""
-    from qubo import build_q_matrix
-
-    return build_sequence(
-        build_q_matrix(args.penalty_weight),
-        energy_scale=args.scale,
-        duration_ns=args.duration,
-        omega_peak=args.omega_peak,
-        seed=args.seed,
-        restarts=args.restarts,
-        maxiter=args.maxiter,
-        delta_initial=args.delta_initial,
-    )
 
 
 def print_program(program, *, penalty_weight):
@@ -229,18 +181,3 @@ def print_program(program, *, penalty_weight):
     print("Actual final-Hamiltonian ground-state checks:")
     print(d["target_vs_realized"])
     print("Pulser register and sequence validation passed.")
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    add_sequence_arguments(parser)
-    args = parser.parse_args()
-    try:
-        program = build_from_args(args)
-    except (ValueError, ImportError) as error:
-        parser.error(str(error))
-    print_program(program, penalty_weight=args.penalty_weight)
-
-
-if __name__ == "__main__":
-    main()
