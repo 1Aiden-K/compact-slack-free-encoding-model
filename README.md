@@ -43,6 +43,35 @@ Values are means over instances. "Optimal shots" is the fraction of all shots th
 
 **CVRP gap.** The quick-start run also routes each sampled feasible clustering exactly (classically) and compares it with the exact CVRP optimum (`best_cvrp_gap_pct`). Because cluster-first / route-second is a heuristic, the clustering optimum is not always the best clustering for routing. The mean best CVRP gap is 5.5% for emu-sv. Uniform random reaches 0% only because 1000 shots cover all 16 possible 4-bit assignments.
 
+## Statistical analysis
+
+Intervals are 95% percentile-bootstrap intervals over the 20 instances. Paired tests are two-sided Wilcoxon signed-rank tests on the same instances.
+
+![Optimal and feasible shots by method](docs/figures/fig1_methods.png)
+
+| Method | Atoms | Optimal shots, mean [95% CI] | Median | Feasible shots, mean [95% CI] |
+|---|---|---|---|---|
+| Random guessing | – | 13.1% [12.0, 14.2] | 13.8% | 58.7% [48.3, 69.0] |
+| 1-bit, baseline pulse | 4 | 64.0% [46.1, 81.5] | 89.8% | 96.5% [94.5, 98.2] |
+| 1-bit, optimized pulse | 4 | 69.0% [52.0, 85.1] | 93.5% | 93.4% [86.5, 97.7] |
+| One-hot, baseline pulse | 8 | 37.1% [31.5, 42.6] | 38.0% | 74.6% [64.4, 83.9] |
+
+- **The emulator does useful work:** the baseline pulse beats random guessing by 50.9 percentage points on average (p < 0.001).
+- **Pulse optimization helps consistently:** it improves the optimal-shot rate on all 20 instances, by 5.0 points on average (p < 0.001).
+- **The results are bimodal, and the averaged detuning explains why.** On the 14 instances where the embedded register's lowest-energy state is still the optimum, the mean is 85.1%. On the other 6 (seeds 5, 6, 9, 15, 16, 17) it is 14.7%, with a median of 2.5% (Mann–Whitney p < 0.001). Embedding error, load ratio and largest-demand ratio show no significant correlation with success (all Spearman |ρ| ≤ 0.23, p ≥ 0.3).
+
+![1-bit success per instance, split by ground state](docs/figures/fig2_ground_state_split.png)
+
+### Trade-off: one-hot comparison (branch `one-hot-model`)
+
+We also built a one-hot version: one atom per (customer, vehicle), 8 atoms. It has the same objective, λ, instances and pulse settings, and its linear terms are uniform, so one global detuning reproduces it **exactly**. It is lower on average (37.1% vs 64.0%, p = 0.02) but never collapses (minimum 10.1%). On the 6 instances where the 1-bit model broke, one-hot averages 39.4% against 14.7%.
+
+We submit the 4-atom model and accept its averaged detuning: it halves the atom count and wins on 14 of 20 instances. The one-hot branch documents the alternative and is not merged.
+
+![One-hot vs 1-bit per instance](docs/figures/fig3_onehot_vs_onebit.png)
+
+The full analysis (script, `stats.md`, three more figures) is on branch `graphs-and-statistical-analysis`. It is also not merged.
+
 ## Model
 
 Full derivations, with equations:
