@@ -15,6 +15,25 @@ We assign the customers of a Capacitated Vehicle Routing Problem (CVRP) to vehic
 3. **Quantum implementation**: the Rydberg Hamiltonian mapping, SLSQP embedding and its error metric, the mean global detuning, and the sin² / linear-sweep pulse.
 4. **Results and discussion**: emulator vs random sampling over 20 instances, variable efficiency across tiers, what went wrong (including the Tier M embedding attempt), and an AI-use disclosure.
 
+## Challenge deliverables checklist
+
+Where each item from the Pasqal brief (Deliverable 10.1) lives:
+
+| # | Deliverable | Where |
+|---|---|---|
+| 1 | README with a one-command reproduction | [Quick start](#quick-start-reproduce-the-headline-result) |
+| 1 | Pinned environment | [`requirements.txt`](requirements.txt) (exported from [`uv.lock`](uv.lock)), plus `.python-version` (Python 3.13) |
+| 2 | Model write-up, derived from scratch | [Report](#report) §2–3, and [`docs/tier_s_model.md`](docs/tier_s_model.md) |
+| 2 | Variable-count table (Section 4) | [Model](#model) below, and report §2.4 / §4.2 |
+| 3 | Instance generator and seeds | `src/main.py --tier s generate` ([`src/duquantum/tier_s/instances.py`](src/duquantum/tier_s/instances.py)); seeds 0–19 |
+| 3 | Instances with feasibility certificates | [`src/instances/tier_s/`](src/instances/tier_s/), with a `certificate` in every JSON |
+| 3 | Validator | `src/main.py --tier s validate src/instances/tier_s/*.json` |
+| 3 | Reference values | `clustering_reference_cost` and `cvrp_reference_cost` columns in each `results.csv`, all `proven_optimum` (brute force) |
+| 4 | `results.csv`, one row per (instance, method, seed), with the Section 9 metrics | [`src/results/tier_s/submission_01/results.csv`](src/results/tier_s/submission_01/results.csv); columns in [`docs/tier_s_metrics.md`](docs/tier_s_metrics.md) |
+| 5 | Report (≤ 4 pages) with a “what did not work” section | [Report PDF](#report), 4 pages, §4.3 “What Went Wrong” |
+
+**Reference method.** All Tier S references are proven optima from exhaustive enumeration: 16 assignments for clustering, and every feasible assignment with every route order for the CVRP. We did not run CPLEX as a second check; brute force is exact at this size.
+
 ## Quick start: reproduce the headline result
 
 From the repository root:
@@ -121,11 +140,15 @@ F(z)=\sum_{i<j}D_{ij}(1-z_i-z_j+2z_iz_j)+2\lambda\left(\sum_i d_i z_i-\frac{T}{2
 
 The first term is the total distance between customers who share a vehicle. The second favors balanced loads; the capacity `Q` cancels out of it. Every measured bitstring is therefore checked against the original capacity constraints, and only feasible shots count toward gaps.
 
-| Encoding | Tier S atoms |
-|---|---|
-| One-hot assignment | 8 |
-| One-hot assignment + binary slack | 14 |
-| **This model** | **4** |
+Variable-count table (challenge brief, Derive 4.1):
+
+| Encoding | Variable count | S | M | L | Fits in 80 atoms? |
+|---|---|---|---|---|---|
+| Assignment variables only (one-hot) | NK | 8 | 30 | 60 | Yes |
+| + binary-encoded slack | NK + K⌈log₂(Q+1)⌉ | 14 | 45 | 80 | Exactly at the limit |
+| **This model** | N⌈log₂K⌉ | **4** | **20** | **30\*** | Yes |
+
+\*Tier L is a projected count; only Tier S is implemented and benchmarked. A 20-atom Tier M attempt did not embed well (see the report, section 4.3).
 
 ## Pipeline
 
@@ -177,6 +200,7 @@ src/results/tier_s/        committed benchmark outputs (submission_01, reproduce
 visualize_results.py       charts from a results.csv; output in demo_charts/
 analysis/grok_summary.py   short text summary of the baseline results
 *.pdf (repository root)    the report
+requirements.txt           pinned dependencies (pip alternative to uv.lock)
 ```
 
 ## Requirements
@@ -185,7 +209,7 @@ analysis/grok_summary.py   short text summary of the baseline results
 - **Package manager:** [uv](https://docs.astral.sh/uv/)
 - **IDE:** [Visual Studio Code](https://code.visualstudio.com/) (optional)
 
-Exact resolved versions of every package are pinned in `uv.lock`.
+Exact resolved versions of every package are pinned in `uv.lock`. The same pins are exported to `requirements.txt` for pip users (`python3.13 -m venv .venv && .venv/bin/pip install -r requirements.txt`). Regenerate it after changing dependencies with `uv export --format requirements-txt --no-hashes --no-emit-project --no-dev --locked -o requirements.txt`.
 
 | Package | Version |
 |---|---|
