@@ -6,6 +6,15 @@
 
 We assign the customers of a Capacitated Vehicle Routing Problem (CVRP) to vehicles on an emulated neutral-atom register. Each Tier S customer is one atom: `z_i = 1` puts customer `i` in vehicle 1 and `z_i = 0` in vehicle 2. Capacity is handled without slack variables, using unbalanced penalization ([Montañez-Barrera et al., arXiv:2211.13914](https://arxiv.org/abs/2211.13914)). With two vehicles, that penalty reduces to a load-balancing term, so the full Tier S model needs only **4 atoms**. The slack-variable version needs 14.
 
+## Report
+
+**[Read the report (PDF)](Capacitated%20Vehicle%20Routing%20Quantum%20Clustering%20Optimization%20Using%20Analog%20Neutral%20Atoms%20with%20Compact%20Slack-Free%20Encoding.pdf)**: *Capacitated Vehicle Routing Quantum Clustering Optimization Using Analog Neutral Atoms with Compact Slack-Free Encoding* (A. C. Khanna, Y. Ashour, I. Atteson). This is the 4-page write-up requested by the Pasqal challenge brief:
+
+1. **Overview**: the CVRP, cluster-first / route-second, and why atom count and global detuning constrain the encoding.
+2. **Tier S model**: the formal problem, the slack-free capacity penalty derived from unbalanced penalization, the QUBO coefficients, and the variable-count comparison (4 atoms vs 8 one-hot vs 14 with slack).
+3. **Quantum implementation**: the Rydberg Hamiltonian mapping, SLSQP embedding and its error metric, the mean global detuning, and the sin² / linear-sweep pulse.
+4. **Results and discussion**: emulator vs random sampling over 20 instances, variable efficiency across tiers, what went wrong (including the Tier M embedding attempt), and an AI-use disclosure.
+
 ## Quick start: reproduce the headline result
 
 From the repository root:
