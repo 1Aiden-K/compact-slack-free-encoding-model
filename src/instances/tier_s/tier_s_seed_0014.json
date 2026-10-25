@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "generator_version": 1,
+  "seed": 14,
+  "rng": "PCG64",
+  "numpy_version": "2.3.5",
+  "tier": "S",
+  "n_customers": 4,
+  "vehicles": 2,
+  "capacity": 7,
+  "square_side": 100.0,
+  "demand_range": [
+    1,
+    4
+  ],
+  "coordinates": [
+    [
+      83.09833188891115,
+      36.09466668342566
+    ],
+    [
+      70.27393055820549,
+      86.01187866525945
+    ],
+    [
+      64.13174807881646,
+      54.83632088133139
+    ],
+    [
+      76.23134225311932,
+      71.63143826400405
+    ]
+  ],
+  "demands": [
+    1,
+    2,
+    1,
+    3
+  ],
+  "depot": [
+    0.0,
+    0.0
+  ],
+  "certificate": {
+    "assignment": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "loads": [
+      0,
+      7
+    ]
+  },
+  "load_ratio": 0.5,
+  "largest_demand_ratio": 0.42857142857142855,
+  "demand_draw_attempts": 1,
+  "feasibility_method": "uniform demand rejection with exhaustive assignment certificate"
+}
