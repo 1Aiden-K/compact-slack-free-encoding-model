@@ -185,7 +185,14 @@ def main():
         "--epsilon",
         type=float,
         default=0.0,
-        help="reference model-gap tolerance in percent (default: exact optimum)",
+        help="model and CVRP reference-gap tolerance in percent (default: exact optimum)",
+    )
+    parser.add_argument(
+        "--depot",
+        type=float,
+        nargs=2,
+        default=None,
+        help="fixed depot X Y for exact routing; otherwise use config.DEPOT",
     )
     parser.add_argument(
         "--skip-evaluation",
@@ -211,6 +218,7 @@ def main():
     try:
         from evaluator import (
             build_reference,
+            configured_depot,
             encoding_from_program,
             evaluate_samples,
             print_evaluation,
@@ -218,8 +226,11 @@ def main():
 
         # The reference is for validation only. It is never used by the builder,
         # embedding optimizer, pulse generation, or state evolution.
+        depot = configured_depot(args.depot)
         reference = (
-            None if args.skip_evaluation else build_reference(args.penalty_weight)
+            None
+            if args.skip_evaluation
+            else build_reference(args.penalty_weight, depot=depot)
         )
         program = build_from_args(args)
         print_program(program, penalty_weight=args.penalty_weight)
@@ -271,6 +282,7 @@ def main():
                 "coordinates": np.asarray(COORDINATES).tolist(),
                 "demands": np.asarray(DEMANDS).tolist(),
                 "capacity": float(CAPACITY),
+                "depot": depot,
             },
             "settings": {
                 "penalty_weight": args.penalty_weight,

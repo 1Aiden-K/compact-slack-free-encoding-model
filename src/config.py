@@ -12,3 +12,5 @@ COORDINATES = np.array(
 DEMANDS = np.array([1, 2, 3, 4], dtype=int)
 
 CAPACITY = 7
+
+DEPOT = [0, 0]
