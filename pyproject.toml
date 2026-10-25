@@ -1,0 +1,29 @@
+[project]
+name = "duquantum-setup"
+version = "0.1.0"
+description = "description"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pulser>=1.9.1",
+    "qoolqit>=1.4.0",
+    "qubo-solver>=0.9.1",
+    "emu-sv",
+    "pasqal-cloud>=0.24.0",
+    "numpy>=2.5.4",
+    "matplotlib>=3.11.2",
+    "dotenv>=0.9.9",
+    "qutip>=5.3.1",
+]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+unfixable = ["F401"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.1",
+]

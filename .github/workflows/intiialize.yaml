@@ -1,0 +1,70 @@
+name: Initialize Project
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  initialize:
+    if: github.event.created == true && !github.event.repository.is_template
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      - name: Update project name
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          path = Path("pyproject.toml")
+          content = path.read_text()
+
+          pattern = r'(?ms)(^\[project\]\s*\n)(.*?)(?=^\[|\Z)'
+          match = re.search(pattern, content)
+
+          if not match:
+              raise RuntimeError("Missing [project] section")
+
+          section, count = re.subn(
+              r'(?m)^(name\s*=\s*)["\'][^"\']+["\']',
+              lambda m: f'{m.group(1)}"{os.environ["REPO_NAME"]}"',
+              match.group(2),
+              count=1,
+          )
+
+          if count != 1:
+              raise RuntimeError("Missing project name")
+
+          content = (
+              content[:match.start(2)]
+              + section
+              + content[match.end(2):]
+          )
+
+          path.write_text(content)
+          PY
+
+      - name: Update lockfile
+        run: uv lock
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add pyproject.toml uv.lock
+          if ! git diff --cached --quiet; then
+            git commit -m "Initialize project"
+            git push
+          fi
