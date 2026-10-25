@@ -18,11 +18,14 @@ class ThreeVehicleModel:
     """
 
     def __init__(self, coordinates, demands, capacity, *, penalty_weight=config.LAMBDA,
-                 assignment_penalty=config.ASSIGNMENT_PENALTY):
+                 assignment_penalty=config.ASSIGNMENT_PENALTY, penalty_strategy="fixed"):
         self.coordinates = np.array(coordinates, dtype=float, copy=True)
         self.demands = np.array(demands, dtype=float, copy=True)
         self.capacity = float(capacity)
         self.penalty_weight = float(penalty_weight)
+        self.penalty_strategy = penalty_strategy
+        if penalty_strategy not in ("fixed", "adaptive_demand_pressure_v1"):
+            raise ValueError("Unknown lambda selection strategy.")
         if (self.demands.ndim != 1 or self.demands.size == 0
                 or not np.isfinite(self.demands).all() or np.any(self.demands < 0)):
             raise ValueError("Demands must be a nonempty, finite, nonnegative vector.")
@@ -130,7 +133,8 @@ class ThreeVehicleModel:
     def settings(self):
         return {
             'tier': 'M', 'n_customers': self.n, 'vehicles': 3, 'n_bits': self.n_bits,
-            'penalty_weight': self.penalty_weight, 'assignment_penalty': self.assignment_penalty,
+            'penalty_weight': self.penalty_weight, 'penalty_strategy': self.penalty_strategy,
+            'assignment_penalty': self.assignment_penalty,
             'assignment_penalty_bound': self.assignment_penalty_bound,
             'assignment_validity_guaranteed': self.assignment_validity_guaranteed,
             'capacity_is_exactly_encoded': False,
@@ -152,9 +156,14 @@ def build_model(instance=None, *, penalty_weight=None, assignment_penalty=None):
     if instance is None:
         from duquantum.tier_m.instances import generate_instance
         instance = generate_instance(config.DEFAULT_SEED)
+    if isinstance(penalty_weight, str) and penalty_weight == 'auto':
+        from duquantum.tier_m.penalty import STRATEGY, select_lambda
+        weight, strategy = select_lambda(instance), STRATEGY
+    else:
+        weight, strategy = config.LAMBDA if penalty_weight is None else penalty_weight, 'fixed'
     return ThreeVehicleModel(
         instance['coordinates'], instance['demands'], instance['capacity'],
-        penalty_weight=config.LAMBDA if penalty_weight is None else penalty_weight,
+        penalty_weight=weight, penalty_strategy=strategy,
         assignment_penalty=config.ASSIGNMENT_PENALTY if assignment_penalty is None else assignment_penalty,
     )
 

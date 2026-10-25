@@ -107,7 +107,8 @@ def build_reference(model, *, check_all_bitstrings=False,
 
 def add_model_arguments(parser):
     parser.add_argument('--instance', type=Path, help='certified Tier M JSON; default: generated seed 0')
-    parser.add_argument('--lambda', dest='penalty_weight', type=float, default=None)
+    parser.add_argument('--lambda', dest='penalty_weight', default=None,
+                        help="balance penalty weight (positive number or 'auto'); default: 0.1")
     parser.add_argument('--eta', dest='assignment_penalty', type=float, default=None,
                         help='assignment penalty; default: sufficient validity bound plus 1')
 
@@ -120,14 +121,34 @@ def model_from_args(args, *, saved_instance=None, saved_settings=None):
             if instance[key] != saved_instance[key]:
                 raise ValueError(f"--instance differs from the saved run's {key}.")
     saved_settings = saved_settings or {}
-    weights = {}
-    for key in ('penalty_weight', 'assignment_penalty'):
-        explicit = getattr(args, key)
-        saved = saved_settings.get(key)
-        if explicit is not None and saved is not None and float(explicit) != float(saved):
-            raise ValueError(f"{key} differs from the saved run.")
-        weights[key] = saved if explicit is None else explicit
-    return build_model(instance, **weights)
+    saved_weight = saved_settings.get('penalty_weight')
+    saved_strategy = saved_settings.get('penalty_strategy', 'fixed')
+    from duquantum.tier_m.penalty import STRATEGY
+    if saved_strategy not in ('fixed', STRATEGY):
+        raise ValueError(f"Unknown saved lambda strategy: {saved_strategy!r}.")
+    explicit = args.penalty_weight
+    if explicit == 'auto':
+        requested_strategy, weight = STRATEGY, 'auto'
+    elif explicit is None:
+        requested_strategy = saved_strategy
+        weight = 'auto' if saved_strategy == STRATEGY else saved_weight
+    else:
+        requested_strategy = 'fixed'
+        try:
+            weight = float(explicit)
+        except (TypeError, ValueError) as error:
+            raise ValueError("--lambda must be a positive number or 'auto'.") from error
+    if saved_weight is not None and requested_strategy != saved_strategy:
+        raise ValueError('Lambda strategy differs from the saved run.')
+    eta = args.assignment_penalty
+    saved_eta = saved_settings.get('assignment_penalty')
+    if eta is not None and saved_eta is not None and float(eta) != float(saved_eta):
+        raise ValueError('assignment_penalty differs from the saved run.')
+    model = build_model(instance, penalty_weight=weight,
+                        assignment_penalty=saved_eta if eta is None else eta)
+    if saved_weight is not None and not np.isclose(model.penalty_weight, float(saved_weight), rtol=1e-12, atol=1e-12):
+        raise ValueError('Recomputed lambda differs from the saved run.')
+    return model
 
 
 def main():

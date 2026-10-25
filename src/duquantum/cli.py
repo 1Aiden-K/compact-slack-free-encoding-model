@@ -11,6 +11,7 @@ COMMANDS = {
     'optimize': ('optimization', None),
     'evaluate': ('evaluation', None),
     'classical': ('classical', None),
+    'lambda-benchmark': ('lambda_benchmark', None),
 }
 
 
@@ -24,9 +25,12 @@ def main(argv=None):
             'benchmark': 'compare methods across instances', 'run': 'embed, optimize, and emulate one instance',
             'optimize': 'compare original and selected pulses', 'evaluate': 'evaluate saved counts or run',
             'classical': 'inspect the exact constrained and QUBO references',
+            'lambda-benchmark': 'compare Tier M fixed and adaptive penalty ground states',
         }[name])
     args, forwarded = parser.parse_known_args(argv)
-    if args.tier == 'm' and args.command not in ('generate', 'validate', 'classical', 'evaluate'):
+    if args.tier == 's' and args.command == 'lambda-benchmark':
+        parser.error('lambda-benchmark is only available for Tier M.')
+    if args.tier == 'm' and args.command not in ('generate', 'validate', 'classical', 'evaluate', 'lambda-benchmark'):
         parser.error('Tier M currently supports generate, validate, classical, and evaluate. '
                      'Quantum execution and pulse optimization are not integrated yet.')
     module_name, prefix = COMMANDS[args.command]

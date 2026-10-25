@@ -1,6 +1,7 @@
 """Shared hardware, numerical, and output defaults.
 
-Tier S instance and model settings live in duquantum/tier_s/config.py."""
+Tier-specific model settings live in duquantum/tier_s/config.py and
+duquantum/tier_m/config.py."""
 
 import logging
 
