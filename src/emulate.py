@@ -1,7 +1,7 @@
 """Emulate a sequence built by pulses.py, using emu-sv or QuTiP.
 
 Run with your existing config.py and model modules:
-    uv run emulate.py --lambda 0.1 --scale 0.2 --seed 0 --shots 1000
+    uv run emulate.py --lambda 0.1 --scale 0.2 --seed 0 --shots 1000 --output run.json
     uv run emulate.py --backend qutip --lambda 0.1 --scale 0.2 --shots 1000
 
 Install emu-sv with `uv add emu-sv`. QuTiP is an optional alternative,
@@ -14,8 +14,10 @@ https://pulser.readthedocs.io/en/stable/tutorials/backends.html
 """
 
 import argparse
+import json
 import logging
 from collections import Counter
+from pathlib import Path
 
 import numpy as np
 
@@ -179,6 +181,22 @@ def main():
     parser.add_argument(
         "--gpu", action="store_true", help="request CUDA for emu-sv; default: CPU"
     )
+    parser.add_argument(
+        "--epsilon",
+        type=float,
+        default=0.0,
+        help="reference model-gap tolerance in percent (default: exact optimum)",
+    )
+    parser.add_argument(
+        "--skip-evaluation",
+        action="store_true",
+        help="omit the exhaustive reference and evaluator (required above 16 bits)",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        help="save counts, probabilities, instance, settings, encoding, and evaluation as JSON",
+    )
     args = parser.parse_args()
     if args.shots <= 0:
         parser.error("--shots must be positive.")
@@ -186,9 +204,23 @@ def main():
         parser.error("--dt must be positive.")
     if args.gpu and args.backend != "emu-sv":
         parser.error("--gpu is only supported by --backend emu-sv.")
+    if not np.isfinite(args.epsilon) or args.epsilon < 0:
+        parser.error("--epsilon must be finite and nonnegative.")
     sample_seed = args.seed if args.sample_seed is None else args.sample_seed
 
     try:
+        from evaluator import (
+            build_reference,
+            encoding_from_program,
+            evaluate_samples,
+            print_evaluation,
+        )
+
+        # The reference is for validation only. It is never used by the builder,
+        # embedding optimizer, pulse generation, or state evolution.
+        reference = (
+            None if args.skip_evaluation else build_reference(args.penalty_weight)
+        )
         program = build_from_args(args)
         print_program(program, penalty_weight=args.penalty_weight)
         print(f"Running {args.backend} emulation...")
@@ -200,6 +232,19 @@ def main():
             with_modulation=args.with_modulation,
             dt=args.dt,
             gpu=args.gpu,
+        )
+        encoding = encoding_from_program(program)
+        evaluation = (
+            None
+            if args.skip_evaluation
+            else evaluate_samples(
+                output["counts"],
+                probabilities=output["probabilities"],
+                penalty_weight=args.penalty_weight,
+                reference=reference,
+                encoding=encoding,
+                epsilon_pct=args.epsilon,
+            )
         )
     except (ValueError, ImportError) as error:
         parser.error(str(error))
@@ -214,6 +259,46 @@ def main():
     print("Bitstring counts:")
     for bits, count in output["counts"].most_common():
         print(bits, count)
+    if evaluation is not None:
+        print_evaluation(evaluation)
+    if args.output is not None:
+        from qubo import CAPACITY, COORDINATES, DEMANDS
+
+        payload = {
+            "counts": dict(output["counts"]),
+            "probabilities": output["probabilities"],
+            "instance": {
+                "coordinates": np.asarray(COORDINATES).tolist(),
+                "demands": np.asarray(DEMANDS).tolist(),
+                "capacity": float(CAPACITY),
+            },
+            "settings": {
+                "penalty_weight": args.penalty_weight,
+                "energy_scale": program["parameters"]["energy_scale"],
+                "duration_ns": program["parameters"]["duration_ns"],
+                "omega_peak": program["parameters"]["omega_peak"],
+                "delta_initial": program["parameters"]["delta_initial"],
+                "delta_final": program["parameters"]["delta_final"],
+                "embedding_seed": args.seed,
+                "embedding_restarts": args.restarts,
+                "sample_seed": sample_seed,
+                "shots": args.shots,
+                "backend": output["backend"],
+                "dt_ns": output["dt_ns"],
+                "gpu": output["gpu"],
+                "with_modulation": args.with_modulation,
+            },
+            "positions_um": program["embedding"]["positions_um"].tolist(),
+            "encoding": encoding,
+            "evaluation": evaluation,
+        }
+        try:
+            args.output.write_text(
+                json.dumps(payload, indent=2, allow_nan=False) + "\n"
+            )
+        except (OSError, ValueError) as error:
+            parser.error(f"Could not save run: {error}")
+        print(f"Saved run to {args.output}")
 
 
 if __name__ == "__main__":
