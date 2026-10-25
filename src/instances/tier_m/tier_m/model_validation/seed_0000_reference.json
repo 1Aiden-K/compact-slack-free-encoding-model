@@ -1,0 +1,160 @@
+{
+  "status": "proven_optimum",
+  "optimal_cost": 489.2438592102022,
+  "valid_assignments_enumerated": 59049,
+  "feasible_assignments": 2016,
+  "optimal_assignments": 6,
+  "optimal_partitions": 1,
+  "representative": {
+    "bits": "11010000010010100010",
+    "assignments": [
+      1,
+      1,
+      2,
+      1,
+      2,
+      3,
+      3,
+      3,
+      2,
+      1
+    ],
+    "assignment_valid": true,
+    "invalid_customers": [],
+    "capacity_feasible": true,
+    "feasible": true,
+    "loads": [
+      19.0,
+      19.0,
+      17.0
+    ],
+    "cost": 489.24385921020223,
+    "energy": 489.51052587686854
+  },
+  "qubo": {
+    "minimum_energy": 378.8363168693754,
+    "ground_assignment_count": 6,
+    "ground_valid_assignments": 6,
+    "ground_invalid_assignments": 0,
+    "ground_feasible_assignments": 0,
+    "all_ground_states_original_optimal": false,
+    "representative": {
+      "bits": "00111000100100000001",
+      "assignments": [
+        3,
+        2,
+        1,
+        1,
+        1,
+        3,
+        3,
+        3,
+        1,
+        2
+      ],
+      "assignment_valid": true,
+      "invalid_customers": [],
+      "capacity_feasible": false,
+      "feasible": false,
+      "loads": [
+        24.0,
+        9.0,
+        22.0
+      ],
+      "cost": 365.56965020270945,
+      "energy": 378.83631686937633
+    },
+    "certification": "exhaustive_binary_enumeration",
+    "binary_states_checked": 1048576
+  },
+  "settings": {
+    "tier": "M",
+    "n_customers": 10,
+    "vehicles": 3,
+    "n_bits": 20,
+    "penalty_weight": 0.1,
+    "assignment_penalty": 830.5331850871873,
+    "assignment_penalty_bound": 829.5331850871873,
+    "assignment_validity_guaranteed": true,
+    "capacity_is_exactly_encoded": false,
+    "bit_order": [
+      "a_0",
+      "a_1",
+      "a_2",
+      "a_3",
+      "a_4",
+      "a_5",
+      "a_6",
+      "a_7",
+      "a_8",
+      "a_9",
+      "b_0",
+      "b_1",
+      "b_2",
+      "b_3",
+      "b_4",
+      "b_5",
+      "b_6",
+      "b_7",
+      "b_8",
+      "b_9"
+    ]
+  },
+  "instance": {
+    "coordinates": [
+      [
+        63.69616873214543,
+        26.97867137638703
+      ],
+      [
+        4.0973523936194685,
+        1.6527635528529094
+      ],
+      [
+        81.32702392002724,
+        91.27555772777217
+      ],
+      [
+        60.663577576717984,
+        72.94965609839984
+      ],
+      [
+        54.362499146542284,
+        93.50724237877682
+      ],
+      [
+        81.58535541215322,
+        0.2738500170148095
+      ],
+      [
+        85.74042765875693,
+        3.3585575305464355
+      ],
+      [
+        72.9655446429944,
+        17.5655620602559
+      ],
+      [
+        86.31789223498866,
+        54.14612202490917
+      ],
+      [
+        29.971189053738478,
+        42.26872211976585
+      ]
+    ],
+    "demands": [
+      5.0,
+      8.0,
+      8.0,
+      5.0,
+      3.0,
+      7.0,
+      2.0,
+      8.0,
+      8.0,
+      1.0
+    ],
+    "capacity": 20.0
+  }
+}
