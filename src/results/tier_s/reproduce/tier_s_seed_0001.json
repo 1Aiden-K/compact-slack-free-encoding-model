@@ -1,0 +1,1477 @@
+{
+  "cvrp_reference": {
+    "status": "proven_optimum",
+    "optimal_cost": 426.34428168020975
+  },
+  "track": "A",
+  "objective": "capacity_constrained_clustering",
+  "instance": {
+    "schema_version": 1,
+    "generator_version": 1,
+    "seed": 1,
+    "rng": "PCG64",
+    "numpy_version": "2.3.5",
+    "tier": "S",
+    "n_customers": 4,
+    "vehicles": 2,
+    "capacity": 7,
+    "square_side": 100.0,
+    "demand_range": [
+      1,
+      4
+    ],
+    "coordinates": [
+      [
+        51.18216247002567,
+        95.04636963259352
+      ],
+      [
+        14.415961271963374,
+        94.86494471372438
+      ],
+      [
+        31.183145201048546,
+        42.332644897257566
+      ],
+      [
+        82.77025938204417,
+        40.91991363691613
+      ]
+    ],
+    "demands": [
+      3,
+      2,
+      2,
+      3
+    ],
+    "depot": [
+      0.0,
+      0.0
+    ],
+    "certificate": {
+      "assignment": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "loads": [
+        3,
+        7
+      ]
+    },
+    "load_ratio": 0.7142857142857143,
+    "largest_demand_ratio": 0.42857142857142855,
+    "demand_draw_attempts": 1,
+    "feasibility_method": "uniform demand rejection with exhaustive assignment certificate"
+  },
+  "settings": {
+    "penalty_weight": 0.1,
+    "duration_ns": 4000,
+    "energy_scale": null,
+    "backend": "emu-sv",
+    "dt_ns": 10,
+    "embedding_seed": 0,
+    "sample_seed": 0,
+    "restarts": 8,
+    "maxiter": 1500,
+    "shots": 1000,
+    "epsilon_pct": 0.0,
+    "with_modulation": false,
+    "gpu": false,
+    "classical_only": false,
+    "optimize_pulses": false,
+    "evaluations": 40,
+    "search_seed": 0,
+    "training_seed": 10000,
+    "training_shots": 1000,
+    "score_mode": "sampled",
+    "metric": "reference-probability",
+    "duration_bounds": null
+  },
+  "program": {
+    "positions_um": [
+      [
+        -2.326917080311877,
+        -4.9505858154753035
+      ],
+      [
+        2.544823695876259,
+        4.748525692679533
+      ],
+      [
+        -3.1057454242481652,
+        1.4933796899458234
+      ],
+      [
+        2.8878388086837834,
+        -1.2913195671500528
+      ]
+    ],
+    "energy_scale": 0.09962485221284392,
+    "duration_ns": 4000,
+    "omega_peak": 11.309733552923255,
+    "delta_initial": -20.478178829290258,
+    "delta_final": 17.78516708001864,
+    "encoding": {
+      "n_atoms": 4,
+      "energy_scale": 0.09962485221284392,
+      "global_q_matrix": [
+        [
+          -17.78516708001864,
+          3.782421777823761,
+          5.736392865195709,
+          6.422776232957837
+        ],
+        [
+          3.782421777823761,
+          -17.78516708001864,
+          5.573340687727546,
+          8.794567358263786
+        ],
+        [
+          5.736392865195709,
+          5.573340687727546,
+          -17.78516708001864,
+          5.260835238068638
+        ],
+        [
+          6.422776232957837,
+          8.794567358263786,
+          5.260835238068638,
+          -17.78516708001864
+        ]
+      ],
+      "realized_q_matrix": [
+        [
+          -17.78516708001864,
+          0.2647523709130193,
+          5.788092620513114,
+          6.475709543311531
+        ],
+        [
+          0.2647523709130193,
+          -17.78516708001864,
+          5.628839381312664,
+          8.83077100766
+        ],
+        [
+          5.788092620513114,
+          5.628839381312664,
+          -17.78516708001864,
+          5.194845228456089
+        ],
+        [
+          6.475709543311531,
+          8.83077100766,
+          5.194845228456089,
+          -17.78516708001864
+        ]
+      ],
+      "relative_interaction_error": 0.23488210252433336,
+      "relative_matrix_error": 0.14645908669952049
+    }
+  },
+  "optimization": null,
+  "timings": {
+    "reference_seconds": 0.001071833074092865,
+    "sequence_seconds": 1.2070185409393162,
+    "emulation_seconds": 0.5813292500097305
+  },
+  "methods": {
+    "exact_clustering": {
+      "status": "ok",
+      "counts": {
+        "0011": 1
+      },
+      "probabilities": null,
+      "report": {
+        "reference": {
+          "status": "proven_optimum",
+          "n_bits": 4,
+          "penalty_weight": 0.1,
+          "coordinates": [
+            [
+              51.18216247002567,
+              95.04636963259352
+            ],
+            [
+              14.415961271963374,
+              94.86494471372438
+            ],
+            [
+              31.183145201048546,
+              42.332644897257566
+            ],
+            [
+              82.77025938204417,
+              40.91991363691613
+            ]
+          ],
+          "demands": [
+            3.0,
+            2.0,
+            2.0,
+            3.0
+          ],
+          "capacity": 7.0,
+          "optimal_cost": 88.37310344784146,
+          "optimal_bitstrings": [
+            "0011",
+            "1100"
+          ],
+          "optimal_clusterings": [
+            "0011"
+          ]
+        },
+        "epsilon_pct": 0.0,
+        "sampled": {
+          "feasibility_rate": 1.0,
+          "optimal_probability": 1.0,
+          "reference_probability": 1.0,
+          "mean_feasible_cost": 88.37310344784146,
+          "shots": 1,
+          "feasible_shots": 1,
+          "optimal_shots": 1,
+          "best_feasible_cost": 88.37310344784146,
+          "best_model_gap_pct": 0.0,
+          "best_solutions": [
+            {
+              "bits": "0011",
+              "cost": 88.37310344784146,
+              "loads": [
+                5.0,
+                5.0
+              ],
+              "feasible": true,
+              "qubo_energy": 88.37310344784144,
+              "clusters": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        "predicted": null,
+        "uniform_baseline": {
+          "feasibility_rate": 0.625,
+          "optimal_probability": 0.125,
+          "reference_probability": 0.125,
+          "mean_feasible_cost": 138.35184350802402
+        },
+        "stages": {
+          "target_qubo": {
+            "ground_bitstrings": [
+              "0011",
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 2,
+            "original_optimal_ground_bitstrings": 2,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 1.0,
+            "predicted_ground_state_probability": null
+          },
+          "global_projection": {
+            "ground_bitstrings": [
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 1,
+            "original_optimal_ground_bitstrings": 1,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0,
+            "predicted_ground_state_probability": null
+          },
+          "embedded": {
+            "ground_bitstrings": [
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 1,
+            "original_optimal_ground_bitstrings": 1,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0,
+            "predicted_ground_state_probability": null
+          }
+        },
+        "encoding": {
+          "n_atoms": 4,
+          "energy_scale": 0.09962485221284392,
+          "global_q_matrix": [
+            [
+              -17.78516708001864,
+              3.782421777823761,
+              5.736392865195709,
+              6.422776232957837
+            ],
+            [
+              3.782421777823761,
+              -17.78516708001864,
+              5.573340687727546,
+              8.794567358263786
+            ],
+            [
+              5.736392865195709,
+              5.573340687727546,
+              -17.78516708001864,
+              5.260835238068638
+            ],
+            [
+              6.422776232957837,
+              8.794567358263786,
+              5.260835238068638,
+              -17.78516708001864
+            ]
+          ],
+          "realized_q_matrix": [
+            [
+              -17.78516708001864,
+              0.2647523709130193,
+              5.788092620513114,
+              6.475709543311531
+            ],
+            [
+              0.2647523709130193,
+              -17.78516708001864,
+              5.628839381312664,
+              8.83077100766
+            ],
+            [
+              5.788092620513114,
+              5.628839381312664,
+              -17.78516708001864,
+              5.194845228456089
+            ],
+            [
+              6.475709543311531,
+              8.83077100766,
+              5.194845228456089,
+              -17.78516708001864
+            ]
+          ],
+          "relative_interaction_error": 0.23488210252433336,
+          "relative_matrix_error": 0.14645908669952049
+        },
+        "bitstrings": [
+          {
+            "bits": "0011",
+            "count": 1,
+            "cost": 88.37310344784146,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 88.37310344784144,
+            "gap_pct": 0.0,
+            "probability": null
+          }
+        ]
+      },
+      "error": null,
+      "cvrp_metrics": {
+        "best_feasible_cvrp_cost": 437.1889837159524,
+        "best_cvrp_gap_pct": 2.543648994893055,
+        "cvrp_reference_probability": 0.0
+      }
+    },
+    "exact_qubo": {
+      "status": "ok",
+      "counts": {
+        "0011": 1
+      },
+      "probabilities": null,
+      "report": {
+        "reference": {
+          "status": "proven_optimum",
+          "n_bits": 4,
+          "penalty_weight": 0.1,
+          "coordinates": [
+            [
+              51.18216247002567,
+              95.04636963259352
+            ],
+            [
+              14.415961271963374,
+              94.86494471372438
+            ],
+            [
+              31.183145201048546,
+              42.332644897257566
+            ],
+            [
+              82.77025938204417,
+              40.91991363691613
+            ]
+          ],
+          "demands": [
+            3.0,
+            2.0,
+            2.0,
+            3.0
+          ],
+          "capacity": 7.0,
+          "optimal_cost": 88.37310344784146,
+          "optimal_bitstrings": [
+            "0011",
+            "1100"
+          ],
+          "optimal_clusterings": [
+            "0011"
+          ]
+        },
+        "epsilon_pct": 0.0,
+        "sampled": {
+          "feasibility_rate": 1.0,
+          "optimal_probability": 1.0,
+          "reference_probability": 1.0,
+          "mean_feasible_cost": 88.37310344784146,
+          "shots": 1,
+          "feasible_shots": 1,
+          "optimal_shots": 1,
+          "best_feasible_cost": 88.37310344784146,
+          "best_model_gap_pct": 0.0,
+          "best_solutions": [
+            {
+              "bits": "0011",
+              "cost": 88.37310344784146,
+              "loads": [
+                5.0,
+                5.0
+              ],
+              "feasible": true,
+              "qubo_energy": 88.37310344784144,
+              "clusters": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        "predicted": null,
+        "uniform_baseline": {
+          "feasibility_rate": 0.625,
+          "optimal_probability": 0.125,
+          "reference_probability": 0.125,
+          "mean_feasible_cost": 138.35184350802402
+        },
+        "stages": {
+          "target_qubo": {
+            "ground_bitstrings": [
+              "0011",
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 2,
+            "original_optimal_ground_bitstrings": 2,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 1.0,
+            "predicted_ground_state_probability": null
+          },
+          "global_projection": {
+            "ground_bitstrings": [
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 1,
+            "original_optimal_ground_bitstrings": 1,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0,
+            "predicted_ground_state_probability": null
+          },
+          "embedded": {
+            "ground_bitstrings": [
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 1,
+            "original_optimal_ground_bitstrings": 1,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0,
+            "predicted_ground_state_probability": null
+          }
+        },
+        "encoding": {
+          "n_atoms": 4,
+          "energy_scale": 0.09962485221284392,
+          "global_q_matrix": [
+            [
+              -17.78516708001864,
+              3.782421777823761,
+              5.736392865195709,
+              6.422776232957837
+            ],
+            [
+              3.782421777823761,
+              -17.78516708001864,
+              5.573340687727546,
+              8.794567358263786
+            ],
+            [
+              5.736392865195709,
+              5.573340687727546,
+              -17.78516708001864,
+              5.260835238068638
+            ],
+            [
+              6.422776232957837,
+              8.794567358263786,
+              5.260835238068638,
+              -17.78516708001864
+            ]
+          ],
+          "realized_q_matrix": [
+            [
+              -17.78516708001864,
+              0.2647523709130193,
+              5.788092620513114,
+              6.475709543311531
+            ],
+            [
+              0.2647523709130193,
+              -17.78516708001864,
+              5.628839381312664,
+              8.83077100766
+            ],
+            [
+              5.788092620513114,
+              5.628839381312664,
+              -17.78516708001864,
+              5.194845228456089
+            ],
+            [
+              6.475709543311531,
+              8.83077100766,
+              5.194845228456089,
+              -17.78516708001864
+            ]
+          ],
+          "relative_interaction_error": 0.23488210252433336,
+          "relative_matrix_error": 0.14645908669952049
+        },
+        "bitstrings": [
+          {
+            "bits": "0011",
+            "count": 1,
+            "cost": 88.37310344784146,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 88.37310344784144,
+            "gap_pct": 0.0,
+            "probability": null
+          }
+        ]
+      },
+      "error": null,
+      "cvrp_metrics": {
+        "best_feasible_cvrp_cost": 437.1889837159524,
+        "best_cvrp_gap_pct": 2.543648994893055,
+        "cvrp_reference_probability": 0.0
+      }
+    },
+    "uniform_random": {
+      "status": "ok",
+      "counts": {
+        "0000": 60,
+        "0001": 63,
+        "0010": 72,
+        "0011": 74,
+        "0100": 65,
+        "0101": 45,
+        "0110": 65,
+        "0111": 60,
+        "1000": 58,
+        "1001": 56,
+        "1010": 53,
+        "1011": 67,
+        "1100": 81,
+        "1101": 55,
+        "1110": 58,
+        "1111": 68
+      },
+      "probabilities": {
+        "0000": 0.0625,
+        "0001": 0.0625,
+        "0010": 0.0625,
+        "0011": 0.0625,
+        "0100": 0.0625,
+        "0101": 0.0625,
+        "0110": 0.0625,
+        "0111": 0.0625,
+        "1000": 0.0625,
+        "1001": 0.0625,
+        "1010": 0.0625,
+        "1011": 0.0625,
+        "1100": 0.0625,
+        "1101": 0.0625,
+        "1110": 0.0625,
+        "1111": 0.0625
+      },
+      "report": {
+        "reference": {
+          "status": "proven_optimum",
+          "n_bits": 4,
+          "penalty_weight": 0.1,
+          "coordinates": [
+            [
+              51.18216247002567,
+              95.04636963259352
+            ],
+            [
+              14.415961271963374,
+              94.86494471372438
+            ],
+            [
+              31.183145201048546,
+              42.332644897257566
+            ],
+            [
+              82.77025938204417,
+              40.91991363691613
+            ]
+          ],
+          "demands": [
+            3.0,
+            2.0,
+            2.0,
+            3.0
+          ],
+          "capacity": 7.0,
+          "optimal_cost": 88.37310344784146,
+          "optimal_bitstrings": [
+            "0011",
+            "1100"
+          ],
+          "optimal_clusterings": [
+            "0011"
+          ]
+        },
+        "epsilon_pct": 0.0,
+        "sampled": {
+          "feasibility_rate": 0.613,
+          "optimal_probability": 0.155,
+          "reference_probability": 0.155,
+          "mean_feasible_cost": 135.11674577815387,
+          "shots": 1000,
+          "feasible_shots": 613,
+          "optimal_shots": 155,
+          "best_feasible_cost": 88.37310344784146,
+          "best_model_gap_pct": 0.0,
+          "best_solutions": [
+            {
+              "bits": "0011",
+              "cost": 88.37310344784146,
+              "loads": [
+                5.0,
+                5.0
+              ],
+              "feasible": true,
+              "qubo_energy": 88.37310344784144,
+              "clusters": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        "predicted": {
+          "feasibility_rate": 0.625,
+          "optimal_probability": 0.125,
+          "reference_probability": 0.125,
+          "mean_feasible_cost": 138.35184350802402
+        },
+        "uniform_baseline": {
+          "feasibility_rate": 0.625,
+          "optimal_probability": 0.125,
+          "reference_probability": 0.125,
+          "mean_feasible_cost": 138.35184350802402
+        },
+        "stages": {
+          "target_qubo": {
+            "ground_bitstrings": [
+              "0011",
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 2,
+            "original_optimal_ground_bitstrings": 2,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0.155,
+            "predicted_ground_state_probability": 0.125
+          },
+          "global_projection": {
+            "ground_bitstrings": [
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 1,
+            "original_optimal_ground_bitstrings": 1,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0.081,
+            "predicted_ground_state_probability": 0.0625
+          },
+          "embedded": {
+            "ground_bitstrings": [
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 1,
+            "original_optimal_ground_bitstrings": 1,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0.081,
+            "predicted_ground_state_probability": 0.0625
+          }
+        },
+        "encoding": {
+          "n_atoms": 4,
+          "energy_scale": 0.09962485221284392,
+          "global_q_matrix": [
+            [
+              -17.78516708001864,
+              3.782421777823761,
+              5.736392865195709,
+              6.422776232957837
+            ],
+            [
+              3.782421777823761,
+              -17.78516708001864,
+              5.573340687727546,
+              8.794567358263786
+            ],
+            [
+              5.736392865195709,
+              5.573340687727546,
+              -17.78516708001864,
+              5.260835238068638
+            ],
+            [
+              6.422776232957837,
+              8.794567358263786,
+              5.260835238068638,
+              -17.78516708001864
+            ]
+          ],
+          "realized_q_matrix": [
+            [
+              -17.78516708001864,
+              0.2647523709130193,
+              5.788092620513114,
+              6.475709543311531
+            ],
+            [
+              0.2647523709130193,
+              -17.78516708001864,
+              5.628839381312664,
+              8.83077100766
+            ],
+            [
+              5.788092620513114,
+              5.628839381312664,
+              -17.78516708001864,
+              5.194845228456089
+            ],
+            [
+              6.475709543311531,
+              8.83077100766,
+              5.194845228456089,
+              -17.78516708001864
+            ]
+          ],
+          "relative_interaction_error": 0.23488210252433336,
+          "relative_matrix_error": 0.14645908669952049
+        },
+        "bitstrings": [
+          {
+            "bits": "1100",
+            "count": 81,
+            "cost": 88.37310344784146,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 88.37310344784142,
+            "gap_pct": 0.0,
+            "probability": 0.0625
+          },
+          {
+            "bits": "0011",
+            "count": 74,
+            "cost": 88.37310344784146,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 88.37310344784144,
+            "gap_pct": 0.0,
+            "probability": 0.0625
+          },
+          {
+            "bits": "0010",
+            "count": 72,
+            "cost": 186.51310970131485,
+            "loads": [
+              2.0,
+              8.0
+            ],
+            "feasible": false,
+            "qubo_energy": 188.31310970131483,
+            "gap_pct": null,
+            "probability": 0.0625
+          },
+          {
+            "bits": "1111",
+            "count": 68,
+            "cost": 349.6427796875712,
+            "loads": [
+              10.0,
+              0.0
+            ],
+            "feasible": false,
+            "qubo_energy": 354.6427796875712,
+            "gap_pct": null,
+            "probability": 0.0625
+          },
+          {
+            "bits": "1011",
+            "count": 67,
+            "cost": 170.65601182127872,
+            "loads": [
+              8.0,
+              2.0
+            ],
+            "feasible": false,
+            "qubo_energy": 172.4560118212787,
+            "gap_pct": null,
+            "probability": 0.0625
+          },
+          {
+            "bits": "0100",
+            "count": 65,
+            "cost": 170.65601182127872,
+            "loads": [
+              2.0,
+              8.0
+            ],
+            "feasible": false,
+            "qubo_energy": 172.4560118212787,
+            "gap_pct": null,
+            "probability": 0.0625
+          },
+          {
+            "bits": "0110",
+            "count": 65,
+            "cost": 117.81289551984709,
+            "loads": [
+              4.0,
+              6.0
+            ],
+            "feasible": true,
+            "qubo_energy": 118.01289551984708,
+            "gap_pct": 33.31306803023076,
+            "probability": 0.0625
+          },
+          {
+            "bits": "0001",
+            "count": 63,
+            "cost": 148.28986418070986,
+            "loads": [
+              3.0,
+              7.0
+            ],
+            "feasible": true,
+            "qubo_energy": 149.08986418070984,
+            "gap_pct": 67.79976983407828,
+            "probability": 0.0625
+          },
+          {
+            "bits": "0000",
+            "count": 60,
+            "cost": 349.6427796875712,
+            "loads": [
+              0.0,
+              10.0
+            ],
+            "feasible": false,
+            "qubo_energy": 354.6427796875712,
+            "gap_pct": null,
+            "probability": 0.0625
+          },
+          {
+            "bits": "0111",
+            "count": 60,
+            "cost": 193.82657367183901,
+            "loads": [
+              7.0,
+              3.0
+            ],
+            "feasible": true,
+            "qubo_energy": 194.62657367183903,
+            "gap_pct": 119.32756247067533,
+            "probability": 0.0625
+          },
+          {
+            "bits": "1000",
+            "count": 58,
+            "cost": 193.82657367183901,
+            "loads": [
+              3.0,
+              7.0
+            ],
+            "feasible": true,
+            "qubo_energy": 194.626573671839,
+            "gap_pct": 119.32756247067533,
+            "probability": 0.0625
+          },
+          {
+            "bits": "1110",
+            "count": 58,
+            "cost": 148.28986418070986,
+            "loads": [
+              7.0,
+              3.0
+            ],
+            "feasible": true,
+            "qubo_energy": 149.0898641807098,
+            "gap_pct": 67.79976983407828,
+            "probability": 0.0625
+          },
+          {
+            "bits": "1001",
+            "count": 56,
+            "cost": 117.81289551984709,
+            "loads": [
+              6.0,
+              4.0
+            ],
+            "feasible": true,
+            "qubo_energy": 118.01289551984709,
+            "gap_pct": 33.31306803023076,
+            "probability": 0.0625
+          },
+          {
+            "bits": "1101",
+            "count": 55,
+            "cost": 186.51310970131485,
+            "loads": [
+              8.0,
+              2.0
+            ],
+            "feasible": false,
+            "qubo_energy": 188.31310970131477,
+            "gap_pct": null,
+            "probability": 0.0625
+          },
+          {
+            "bits": "1010",
+            "count": 53,
+            "cost": 143.45678071988266,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 143.45678071988263,
+            "gap_pct": 62.330816869583,
+            "probability": 0.0625
+          },
+          {
+            "bits": "0101",
+            "count": 45,
+            "cost": 143.45678071988266,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 143.45678071988266,
+            "gap_pct": 62.330816869583,
+            "probability": 0.0625
+          }
+        ]
+      },
+      "error": null,
+      "cvrp_metrics": {
+        "best_feasible_cvrp_cost": 426.34428168020975,
+        "best_cvrp_gap_pct": 0.0,
+        "cvrp_reference_probability": 0.121
+      }
+    },
+    "emu-sv": {
+      "status": "ok",
+      "counts": {
+        "0001": 7,
+        "0010": 6,
+        "0011": 24,
+        "0100": 6,
+        "0110": 16,
+        "1000": 8,
+        "1001": 9,
+        "1010": 5,
+        "1100": 917,
+        "1110": 2
+      },
+      "probabilities": {
+        "0000": 2.0006184926019316e-07,
+        "0001": 0.008959695248768053,
+        "0010": 0.010813819731797967,
+        "0011": 0.03008952302143768,
+        "0100": 0.003101099273039334,
+        "0101": 0.00043550591929532117,
+        "0110": 0.013395746328791702,
+        "0111": 2.0777015095542364e-06,
+        "1000": 0.0047615960070441655,
+        "1001": 0.0066862882659259205,
+        "1010": 0.013725383852311111,
+        "1011": 6.977905090977617e-05,
+        "1100": 0.9014943038836706,
+        "1101": 8.984055686362136e-05,
+        "1110": 0.006375140507277093,
+        "1111": 5.895088547453746e-10
+      },
+      "report": {
+        "reference": {
+          "status": "proven_optimum",
+          "n_bits": 4,
+          "penalty_weight": 0.1,
+          "coordinates": [
+            [
+              51.18216247002567,
+              95.04636963259352
+            ],
+            [
+              14.415961271963374,
+              94.86494471372438
+            ],
+            [
+              31.183145201048546,
+              42.332644897257566
+            ],
+            [
+              82.77025938204417,
+              40.91991363691613
+            ]
+          ],
+          "demands": [
+            3.0,
+            2.0,
+            2.0,
+            3.0
+          ],
+          "capacity": 7.0,
+          "optimal_cost": 88.37310344784146,
+          "optimal_bitstrings": [
+            "0011",
+            "1100"
+          ],
+          "optimal_clusterings": [
+            "0011"
+          ]
+        },
+        "epsilon_pct": 0.0,
+        "sampled": {
+          "feasibility_rate": 0.988,
+          "optimal_probability": 0.941,
+          "reference_probability": 0.941,
+          "mean_feasible_cost": 90.79647571155415,
+          "shots": 1000,
+          "feasible_shots": 988,
+          "optimal_shots": 941,
+          "best_feasible_cost": 88.37310344784146,
+          "best_model_gap_pct": 0.0,
+          "best_solutions": [
+            {
+              "bits": "0011",
+              "cost": 88.37310344784146,
+              "loads": [
+                5.0,
+                5.0
+              ],
+              "feasible": true,
+              "qubo_energy": 88.37310344784144,
+              "clusters": [
+                [
+                  2,
+                  3
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          ]
+        },
+        "predicted": {
+          "feasibility_rate": 0.9859252607360312,
+          "optimal_probability": 0.9315838269051082,
+          "reference_probability": 0.9315838269051082,
+          "mean_feasible_cost": 91.20537129265293
+        },
+        "uniform_baseline": {
+          "feasibility_rate": 0.625,
+          "optimal_probability": 0.125,
+          "reference_probability": 0.125,
+          "mean_feasible_cost": 138.35184350802402
+        },
+        "stages": {
+          "target_qubo": {
+            "ground_bitstrings": [
+              "0011",
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 2,
+            "original_optimal_ground_bitstrings": 2,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0.9410000000000001,
+            "predicted_ground_state_probability": 0.9315838269051082
+          },
+          "global_projection": {
+            "ground_bitstrings": [
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 1,
+            "original_optimal_ground_bitstrings": 1,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0.917,
+            "predicted_ground_state_probability": 0.9014943038836706
+          },
+          "embedded": {
+            "ground_bitstrings": [
+              "1100"
+            ],
+            "distinct_ground_clusterings": 1,
+            "feasible_ground_bitstrings": 1,
+            "original_optimal_ground_bitstrings": 1,
+            "has_original_optimum": true,
+            "all_ground_states_original_optimal": true,
+            "best_feasible_ground_gap_pct": 0.0,
+            "sampled_ground_state_probability": 0.917,
+            "predicted_ground_state_probability": 0.9014943038836706
+          }
+        },
+        "encoding": {
+          "n_atoms": 4,
+          "energy_scale": 0.09962485221284392,
+          "global_q_matrix": [
+            [
+              -17.78516708001864,
+              3.782421777823761,
+              5.736392865195709,
+              6.422776232957837
+            ],
+            [
+              3.782421777823761,
+              -17.78516708001864,
+              5.573340687727546,
+              8.794567358263786
+            ],
+            [
+              5.736392865195709,
+              5.573340687727546,
+              -17.78516708001864,
+              5.260835238068638
+            ],
+            [
+              6.422776232957837,
+              8.794567358263786,
+              5.260835238068638,
+              -17.78516708001864
+            ]
+          ],
+          "realized_q_matrix": [
+            [
+              -17.78516708001864,
+              0.2647523709130193,
+              5.788092620513114,
+              6.475709543311531
+            ],
+            [
+              0.2647523709130193,
+              -17.78516708001864,
+              5.628839381312664,
+              8.83077100766
+            ],
+            [
+              5.788092620513114,
+              5.628839381312664,
+              -17.78516708001864,
+              5.194845228456089
+            ],
+            [
+              6.475709543311531,
+              8.83077100766,
+              5.194845228456089,
+              -17.78516708001864
+            ]
+          ],
+          "relative_interaction_error": 0.23488210252433336,
+          "relative_matrix_error": 0.14645908669952049
+        },
+        "bitstrings": [
+          {
+            "bits": "1100",
+            "count": 917,
+            "cost": 88.37310344784146,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 88.37310344784142,
+            "gap_pct": 0.0,
+            "probability": 0.9014943038836706
+          },
+          {
+            "bits": "0011",
+            "count": 24,
+            "cost": 88.37310344784146,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 88.37310344784144,
+            "gap_pct": 0.0,
+            "probability": 0.03008952302143768
+          },
+          {
+            "bits": "0110",
+            "count": 16,
+            "cost": 117.81289551984709,
+            "loads": [
+              4.0,
+              6.0
+            ],
+            "feasible": true,
+            "qubo_energy": 118.01289551984708,
+            "gap_pct": 33.31306803023076,
+            "probability": 0.013395746328791702
+          },
+          {
+            "bits": "1001",
+            "count": 9,
+            "cost": 117.81289551984709,
+            "loads": [
+              6.0,
+              4.0
+            ],
+            "feasible": true,
+            "qubo_energy": 118.01289551984709,
+            "gap_pct": 33.31306803023076,
+            "probability": 0.0066862882659259205
+          },
+          {
+            "bits": "1000",
+            "count": 8,
+            "cost": 193.82657367183901,
+            "loads": [
+              3.0,
+              7.0
+            ],
+            "feasible": true,
+            "qubo_energy": 194.626573671839,
+            "gap_pct": 119.32756247067533,
+            "probability": 0.0047615960070441655
+          },
+          {
+            "bits": "0001",
+            "count": 7,
+            "cost": 148.28986418070986,
+            "loads": [
+              3.0,
+              7.0
+            ],
+            "feasible": true,
+            "qubo_energy": 149.08986418070984,
+            "gap_pct": 67.79976983407828,
+            "probability": 0.008959695248768053
+          },
+          {
+            "bits": "0010",
+            "count": 6,
+            "cost": 186.51310970131485,
+            "loads": [
+              2.0,
+              8.0
+            ],
+            "feasible": false,
+            "qubo_energy": 188.31310970131483,
+            "gap_pct": null,
+            "probability": 0.010813819731797967
+          },
+          {
+            "bits": "0100",
+            "count": 6,
+            "cost": 170.65601182127872,
+            "loads": [
+              2.0,
+              8.0
+            ],
+            "feasible": false,
+            "qubo_energy": 172.4560118212787,
+            "gap_pct": null,
+            "probability": 0.003101099273039334
+          },
+          {
+            "bits": "1010",
+            "count": 5,
+            "cost": 143.45678071988266,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 143.45678071988263,
+            "gap_pct": 62.330816869583,
+            "probability": 0.013725383852311111
+          },
+          {
+            "bits": "1110",
+            "count": 2,
+            "cost": 148.28986418070986,
+            "loads": [
+              7.0,
+              3.0
+            ],
+            "feasible": true,
+            "qubo_energy": 149.0898641807098,
+            "gap_pct": 67.79976983407828,
+            "probability": 0.006375140507277093
+          },
+          {
+            "bits": "0000",
+            "count": 0,
+            "cost": 349.6427796875712,
+            "loads": [
+              0.0,
+              10.0
+            ],
+            "feasible": false,
+            "qubo_energy": 354.6427796875712,
+            "gap_pct": null,
+            "probability": 2.0006184926019316e-07
+          },
+          {
+            "bits": "0101",
+            "count": 0,
+            "cost": 143.45678071988266,
+            "loads": [
+              5.0,
+              5.0
+            ],
+            "feasible": true,
+            "qubo_energy": 143.45678071988266,
+            "gap_pct": 62.330816869583,
+            "probability": 0.00043550591929532117
+          },
+          {
+            "bits": "0111",
+            "count": 0,
+            "cost": 193.82657367183901,
+            "loads": [
+              7.0,
+              3.0
+            ],
+            "feasible": true,
+            "qubo_energy": 194.62657367183903,
+            "gap_pct": 119.32756247067533,
+            "probability": 2.0777015095542364e-06
+          },
+          {
+            "bits": "1011",
+            "count": 0,
+            "cost": 170.65601182127872,
+            "loads": [
+              8.0,
+              2.0
+            ],
+            "feasible": false,
+            "qubo_energy": 172.4560118212787,
+            "gap_pct": null,
+            "probability": 6.977905090977617e-05
+          },
+          {
+            "bits": "1101",
+            "count": 0,
+            "cost": 186.51310970131485,
+            "loads": [
+              8.0,
+              2.0
+            ],
+            "feasible": false,
+            "qubo_energy": 188.31310970131477,
+            "gap_pct": null,
+            "probability": 8.984055686362136e-05
+          },
+          {
+            "bits": "1111",
+            "count": 0,
+            "cost": 349.6427796875712,
+            "loads": [
+              10.0,
+              0.0
+            ],
+            "feasible": false,
+            "qubo_energy": 354.6427796875712,
+            "gap_pct": null,
+            "probability": 5.895088547453746e-10
+          }
+        ]
+      },
+      "error": null,
+      "cvrp_metrics": {
+        "best_feasible_cvrp_cost": 426.34428168020975,
+        "best_cvrp_gap_pct": 0.0,
+        "cvrp_reference_probability": 0.009
+      }
+    }
+  }
+}

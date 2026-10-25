@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DuQuantum Tier S · Live Demo</title>
+<style>
+html,body{margin:0;width:100%;height:100%;background:#101827;color:#f3f7fd;font-family:system-ui,sans-serif;overflow:hidden}
+header{height:7vh;display:flex;align-items:center;justify-content:space-between;padding:0 3vw;box-sizing:border-box}
+h1{font-size:clamp(15px,2vw,25px);margin:0}nav{display:flex;gap:12px;align-items:center}button{background:#21334a;color:white;border:1px solid #465d74;border-radius:8px;padding:8px 16px;cursor:pointer;font-size:20px}
+main{height:89vh;display:flex;align-items:center;justify-content:center}img{display:block;max-width:100vw;max-height:89vh;object-fit:contain}
+footer{height:4vh;text-align:center;color:#aab9cc;font-size:13px}
+</style></head><body><header><h1>DuQuantum · Tier S benchmark</h1><nav><span id="counter"></span><button id="prev">&#8592;</button><button id="next">&#8594;</button></nav></header>
+<main><img id="slide" alt="Benchmark chart"></main>
+<footer>Use &larr; and &rarr; arrow keys to navigate. Charts are generated from results.csv.</footer>
+<script>
+const slides = [{"filename": "01_quantum_vs_random.png", "title": "Quantum Vs Random"}, {"filename": "02_optimal_probability_by_seed.png", "title": "Optimal Probability By Seed"}, {"filename": "03_ground_state_preservation.png", "title": "Ground State Preservation"}, {"filename": "04_embedding_error_vs_success.png", "title": "Embedding Error Vs Success"}, {"filename": "05_cvrp_gap_by_seed.png", "title": "Cvrp Gap By Seed"}]; let index=0;
+function update(){document.querySelector('#slide').src=slides[index].filename;document.querySelector('#slide').alt=slides[index].title;document.querySelector('#counter').textContent=(index+1)+' / '+slides.length;}
+function move(n){index=(index+n+slides.length)%slides.length;update();}
+document.querySelector('#prev').onclick=()=>move(-1);document.querySelector('#next').onclick=()=>move(1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();move(1);}if(e.key==='ArrowLeft'){e.preventDefault();move(-1);}});update();
+</script></body></html>
