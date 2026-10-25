@@ -5,6 +5,11 @@ https://arxiv.org/abs/2211.13914
 #### Challenge: Pasqal Neutral Atom Optimization
 *DuQuantum 2026*
 
+## S-tier
+See model [here](docs/tier_s_model.md)
+
+ ## M-tier
+See model [here](docs/tier_m_model.md)
 
 ## Requirements
 
