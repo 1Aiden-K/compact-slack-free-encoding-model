@@ -1,20 +1,18 @@
 """Build a global-detuning AnalogDevice sequence from a symmetric Q matrix.
 
 Requires numpy, scipy, pulser-core, and the local ising.py / embedding.py.
-Optional emulation also requires pulser-simulation. No DMM or local driving.
+No emulation is performed here. No DMM or local driving.
 
 Run with your existing config.py:
     python pulses.py --lambda 0.1 --seed 0
-    python pulses.py --lambda 0.1 --seed 0 --shots 1000
+    python emulate.py --lambda 0.1 --seed 0 --shots 1000
 
 Sources:
 https://pulser.readthedocs.io/en/stable/tutorials/qubo.html
 https://pulser.readthedocs.io/en/stable/pulses.html
-https://pulser.readthedocs.io/en/stable/apidoc/_autosummary/pulser_simulation.QutipBackendV2.html
 """
 
 import argparse
-from collections import Counter
 
 import numpy as np
 
@@ -155,57 +153,8 @@ def build_sequence(
     }
 
 
-def emulate(sequence, *, shots=1000, seed=0, with_modulation=False):
-    """Run ideal coherent QuTiP emulation and draw seeded measurements.
-
-    with_modulation=True includes the device's deterministic waveform response;
-    neither setting adds stochastic device noise. Samples use register order.
-    Pulser converts its internal basis into bitstrings with r=1 and g=0.
-    Returns counts, exact final probabilities, and the Pulser simulation result.
-    Requires Pulser's QutipBackendV2 / StateResult API (1.9 or later).
-    """
-    from pulser import NoiseModel
-    from pulser.backend import StateResult
-    from pulser_simulation import QutipBackendV2, QutipConfig
-
-    if (
-        isinstance(shots, (bool, np.bool_))
-        or not isinstance(shots, (int, np.integer))
-        or shots <= 0
-    ):
-        raise ValueError("shots must be a positive integer.")
-    config = QutipConfig(
-        observables=(StateResult(),),
-        default_evaluation_times=(1.0,),
-        sampling_rate=1.0,
-        with_modulation=with_modulation,
-        prefer_device_noise_model=False,
-        noise_model=NoiseModel(),
-    )
-    results = QutipBackendV2(sequence, config=config).run()
-    probability_map = results.final_state.bitstring_probabilities(
-        one_state="r", cutoff=0.0
-    )
-    if tuple(results.atom_order) != tuple(sequence.register.qubits):
-        raise ValueError("Unexpected atom ordering in emulator results.")
-    labels = sorted(probability_map)
-    probabilities = np.array([probability_map[label] for label in labels], dtype=float)
-    probabilities /= probabilities.sum()
-    draws = np.random.default_rng(seed).multinomial(int(shots), probabilities)
-    counts = Counter(
-        {label: int(count) for label, count in zip(labels, draws) if count}
-    )
-    return {
-        "counts": counts,
-        "probabilities": dict(zip(labels, probabilities.tolist())),
-        "results": results,
-        "seed": seed,
-        "with_modulation": with_modulation,
-    }
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+def add_sequence_arguments(parser):
+    """Add shared model, embedding, and pulse options to a CLI parser."""
     parser.add_argument("--lambda", dest="penalty_weight", type=float, default=0.1)
     parser.add_argument(
         "--scale", type=float, default=None, help="default: automatic common scaling"
@@ -214,29 +163,27 @@ def main():
     parser.add_argument("--omega-peak", type=float, default=None, help="rad/us")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--restarts", type=int, default=8)
-    parser.add_argument(
-        "--shots", type=int, default=None, help="omit to build without emulation"
-    )
-    parser.add_argument("--with-modulation", action="store_true")
-    args = parser.parse_args()
+
+
+def build_from_args(args):
+    """Build a program using the shared CLI options and the user's config.py."""
     from qubo import build_q_matrix
 
-    try:
-        program = build_sequence(
-            build_q_matrix(args.penalty_weight),
-            energy_scale=args.scale,
-            duration_ns=args.duration,
-            omega_peak=args.omega_peak,
-            seed=args.seed,
-            restarts=args.restarts,
-        )
-    except (ValueError, ImportError) as error:
-        parser.error(str(error))
+    return build_sequence(
+        build_q_matrix(args.penalty_weight),
+        energy_scale=args.scale,
+        duration_ns=args.duration,
+        omega_peak=args.omega_peak,
+        seed=args.seed,
+        restarts=args.restarts,
+    )
+
+
+def print_program(program, *, penalty_weight):
+    """Print the model, pulse, register, and final-energy diagnostics."""
     np.set_printoptions(precision=6, suppress=True)
     p, e, d = program["parameters"], program["embedding"], program["diagnostics"]
-    print(
-        f"Atoms: {p['n_qubits']}; global detuning only; lambda: {args.penalty_weight:g}"
-    )
+    print(f"Atoms: {p['n_qubits']}; global detuning only; lambda: {penalty_weight:g}")
     print(f"Energy scale: {p['energy_scale']:.6g}; duration: {p['duration_ns']} ns")
     print(
         f"Rabi peak: {p['omega_peak']:.6g}; detuning: {p['delta_initial']:.6g} -> {p['delta_final']:.6g} rad/us"
@@ -252,22 +199,17 @@ def main():
     print("Actual final-Hamiltonian ground-state checks:")
     print(d["target_vs_realized"])
     print("Pulser register and sequence validation passed.")
-    if args.shots is not None:
-        try:
-            output = emulate(
-                program["sequence"],
-                shots=args.shots,
-                seed=args.seed,
-                with_modulation=args.with_modulation,
-            )
-        except (ValueError, ImportError) as error:
-            parser.error(str(error))
-        print(
-            f"Modulation: {args.with_modulation}; ideal coherent emulation, no stochastic noise"
-        )
-        print("Bitstring counts:")
-        for bits, count in output["counts"].most_common():
-            print(bits, count)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    add_sequence_arguments(parser)
+    args = parser.parse_args()
+    try:
+        program = build_from_args(args)
+    except (ValueError, ImportError) as error:
+        parser.error(str(error))
+    print_program(program, penalty_weight=args.penalty_weight)
 
 
 if __name__ == "__main__":
