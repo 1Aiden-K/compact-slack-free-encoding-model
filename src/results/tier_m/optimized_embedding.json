@@ -1,0 +1,5914 @@
+{
+  "tier": "M",
+  "track": "A",
+  "objective": "capacity_constrained_clustering",
+  "instance": {
+    "coordinates": [
+      [
+        63.69616873214543,
+        26.97867137638703
+      ],
+      [
+        4.0973523936194685,
+        1.6527635528529094
+      ],
+      [
+        81.32702392002724,
+        91.27555772777217
+      ],
+      [
+        60.663577576717984,
+        72.94965609839984
+      ],
+      [
+        54.362499146542284,
+        93.50724237877682
+      ],
+      [
+        81.58535541215322,
+        0.2738500170148095
+      ],
+      [
+        85.74042765875693,
+        3.3585575305464355
+      ],
+      [
+        72.9655446429944,
+        17.5655620602559
+      ],
+      [
+        86.31789223498866,
+        54.14612202490917
+      ],
+      [
+        29.971189053738478,
+        42.26872211976585
+      ]
+    ],
+    "demands": [
+      5.0,
+      8.0,
+      8.0,
+      5.0,
+      3.0,
+      7.0,
+      2.0,
+      8.0,
+      8.0,
+      1.0
+    ],
+    "capacity": 20.0
+  },
+  "settings": {
+    "tier": "M",
+    "n_customers": 10,
+    "vehicles": 3,
+    "n_bits": 20,
+    "penalty_weight": 5.724967679378486,
+    "penalty_strategy": "adaptive_demand_pressure_v1",
+    "assignment_penalty": 5060.508879979809,
+    "assignment_penalty_bound": 5059.508879979809,
+    "assignment_validity_guaranteed": true,
+    "capacity_is_exactly_encoded": false,
+    "bit_order": [
+      "a_0",
+      "a_1",
+      "a_2",
+      "a_3",
+      "a_4",
+      "a_5",
+      "a_6",
+      "a_7",
+      "a_8",
+      "a_9",
+      "b_0",
+      "b_1",
+      "b_2",
+      "b_3",
+      "b_4",
+      "b_5",
+      "b_6",
+      "b_7",
+      "b_8",
+      "b_9"
+    ]
+  },
+  "emulation": {
+    "backend": "emu-mps",
+    "dt_ns": 20,
+    "shots": 200,
+    "sample_seed": 0,
+    "gpu": false,
+    "with_modulation": false,
+    "dmm": true,
+    "mps_max_bond_dim": 64,
+    "mps_precision": 1e-05,
+    "prepare_only": false
+  },
+  "encoding": {
+    "atoms": 20,
+    "energy_scale": 0.00860229855751204,
+    "relative_interaction_error": 0.6362257356422397,
+    "relative_matrix_error": 0.4055065810575225,
+    "min_separation_um": 5.085157630537021,
+    "max_radius_um": 19.216677928523925,
+    "optimizer_converged": true,
+    "optimizer_message": "Optimization terminated successfully",
+    "positions_um": [
+      [
+        10.75472637392064,
+        9.29876885178329
+      ],
+      [
+        8.566251547890891,
+        2.975084566722186
+      ],
+      [
+        -4.883782809812907,
+        1.6421516747049414
+      ],
+      [
+        -2.8413492532969653,
+        8.228410286919374
+      ],
+      [
+        -3.6655695718295873,
+        -10.329849292907104
+      ],
+      [
+        -7.339798710815,
+        -4.236955550370231
+      ],
+      [
+        -4.662989362361519,
+        -18.394276914216405
+      ],
+      [
+        4.064423297548692,
+        7.436716033579133
+      ],
+      [
+        -0.9389005992421099,
+        -3.4000451448718447
+      ],
+      [
+        -11.239928839031927,
+        7.4952624551493905
+      ],
+      [
+        8.15375339677709,
+        -7.991379826033462
+      ],
+      [
+        6.208621537469797,
+        -1.5362447045947922
+      ],
+      [
+        12.345497494992047,
+        -2.755960167524354
+      ],
+      [
+        -1.3381290273738433,
+        13.159806149933612
+      ],
+      [
+        1.454350795231132,
+        -11.156503901550586
+      ],
+      [
+        -11.445181985885814,
+        -1.1877663084222503
+      ],
+      [
+        0.469697325515105,
+        -19.2109368597948
+      ],
+      [
+        1.7957852654696052,
+        2.885660155344586
+      ],
+      [
+        5.326347534851481,
+        14.399676719315611
+      ],
+      [
+        -10.783824410016805,
+        12.678381776833705
+      ]
+    ],
+    "delta_initial": -43.52340593996966,
+    "delta_final": 43.52340593996966,
+    "omega_peak": 4.243944898147711,
+    "duration_ns": 2000,
+    "use_dmm": true,
+    "dmm_plan": {
+      "global_final": 43.52340593996966,
+      "amplitude": 33.92042541781866,
+      "weights": [
+        0.4570680912505102,
+        0.0,
+        0.038805471570737674,
+        0.4385506558552038,
+        0.678299437923627,
+        0.17595323675624333,
+        0.8448305322682933,
+        0.0847999796869118,
+        0.0760970491716376,
+        1.0,
+        0.4570680912505102,
+        0.0,
+        0.038805471570737674,
+        0.4385506558552038,
+        0.678299437923627,
+        0.17595323675624333,
+        0.8448305322682933,
+        0.0847999796869118,
+        0.0760970491716376,
+        1.0
+      ]
+    }
+  },
+  "counts": {
+    "00100001101011010010": 1,
+    "10101010000010010110": 1,
+    "10100100000001000110": 1,
+    "11010100101000000010": 1,
+    "10100000000010110100": 1,
+    "01010110100000000110": 1,
+    "01100100011010000000": 1,
+    "01100001100011000000": 1,
+    "01100000001010010010": 1,
+    "00011000100010010110": 1,
+    "01100100001001000000": 1,
+    "00000010100010010110": 1,
+    "01111000001000010001": 1,
+    "01000000001011010010": 1,
+    "10100010000111100010": 1,
+    "00000001100010001000": 1,
+    "00100001000110100010": 1,
+    "00100001100101010010": 1,
+    "00100001000100010010": 1,
+    "00000001100010000011": 1,
+    "01000000100011111100": 1,
+    "01000000101001010000": 1,
+    "10000000000100010010": 1,
+    "00100101000110000000": 1,
+    "01000010100010010100": 1,
+    "01000110001011000100": 1,
+    "01010100000000100100": 1,
+    "00100101000000000010": 1,
+    "00000101100111000000": 1,
+    "00000101001100001000": 1,
+    "01100000101010001000": 1,
+    "00100001001000011010": 1,
+    "00101001000011000000": 1,
+    "00000000000100000110": 1,
+    "01100110001010100000": 1,
+    "00010011000100010010": 1,
+    "00100001100010000000": 1,
+    "01110000100000010000": 1,
+    "01100000000011000110": 1,
+    "01001000100000000010": 1,
+    "10101000000111000110": 1,
+    "00111000000110010000": 1,
+    "10000001100011001010": 1,
+    "01000000100010010110": 1,
+    "00000001110010010010": 1,
+    "01000000101010000110": 1,
+    "00101001000111010000": 1,
+    "10010100001000000110": 1,
+    "11000100000001000100": 1,
+    "00000101110010001000": 1,
+    "00100001100011000000": 1,
+    "10100000001000010100": 1,
+    "00100101000110000010": 1,
+    "00100001100010001000": 1,
+    "11100010101001010000": 1,
+    "00101000001000011110": 1,
+    "10010100100010001010": 1,
+    "01100000001010000010": 1,
+    "00000110100000000000": 1,
+    "00100001000011010001": 1,
+    "00100001101001000000": 1,
+    "01000000000011010101": 1,
+    "01000000000011101100": 1,
+    "01010000100010011010": 1,
+    "10000100011010001110": 1,
+    "10000000100010011110": 2,
+    "00000100001101000100": 1,
+    "10110100001100001010": 1,
+    "00010000000100010010": 1,
+    "10000100000011000100": 1,
+    "01100000001000100000": 1,
+    "01110010100000100010": 1,
+    "01100100000000100000": 1,
+    "01010100100000100110": 1,
+    "10010100000000000110": 1,
+    "00000111000100000010": 1,
+    "00101001000110000000": 1,
+    "01110000101000000010": 1,
+    "00100001000000010010": 1,
+    "10010000100100010000": 1,
+    "01100000100001010000": 1,
+    "10110000100010001100": 1,
+    "01010100101000000000": 1,
+    "00101001000110010000": 1,
+    "00001100000010000110": 1,
+    "01100001100010110000": 1,
+    "10000100000011000110": 1,
+    "01100100000010100010": 1,
+    "01000100000000000110": 1,
+    "01100000100010001010": 1,
+    "10000100000010100100": 1,
+    "00000000100100010100": 1,
+    "01100000101000010000": 1,
+    "11101000000001010000": 1,
+    "01000000000011001110": 1,
+    "00100101000010100010": 1,
+    "10000100100101100000": 1,
+    "10100000000110001000": 1,
+    "10101000000011000100": 1,
+    "01000100101011001100": 1,
+    "00001001000011010000": 1,
+    "00000001100010010010": 2,
+    "01100000101010010010": 1,
+    "00100111000110100010": 1,
+    "10010001100010010010": 1,
+    "00010000100110000010": 1,
+    "00010000000110111010": 1,
+    "01000100100001000010": 2,
+    "01000100000010100100": 1,
+    "01010100100000000010": 1,
+    "00100011000011100000": 1,
+    "01000101000010000010": 1,
+    "11010010101010010010": 1,
+    "01000000000011100100": 1,
+    "01101010000011010010": 1,
+    "00101011100010000010": 1,
+    "00100001000110110010": 1,
+    "00101000000010010110": 1,
+    "00000101000111000000": 1,
+    "01000110000010000100": 1,
+    "01101000100000010010": 1,
+    "11010000111010010000": 1,
+    "11010100111010000000": 1,
+    "01100000100001010010": 1,
+    "01000000101000010010": 1,
+    "00100001100111000000": 1,
+    "01010000100010010000": 1,
+    "00000101100110100010": 1,
+    "00000100000010000110": 1,
+    "01100000100000000000": 1,
+    "00101010000010000110": 1,
+    "00010000100110010010": 1,
+    "00000010100100010010": 1,
+    "01001000000000000110": 1,
+    "01110010100010000000": 1,
+    "01100001100010110010": 1,
+    "01100000000000101000": 1,
+    "00100011100010000000": 1,
+    "01000001100010010010": 1,
+    "01000000000010100110": 1,
+    "00110000000010110110": 1,
+    "11010100100000001000": 1,
+    "01010100000010000110": 2,
+    "00100001100100010010": 1,
+    "00100001000110010000": 1,
+    "00110000000100000000": 1,
+    "01000101100000000000": 1,
+    "00100001100110001010": 1,
+    "00010101100010000010": 1,
+    "00011001100010010000": 1,
+    "00101000000010010100": 1,
+    "00100101000110100010": 1,
+    "10101000100111010001": 1,
+    "00100011000110110010": 1,
+    "01000010100010010011": 1,
+    "01101000000000010010": 1,
+    "00111000000110000010": 1,
+    "00100001100010010000": 1,
+    "00000001101000101010": 1,
+    "10100001100010000010": 1,
+    "00001001100100010010": 1,
+    "01000000100001010110": 1,
+    "01100010101000010010": 1,
+    "00000101100100000010": 1,
+    "00101111000101000000": 1,
+    "01100000000001100001": 1,
+    "01100100100010101001": 1,
+    "00100001100100100010": 1,
+    "00100111000110000000": 1,
+    "10100000100100011000": 1,
+    "01101000101000001010": 1,
+    "01000000000011000101": 1,
+    "10100001100010010000": 1,
+    "10000001000101100000": 1,
+    "00000001000111010010": 1,
+    "01010000111010011010": 1,
+    "10100000100100010000": 1,
+    "01000001001010100000": 1,
+    "01100000100010000010": 1,
+    "01110000000000110010": 1,
+    "10101001000100010010": 1,
+    "01000100001000001110": 1,
+    "00011000100010010100": 1,
+    "11010000100010010001": 1,
+    "01010000100010011000": 1,
+    "01000000100011100100": 1,
+    "01100000101000000010": 1,
+    "00000010001001110000": 1,
+    "01101000001010010010": 1,
+    "10110101000110000010": 1,
+    "10101101100011001000": 1,
+    "01100000001000000010": 1,
+    "01001010100010010010": 1,
+    "01110000001000011010": 1,
+    "10001010001010010100": 1,
+    "00100001100010001010": 1
+  },
+  "probabilities": null,
+  "evaluation": {
+    "track": "A",
+    "tier": "M",
+    "objective": "capacity_constrained_clustering",
+    "reference": {
+      "status": "proven_optimum",
+      "optimal_cost": 489.2438592102022,
+      "valid_assignments_enumerated": 59049,
+      "feasible_assignments": 2016,
+      "optimal_assignments": 6,
+      "optimal_partitions": 1,
+      "representative": {
+        "bits": "11010000010010100010",
+        "assignments": [
+          1,
+          1,
+          2,
+          1,
+          2,
+          3,
+          3,
+          3,
+          2,
+          1
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": true,
+        "feasible": true,
+        "loads": [
+          19.0,
+          19.0,
+          17.0
+        ],
+        "cost": 489.24385921020223,
+        "energy": 504.510439688549
+      },
+      "qubo": {
+        "minimum_energy": 504.5104396885448,
+        "ground_assignment_count": 6,
+        "ground_valid_assignments": 6,
+        "ground_invalid_assignments": 0,
+        "ground_feasible_assignments": 6,
+        "all_ground_states_original_optimal": true,
+        "representative": {
+          "bits": "11010000010010100010",
+          "assignments": [
+            1,
+            1,
+            2,
+            1,
+            2,
+            3,
+            3,
+            3,
+            2,
+            1
+          ],
+          "assignment_valid": true,
+          "invalid_customers": [],
+          "capacity_feasible": true,
+          "feasible": true,
+          "loads": [
+            19.0,
+            19.0,
+            17.0
+          ],
+          "cost": 489.24385921020223,
+          "energy": 504.510439688549
+        },
+        "certification": "valid_assignment_enumeration_and_sufficient_eta_proof",
+        "binary_states_checked": 0
+      },
+      "settings": {
+        "tier": "M",
+        "n_customers": 10,
+        "vehicles": 3,
+        "n_bits": 20,
+        "penalty_weight": 5.724967679378486,
+        "penalty_strategy": "adaptive_demand_pressure_v1",
+        "assignment_penalty": 5060.508879979809,
+        "assignment_penalty_bound": 5059.508879979809,
+        "assignment_validity_guaranteed": true,
+        "capacity_is_exactly_encoded": false,
+        "bit_order": [
+          "a_0",
+          "a_1",
+          "a_2",
+          "a_3",
+          "a_4",
+          "a_5",
+          "a_6",
+          "a_7",
+          "a_8",
+          "a_9",
+          "b_0",
+          "b_1",
+          "b_2",
+          "b_3",
+          "b_4",
+          "b_5",
+          "b_6",
+          "b_7",
+          "b_8",
+          "b_9"
+        ]
+      },
+      "instance": {
+        "coordinates": [
+          [
+            63.69616873214543,
+            26.97867137638703
+          ],
+          [
+            4.0973523936194685,
+            1.6527635528529094
+          ],
+          [
+            81.32702392002724,
+            91.27555772777217
+          ],
+          [
+            60.663577576717984,
+            72.94965609839984
+          ],
+          [
+            54.362499146542284,
+            93.50724237877682
+          ],
+          [
+            81.58535541215322,
+            0.2738500170148095
+          ],
+          [
+            85.74042765875693,
+            3.3585575305464355
+          ],
+          [
+            72.9655446429944,
+            17.5655620602559
+          ],
+          [
+            86.31789223498866,
+            54.14612202490917
+          ],
+          [
+            29.971189053738478,
+            42.26872211976585
+          ]
+        ],
+        "demands": [
+          5.0,
+          8.0,
+          8.0,
+          5.0,
+          3.0,
+          7.0,
+          2.0,
+          8.0,
+          8.0,
+          1.0
+        ],
+        "capacity": 20.0
+      }
+    },
+    "epsilon_pct": 0.0,
+    "sampled": {
+      "assignment_validity_rate": 0.425,
+      "feasibility_rate": 0.005,
+      "optimal_probability": 0.0,
+      "reference_probability": 0.0,
+      "shots": 200,
+      "assignment_valid_shots": 85,
+      "feasible_shots": 1,
+      "best_feasible_cost": 708.6865564022144,
+      "best_model_gap_pct": 44.85343925343564,
+      "best_solutions": [
+        {
+          "bits": "10000100100101100000",
+          "assignments": [
+            1,
+            2,
+            3,
+            2,
+            2,
+            1,
+            3,
+            3,
+            1,
+            3
+          ],
+          "assignment_valid": true,
+          "invalid_customers": [],
+          "capacity_feasible": true,
+          "feasible": true,
+          "loads": [
+            20.0,
+            16.0,
+            19.0
+          ],
+          "cost": 708.6865564022144,
+          "energy": 758.3029429568305
+        }
+      ]
+    },
+    "predicted": null,
+    "bitstrings": [
+      {
+        "bits": "00000001100010010010",
+        "assignments": [
+          3,
+          3,
+          2,
+          3,
+          3,
+          2,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6077.182857362883,
+        "count": 2,
+        "probability": null
+      },
+      {
+        "bits": "01000100100001000010",
+        "assignments": [
+          3,
+          1,
+          3,
+          2,
+          3,
+          1,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6184.412367880554,
+        "count": 2,
+        "probability": null
+      },
+      {
+        "bits": "01010100000010000110",
+        "assignments": [
+          3,
+          1,
+          2,
+          1,
+          3,
+          1,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          20.0,
+          24.0,
+          11.0
+        ],
+        "cost": 751.4468396954746,
+        "energy": 1259.0606406003699,
+        "count": 2,
+        "probability": null
+      },
+      {
+        "bits": "10000000100010011110",
+        "assignments": [
+          1,
+          3,
+          2,
+          3,
+          3,
+          2,
+          2,
+          2,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7594.88979269908,
+        "count": 2,
+        "probability": null
+      },
+      {
+        "bits": "00000000000100000110",
+        "assignments": [
+          3,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          0.0,
+          24.0,
+          31.0
+        ],
+        "cost": 1396.8095424065073,
+        "energy": 4423.409122237936,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000000100100010100",
+        "assignments": [
+          3,
+          2,
+          3,
+          3,
+          3,
+          2,
+          3,
+          2,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          8.0,
+          23.0,
+          24.0
+        ],
+        "cost": 989.5268921951869,
+        "energy": 1909.3383660153322,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000001000111010010",
+        "assignments": [
+          3,
+          2,
+          2,
+          2,
+          3,
+          2,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          8.0,
+          36.0,
+          11.0
+        ],
+        "cost": 1058.687605012013,
+        "energy": 3764.688994798247,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000001100010000011",
+        "assignments": [
+          3,
+          3,
+          2,
+          3,
+          3,
+          3,
+          3,
+          1,
+          0,
+          2
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6029.7168330966415,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000001100010001000",
+        "assignments": [
+          3,
+          3,
+          2,
+          3,
+          3,
+          3,
+          2,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          10.0,
+          29.0
+        ],
+        "cost": 1056.4663049452715,
+        "energy": 2136.5768737880135,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000001101000101010",
+        "assignments": [
+          2,
+          3,
+          3,
+          3,
+          2,
+          3,
+          2,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5935.416122786348,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000001110010010010",
+        "assignments": [
+          3,
+          3,
+          2,
+          3,
+          3,
+          2,
+          3,
+          1,
+          0,
+          1
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6000.0552945352065,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000010001001110000",
+        "assignments": [
+          2,
+          3,
+          3,
+          2,
+          2,
+          2,
+          1,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          2.0,
+          20.0,
+          33.0
+        ],
+        "cost": 1003.090290198438,
+        "energy": 3777.7912921372117,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000010100010010110",
+        "assignments": [
+          3,
+          3,
+          2,
+          3,
+          3,
+          2,
+          1,
+          2,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7157.465300986437,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000010100100010010",
+        "assignments": [
+          3,
+          2,
+          3,
+          3,
+          3,
+          2,
+          1,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6423.952920868956,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000100000010000110",
+        "assignments": [
+          3,
+          3,
+          2,
+          3,
+          3,
+          1,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          7.0,
+          24.0,
+          24.0
+        ],
+        "cost": 1082.5436033028736,
+        "energy": 2185.554042863132,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000100001101000100",
+        "assignments": [
+          2,
+          2,
+          3,
+          2,
+          3,
+          1,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          7.0,
+          26.0,
+          22.0
+        ],
+        "cost": 945.2784873477797,
+        "energy": 2094.0886683430635,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000101000111000000",
+        "assignments": [
+          3,
+          2,
+          2,
+          2,
+          3,
+          1,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          15.0,
+          21.0,
+          19.0
+        ],
+        "cost": 807.4076215504319,
+        "energy": 914.2736848988316,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000101001100001000",
+        "assignments": [
+          2,
+          2,
+          3,
+          3,
+          3,
+          1,
+          2,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          15.0,
+          15.0,
+          25.0
+        ],
+        "cost": 622.9121255762993,
+        "energy": 1004.5766375348649,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000101100100000010",
+        "assignments": [
+          3,
+          2,
+          3,
+          3,
+          3,
+          1,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6015.739346428961,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000101100110100010",
+        "assignments": [
+          3,
+          2,
+          2,
+          3,
+          2,
+          1,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7306.336408217306,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000101100111000000",
+        "assignments": [
+          3,
+          2,
+          2,
+          2,
+          3,
+          1,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          23.0,
+          21.0,
+          11.0
+        ],
+        "cost": 706.0006162401825,
+        "energy": 1179.2646110688074,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000101110010001000",
+        "assignments": [
+          3,
+          3,
+          2,
+          3,
+          3,
+          1,
+          2,
+          1,
+          1,
+          1
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          24.0,
+          10.0,
+          21.0
+        ],
+        "cost": 769.3092139617995,
+        "energy": 1391.422368454263,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000110100000000000",
+        "assignments": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          1,
+          1,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          17.0,
+          0.0,
+          38.0
+        ],
+        "cost": 1343.829138757738,
+        "energy": 5492.5223837473495,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00000111000100000010",
+        "assignments": [
+          3,
+          2,
+          3,
+          3,
+          3,
+          1,
+          1,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          17.0,
+          16.0,
+          22.0
+        ],
+        "cost": 605.4106938486301,
+        "energy": 723.7266925557869,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00001001000011010000",
+        "assignments": [
+          3,
+          3,
+          2,
+          2,
+          1,
+          2,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          11.0,
+          20.0,
+          24.0
+        ],
+        "cost": 845.6270416611878,
+        "energy": 1353.2408425660833,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00001001100100010010",
+        "assignments": [
+          3,
+          2,
+          3,
+          3,
+          1,
+          2,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6088.614352497279,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00001100000010000110",
+        "assignments": [
+          3,
+          3,
+          2,
+          3,
+          1,
+          1,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          10.0,
+          24.0,
+          21.0
+        ],
+        "cost": 834.0787326498528,
+        "energy": 1456.1918871423186,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00010000000100010010",
+        "assignments": [
+          3,
+          2,
+          3,
+          1,
+          3,
+          2,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          5.0,
+          23.0,
+          27.0
+        ],
+        "cost": 1072.8636185458008,
+        "energy": 2645.321407815094,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00010000000110111010",
+        "assignments": [
+          3,
+          2,
+          2,
+          1,
+          2,
+          2,
+          2,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          5.0,
+          36.0,
+          14.0
+        ],
+        "cost": 1176.4266241393798,
+        "energy": 4088.5268503832394,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00010000100110000010",
+        "assignments": [
+          3,
+          2,
+          2,
+          1,
+          3,
+          3,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6142.618067007164,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00010000100110010010",
+        "assignments": [
+          3,
+          2,
+          2,
+          1,
+          3,
+          2,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7240.918404651631,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00010011000100010010",
+        "assignments": [
+          3,
+          2,
+          3,
+          1,
+          3,
+          2,
+          1,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          15.0,
+          23.0,
+          17.0
+        ],
+        "cost": 704.6108808424158,
+        "energy": 903.0764270608706,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00010101100010000010",
+        "assignments": [
+          3,
+          3,
+          2,
+          1,
+          3,
+          1,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6612.521934673419,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00011000100010010100",
+        "assignments": [
+          3,
+          3,
+          2,
+          1,
+          1,
+          2,
+          3,
+          2,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          23.0,
+          16.0
+        ],
+        "cost": 620.4287197309197,
+        "energy": 807.4443305906207,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00011000100010010110",
+        "assignments": [
+          3,
+          3,
+          2,
+          1,
+          1,
+          2,
+          3,
+          2,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7131.152562004992,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00011001100010010000",
+        "assignments": [
+          3,
+          3,
+          2,
+          1,
+          1,
+          2,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          24.0,
+          15.0,
+          16.0
+        ],
+        "cost": 700.7871102242826,
+        "energy": 979.4022039540396,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001000000010010",
+        "assignments": [
+          3,
+          3,
+          1,
+          3,
+          3,
+          2,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          15.0,
+          24.0
+        ],
+        "cost": 1060.218710069153,
+        "energy": 1338.8338037989088,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001000011010001",
+        "assignments": [
+          3,
+          3,
+          0,
+          2,
+          3,
+          2,
+          3,
+          1,
+          3,
+          2
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5925.31505523687,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001000100010010",
+        "assignments": [
+          3,
+          2,
+          1,
+          3,
+          3,
+          2,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          23.0,
+          16.0
+        ],
+        "cost": 844.9739011676063,
+        "energy": 1031.9895120273068,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001000110010000",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          3,
+          2,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6058.591097367307,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001000110100010",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          2,
+          3,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6397.247536161216,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001000110110010",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          2,
+          2,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 8391.762808618509,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001001000011010",
+        "assignments": [
+          2,
+          3,
+          1,
+          3,
+          3,
+          2,
+          2,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          22.0,
+          17.0
+        ],
+        "cost": 649.5560590022016,
+        "energy": 767.8720577093591,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100010000000",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          3,
+          3,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6927.306019559772,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100010001000",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          3,
+          3,
+          2,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6449.092078265387,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100010001010",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          3,
+          3,
+          2,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 11033.446870938746,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100010010000",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          3,
+          2,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6114.00166036179,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100011000000",
+        "assignments": [
+          3,
+          3,
+          0,
+          2,
+          3,
+          3,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6058.46790105391,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100100010010",
+        "assignments": [
+          3,
+          2,
+          1,
+          3,
+          3,
+          2,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6675.463377069305,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100100100010",
+        "assignments": [
+          3,
+          2,
+          1,
+          3,
+          2,
+          3,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6130.71626126264,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100101010010",
+        "assignments": [
+          3,
+          2,
+          1,
+          2,
+          3,
+          2,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7865.768756299581,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100110001010",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          3,
+          3,
+          2,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 12351.480415140877,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001100111000000",
+        "assignments": [
+          3,
+          2,
+          0,
+          2,
+          3,
+          3,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6284.109023905314,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001101001000000",
+        "assignments": [
+          2,
+          3,
+          1,
+          2,
+          3,
+          3,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          24.0,
+          10.0,
+          21.0
+        ],
+        "cost": 897.7293133670544,
+        "energy": 1519.8424678595202,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100001101011010010",
+        "assignments": [
+          2,
+          3,
+          0,
+          2,
+          3,
+          2,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 14482.926461561323,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100011000011100000",
+        "assignments": [
+          3,
+          3,
+          0,
+          2,
+          2,
+          3,
+          1,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5576.781583793279,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100011000110110010",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          2,
+          2,
+          1,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 8710.340717541767,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100011100010000000",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          3,
+          3,
+          1,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6885.386788453422,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100101000000000010",
+        "assignments": [
+          3,
+          3,
+          1,
+          3,
+          3,
+          1,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          23.0,
+          8.0,
+          24.0
+        ],
+        "cost": 1116.4621295534027,
+        "energy": 2036.2736033735473,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100101000010100010",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          2,
+          1,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5865.053074433748,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100101000110000000",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          3,
+          1,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6000.4119143483795,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100101000110000010",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          3,
+          1,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6679.447801997707,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100101000110100010",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          2,
+          1,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7300.732399408696,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100111000110000000",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          3,
+          1,
+          1,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6086.320994126233,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00100111000110100010",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          2,
+          1,
+          1,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7784.784347394689,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101000000010010100",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          1,
+          2,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6195.710519298925,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101000000010010110",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          1,
+          2,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7006.568326731647,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101000001000011110",
+        "assignments": [
+          2,
+          3,
+          1,
+          3,
+          1,
+          2,
+          2,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          11.0,
+          30.0,
+          14.0
+        ],
+        "cost": 510.0514668113227,
+        "energy": 1704.661389241639,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101001000011000000",
+        "assignments": [
+          3,
+          3,
+          0,
+          2,
+          1,
+          3,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5893.791494009283,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101001000110000000",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          1,
+          3,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5735.970485546275,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101001000110010000",
+        "assignments": [
+          3,
+          2,
+          0,
+          3,
+          1,
+          2,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6002.358408785848,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101001000111010000",
+        "assignments": [
+          3,
+          2,
+          0,
+          2,
+          1,
+          2,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6887.732770734528,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101010000010000110",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          1,
+          3,
+          1,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5976.596160587074,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101011100010000010",
+        "assignments": [
+          3,
+          3,
+          0,
+          3,
+          1,
+          3,
+          1,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 11767.237340389574,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00101111000101000000",
+        "assignments": [
+          3,
+          2,
+          1,
+          2,
+          1,
+          1,
+          1,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          28.0,
+          13.0,
+          14.0
+        ],
+        "cost": 815.615828076105,
+        "energy": 1620.927948308683,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00110000000010110110",
+        "assignments": [
+          3,
+          3,
+          0,
+          1,
+          2,
+          2,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7823.414478627828,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00110000000100000000",
+        "assignments": [
+          3,
+          2,
+          1,
+          1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          13.0,
+          8.0,
+          34.0
+        ],
+        "cost": 1052.1845015776325,
+        "energy": 3231.488864861045,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00111000000110000010",
+        "assignments": [
+          3,
+          2,
+          0,
+          1,
+          1,
+          3,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5620.173060955167,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "00111000000110010000",
+        "assignments": [
+          3,
+          2,
+          0,
+          1,
+          1,
+          2,
+          3,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5675.093042199183,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000000010100110",
+        "assignments": [
+          3,
+          1,
+          2,
+          3,
+          2,
+          3,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          8.0,
+          27.0,
+          20.0
+        ],
+        "cost": 786.7953980119237,
+        "energy": 1844.0060961371546,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000000011000101",
+        "assignments": [
+          3,
+          1,
+          2,
+          2,
+          3,
+          3,
+          3,
+          2,
+          3,
+          2
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          8.0,
+          22.0,
+          25.0
+        ],
+        "cost": 842.8153019322945,
+        "energy": 1785.5266464699525,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000000011001110",
+        "assignments": [
+          3,
+          1,
+          2,
+          2,
+          3,
+          3,
+          2,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          8.0,
+          31.0,
+          16.0
+        ],
+        "cost": 855.4105555398512,
+        "energy": 2416.418409450387,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000000011010101",
+        "assignments": [
+          3,
+          1,
+          2,
+          2,
+          3,
+          2,
+          3,
+          2,
+          3,
+          2
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          8.0,
+          29.0,
+          18.0
+        ],
+        "cost": 906.7818300194094,
+        "energy": 2170.0913646022655,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000000011100100",
+        "assignments": [
+          3,
+          1,
+          2,
+          2,
+          2,
+          3,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          8.0,
+          24.0,
+          23.0
+        ],
+        "cost": 724.2868974827983,
+        "energy": 1644.0983713029455,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000000011101100",
+        "assignments": [
+          3,
+          1,
+          2,
+          2,
+          2,
+          3,
+          2,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          8.0,
+          26.0,
+          21.0
+        ],
+        "cost": 844.5692513238719,
+        "energy": 1833.0803372965602,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000001011010010",
+        "assignments": [
+          2,
+          1,
+          2,
+          2,
+          3,
+          2,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          8.0,
+          33.0,
+          14.0
+        ],
+        "cost": 864.917784952323,
+        "energy": 2815.223441060596,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000100001010110",
+        "assignments": [
+          3,
+          1,
+          3,
+          2,
+          3,
+          2,
+          3,
+          2,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6686.151178253854,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000100010010110",
+        "assignments": [
+          3,
+          1,
+          2,
+          3,
+          3,
+          2,
+          3,
+          2,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7349.482648520608,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000100011100100",
+        "assignments": [
+          3,
+          1,
+          2,
+          2,
+          2,
+          3,
+          3,
+          2,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          24.0,
+          15.0
+        ],
+        "cost": 624.0274989342824,
+        "energy": 902.6425926640386,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000100011111100",
+        "assignments": [
+          3,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          33.0,
+          6.0
+        ],
+        "cost": 984.6694821270122,
+        "energy": 3118.174103975396,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000101000010010",
+        "assignments": [
+          2,
+          1,
+          3,
+          3,
+          3,
+          2,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5912.520977819197,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000101001010000",
+        "assignments": [
+          2,
+          1,
+          3,
+          2,
+          3,
+          2,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          17.0,
+          22.0
+        ],
+        "cost": 878.725446360864,
+        "energy": 997.0414450680219,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000000101010000110",
+        "assignments": [
+          2,
+          1,
+          2,
+          3,
+          3,
+          3,
+          3,
+          2,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6862.569240397775,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000001001010100000",
+        "assignments": [
+          2,
+          1,
+          2,
+          3,
+          2,
+          3,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          16.0,
+          23.0
+        ],
+        "cost": 758.5657765265805,
+        "energy": 945.581387386279,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000001100010010010",
+        "assignments": [
+          3,
+          1,
+          2,
+          3,
+          3,
+          2,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6685.46515485506,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000010100010010011",
+        "assignments": [
+          3,
+          1,
+          2,
+          3,
+          3,
+          2,
+          1,
+          3,
+          0,
+          2
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6141.5643817545,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000010100010010100",
+        "assignments": [
+          3,
+          1,
+          2,
+          3,
+          3,
+          2,
+          1,
+          2,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          18.0,
+          23.0,
+          14.0
+        ],
+        "cost": 686.4335929479064,
+        "energy": 919.2489452426362,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000100000000000110",
+        "assignments": [
+          3,
+          1,
+          3,
+          3,
+          3,
+          1,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          15.0,
+          16.0,
+          24.0
+        ],
+        "cost": 938.464367785897,
+        "energy": 1217.079461515652,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000100000010100100",
+        "assignments": [
+          3,
+          1,
+          2,
+          3,
+          2,
+          1,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          15.0,
+          19.0,
+          21.0
+        ],
+        "cost": 733.2420394957526,
+        "energy": 840.1081028441549,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000100001000001110",
+        "assignments": [
+          2,
+          1,
+          3,
+          3,
+          3,
+          1,
+          2,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          15.0,
+          23.0,
+          17.0
+        ],
+        "cost": 514.5200917178265,
+        "energy": 712.9856379362827,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000100101011001100",
+        "assignments": [
+          2,
+          1,
+          2,
+          2,
+          3,
+          1,
+          2,
+          2,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          23.0,
+          28.0,
+          4.0
+        ],
+        "cost": 783.7784977631477,
+        "energy": 2619.584800283854,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000101000010000010",
+        "assignments": [
+          3,
+          1,
+          2,
+          3,
+          3,
+          1,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          23.0,
+          16.0,
+          16.0
+        ],
+        "cost": 746.6297787832547,
+        "energy": 933.6453896429539,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000101100000000000",
+        "assignments": [
+          3,
+          1,
+          3,
+          3,
+          3,
+          1,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          31.0,
+          0.0,
+          24.0
+        ],
+        "cost": 1180.0967132562582,
+        "energy": 4206.696293087687,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000110000010000100",
+        "assignments": [
+          3,
+          1,
+          2,
+          3,
+          3,
+          1,
+          1,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          17.0,
+          16.0,
+          22.0
+        ],
+        "cost": 685.8906574780476,
+        "energy": 804.2066561852043,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01000110001011000100",
+        "assignments": [
+          2,
+          1,
+          2,
+          2,
+          3,
+          1,
+          1,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          17.0,
+          26.0,
+          12.0
+        ],
+        "cost": 613.8564092993232,
+        "energy": 1190.1698223567619,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01001000000000000110",
+        "assignments": [
+          3,
+          1,
+          3,
+          3,
+          1,
+          3,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          11.0,
+          16.0,
+          28.0
+        ],
+        "cost": 968.2201382822474,
+        "energy": 1842.2318706673668,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01001000100000000010",
+        "assignments": [
+          3,
+          1,
+          3,
+          3,
+          1,
+          3,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7212.966409201679,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01001010100010010010",
+        "assignments": [
+          3,
+          1,
+          2,
+          3,
+          1,
+          2,
+          1,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6279.521808123919,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01010000100010010000",
+        "assignments": [
+          3,
+          1,
+          2,
+          1,
+          3,
+          2,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          21.0,
+          15.0,
+          19.0
+        ],
+        "cost": 828.1800033042528,
+        "energy": 935.0460666526524,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01010000100010011000",
+        "assignments": [
+          3,
+          1,
+          2,
+          1,
+          3,
+          2,
+          2,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          21.0,
+          17.0,
+          17.0
+        ],
+        "cost": 706.5129344254883,
+        "energy": 767.5792563388604,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01010000100010011010",
+        "assignments": [
+          3,
+          1,
+          2,
+          1,
+          3,
+          2,
+          2,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6520.639513093476,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01010000111010011010",
+        "assignments": [
+          2,
+          1,
+          2,
+          1,
+          3,
+          2,
+          2,
+          3,
+          0,
+          1
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 8113.779608162836,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01010100000000100100",
+        "assignments": [
+          3,
+          1,
+          3,
+          1,
+          2,
+          1,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          20.0,
+          11.0,
+          24.0
+        ],
+        "cost": 866.5415161555406,
+        "energy": 1374.1553170604348,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01010100100000000010",
+        "assignments": [
+          3,
+          1,
+          3,
+          1,
+          3,
+          1,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7209.795757712009,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01010100100000100110",
+        "assignments": [
+          3,
+          1,
+          3,
+          1,
+          2,
+          1,
+          3,
+          2,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6986.553791555801,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01010100101000000000",
+        "assignments": [
+          2,
+          1,
+          3,
+          1,
+          3,
+          1,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          28.0,
+          5.0,
+          22.0
+        ],
+        "cost": 1054.9099881962225,
+        "energy": 2684.6174542593,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01010110100000000110",
+        "assignments": [
+          3,
+          1,
+          3,
+          1,
+          3,
+          1,
+          1,
+          2,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7192.302349104009,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000000000101000",
+        "assignments": [
+          3,
+          1,
+          1,
+          3,
+          2,
+          3,
+          2,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          5.0,
+          34.0
+        ],
+        "cost": 871.1868947907079,
+        "energy": 3325.289706684289,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000000001100001",
+        "assignments": [
+          3,
+          1,
+          1,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3,
+          2
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          9.0,
+          30.0
+        ],
+        "cost": 540.3836623971807,
+        "energy": 1849.4929384150637,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000000011000110",
+        "assignments": [
+          3,
+          1,
+          0,
+          2,
+          3,
+          3,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6739.636936668895,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000001000000010",
+        "assignments": [
+          2,
+          1,
+          1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          13.0,
+          26.0
+        ],
+        "cost": 980.1362848174406,
+        "energy": 1510.649956439851,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000001000100000",
+        "assignments": [
+          2,
+          1,
+          1,
+          3,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          16.0,
+          8.0,
+          31.0
+        ],
+        "cost": 896.1515950515385,
+        "energy": 2457.1594489620747,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000001010000010",
+        "assignments": [
+          2,
+          1,
+          0,
+          3,
+          3,
+          3,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5838.420218005005,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000001010010010",
+        "assignments": [
+          2,
+          1,
+          0,
+          3,
+          3,
+          2,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6644.352578829825,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000100000000000",
+        "assignments": [
+          3,
+          1,
+          1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          24.0,
+          0.0,
+          31.0
+        ],
+        "cost": 1307.738644374726,
+        "energy": 4334.338224206154,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000100001010000",
+        "assignments": [
+          3,
+          1,
+          1,
+          2,
+          3,
+          2,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          24.0,
+          12.0,
+          19.0
+        ],
+        "cost": 845.7577404326082,
+        "energy": 1261.7720584674462,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000100001010010",
+        "assignments": [
+          3,
+          1,
+          1,
+          2,
+          3,
+          2,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6266.398370121139,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000100010000010",
+        "assignments": [
+          3,
+          1,
+          0,
+          3,
+          3,
+          3,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 11017.496415827234,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000100010001010",
+        "assignments": [
+          3,
+          1,
+          0,
+          3,
+          3,
+          3,
+          2,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 11069.817062459351,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000101000000010",
+        "assignments": [
+          2,
+          1,
+          1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6239.068207092629,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000101000010000",
+        "assignments": [
+          2,
+          1,
+          1,
+          3,
+          3,
+          2,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          24.0,
+          12.0,
+          19.0
+        ],
+        "cost": 848.1487611586899,
+        "energy": 1264.1630791935295,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000101010001000",
+        "assignments": [
+          2,
+          1,
+          0,
+          3,
+          3,
+          3,
+          2,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6053.372128717335,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100000101010010010",
+        "assignments": [
+          2,
+          1,
+          0,
+          3,
+          3,
+          2,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 12838.306181070833,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100001100010110000",
+        "assignments": [
+          3,
+          1,
+          0,
+          3,
+          2,
+          2,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7848.000974640354,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100001100010110010",
+        "assignments": [
+          3,
+          1,
+          0,
+          3,
+          2,
+          2,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 14836.269066258124,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100001100011000000",
+        "assignments": [
+          3,
+          1,
+          0,
+          2,
+          3,
+          3,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7368.923945577719,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100010101000010010",
+        "assignments": [
+          2,
+          1,
+          1,
+          3,
+          3,
+          2,
+          1,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6634.115817118232,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100100000000100000",
+        "assignments": [
+          3,
+          1,
+          1,
+          3,
+          2,
+          1,
+          3,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          23.0,
+          3.0,
+          29.0
+        ],
+        "cost": 940.7030469909228,
+        "energy": 3062.757733480552,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100100000010100010",
+        "assignments": [
+          3,
+          1,
+          0,
+          3,
+          2,
+          1,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5864.532873710892,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100100001001000000",
+        "assignments": [
+          2,
+          1,
+          1,
+          2,
+          3,
+          1,
+          3,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          23.0,
+          10.0,
+          22.0
+        ],
+        "cost": 897.979074682303,
+        "energy": 1497.1923584572542,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100100011010000000",
+        "assignments": [
+          2,
+          1,
+          0,
+          3,
+          3,
+          1,
+          3,
+          3,
+          3,
+          1
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6209.830479110491,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100100100010101001",
+        "assignments": [
+          3,
+          1,
+          0,
+          3,
+          2,
+          1,
+          2,
+          3,
+          1,
+          2
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7313.836613513046,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01100110001010100000",
+        "assignments": [
+          2,
+          1,
+          0,
+          3,
+          2,
+          1,
+          1,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6144.003111623948,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01101000000000010010",
+        "assignments": [
+          3,
+          1,
+          1,
+          3,
+          1,
+          2,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          19.0,
+          15.0,
+          21.0
+        ],
+        "cost": 743.5682442968301,
+        "energy": 850.4343076452315,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01101000001010010010",
+        "assignments": [
+          2,
+          1,
+          0,
+          3,
+          1,
+          2,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6826.08283807258,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01101000100000010010",
+        "assignments": [
+          3,
+          1,
+          1,
+          3,
+          1,
+          2,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6431.774584660961,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01101000101000001010",
+        "assignments": [
+          2,
+          1,
+          1,
+          3,
+          1,
+          3,
+          2,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6400.000887446327,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01101010000011010010",
+        "assignments": [
+          3,
+          1,
+          0,
+          2,
+          1,
+          2,
+          1,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7227.817432533501,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01110000000000110010",
+        "assignments": [
+          3,
+          1,
+          1,
+          1,
+          2,
+          2,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          21.0,
+          18.0,
+          16.0
+        ],
+        "cost": 658.0855597701725,
+        "energy": 730.6018170423049,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01110000001000011010",
+        "assignments": [
+          2,
+          1,
+          1,
+          1,
+          3,
+          2,
+          2,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          21.0,
+          22.0,
+          12.0
+        ],
+        "cost": 631.3083621018358,
+        "energy": 978.6230679841319,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01110000100000010000",
+        "assignments": [
+          3,
+          1,
+          1,
+          1,
+          3,
+          2,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          29.0,
+          7.0,
+          19.0
+        ],
+        "cost": 920.567942758867,
+        "energy": 2309.826766288048,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01110000101000000010",
+        "assignments": [
+          2,
+          1,
+          1,
+          1,
+          3,
+          3,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6779.827959148466,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01110010100000100010",
+        "assignments": [
+          3,
+          1,
+          1,
+          1,
+          2,
+          3,
+          1,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7230.546885390271,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01110010100010000000",
+        "assignments": [
+          3,
+          1,
+          0,
+          1,
+          3,
+          3,
+          1,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7506.898037442348,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "01111000001000010001",
+        "assignments": [
+          2,
+          1,
+          1,
+          1,
+          1,
+          2,
+          3,
+          3,
+          3,
+          2
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          24.0,
+          13.0,
+          18.0
+        ],
+        "cost": 634.7545057329063,
+        "energy": 982.0692116152059,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10000000000100010010",
+        "assignments": [
+          1,
+          2,
+          3,
+          3,
+          3,
+          2,
+          3,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          5.0,
+          23.0,
+          27.0
+        ],
+        "cost": 1079.6877814894926,
+        "energy": 2652.1455707587847,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10000001000101100000",
+        "assignments": [
+          1,
+          2,
+          3,
+          2,
+          2,
+          3,
+          3,
+          1,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          13.0,
+          16.0,
+          26.0
+        ],
+        "cost": 820.0835483268277,
+        "energy": 1350.5972199492371,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10000001100011001010",
+        "assignments": [
+          1,
+          3,
+          2,
+          2,
+          3,
+          3,
+          2,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6121.824894287876,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10000100000010100100",
+        "assignments": [
+          1,
+          3,
+          2,
+          3,
+          2,
+          1,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          12.0,
+          19.0,
+          24.0
+        ],
+        "cost": 855.5009188367662,
+        "energy": 1271.5152368716062,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10000100000011000100",
+        "assignments": [
+          1,
+          3,
+          2,
+          2,
+          3,
+          1,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          12.0,
+          21.0,
+          22.0
+        ],
+        "cost": 902.0320986629274,
+        "energy": 1249.3468045452246,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10000100000011000110",
+        "assignments": [
+          1,
+          3,
+          2,
+          2,
+          3,
+          1,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          12.0,
+          29.0,
+          14.0
+        ],
+        "cost": 753.6200945450953,
+        "energy": 1742.131180517783,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10000100011010001110",
+        "assignments": [
+          0,
+          3,
+          2,
+          3,
+          3,
+          1,
+          2,
+          2,
+          2,
+          1
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7080.747762721735,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10000100100101100000",
+        "assignments": [
+          1,
+          2,
+          3,
+          2,
+          2,
+          1,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": true,
+        "feasible": true,
+        "loads": [
+          20.0,
+          16.0,
+          19.0
+        ],
+        "cost": 708.6865564022144,
+        "energy": 758.3029429568305,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10001010001010010100",
+        "assignments": [
+          0,
+          3,
+          2,
+          3,
+          1,
+          2,
+          1,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6680.990103872813,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10010000100100010000",
+        "assignments": [
+          1,
+          2,
+          3,
+          1,
+          3,
+          2,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          18.0,
+          15.0,
+          22.0
+        ],
+        "cost": 818.0667929831195,
+        "energy": 959.2826624077898,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10010001100010010010",
+        "assignments": [
+          1,
+          3,
+          2,
+          1,
+          3,
+          2,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6995.285461070381,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10010100000000000110",
+        "assignments": [
+          1,
+          3,
+          3,
+          1,
+          3,
+          1,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          17.0,
+          16.0,
+          22.0
+        ],
+        "cost": 951.8901900726781,
+        "energy": 1070.2061887798354,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10010100001000000110",
+        "assignments": [
+          0,
+          3,
+          3,
+          1,
+          3,
+          1,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5854.083899903864,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10010100100010001010",
+        "assignments": [
+          1,
+          3,
+          2,
+          1,
+          3,
+          1,
+          2,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6159.880282548531,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10100000000010110100",
+        "assignments": [
+          1,
+          3,
+          0,
+          3,
+          2,
+          2,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6346.096202063871,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10100000000110001000",
+        "assignments": [
+          1,
+          2,
+          0,
+          3,
+          3,
+          3,
+          2,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6232.061275829427,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10100000001000010100",
+        "assignments": [
+          0,
+          3,
+          1,
+          3,
+          3,
+          2,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6137.913335905316,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10100000100100010000",
+        "assignments": [
+          1,
+          2,
+          1,
+          3,
+          3,
+          2,
+          3,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          21.0,
+          15.0,
+          19.0
+        ],
+        "cost": 779.6727921439161,
+        "energy": 886.5388554923175,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10100000100100011000",
+        "assignments": [
+          1,
+          2,
+          1,
+          3,
+          3,
+          2,
+          2,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          21.0,
+          17.0,
+          17.0
+        ],
+        "cost": 609.9763096883878,
+        "energy": 671.042631601762,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10100001100010000010",
+        "assignments": [
+          1,
+          3,
+          0,
+          3,
+          3,
+          3,
+          3,
+          1,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 11782.945062466997,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10100001100010010000",
+        "assignments": [
+          1,
+          3,
+          0,
+          3,
+          3,
+          2,
+          3,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6792.806138545404,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10100010000111100010",
+        "assignments": [
+          1,
+          2,
+          0,
+          2,
+          2,
+          3,
+          1,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7498.721720996019,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10100100000001000110",
+        "assignments": [
+          1,
+          3,
+          1,
+          2,
+          3,
+          1,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          20.0,
+          21.0,
+          14.0
+        ],
+        "cost": 772.0272927358119,
+        "energy": 936.1430328779988,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10101000000011000100",
+        "assignments": [
+          1,
+          3,
+          0,
+          2,
+          1,
+          3,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 5653.7201594608505,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10101000000111000110",
+        "assignments": [
+          1,
+          2,
+          0,
+          2,
+          1,
+          3,
+          3,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 9308.710807080042,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10101000100111010001",
+        "assignments": [
+          1,
+          2,
+          0,
+          2,
+          1,
+          2,
+          3,
+          3,
+          1,
+          2
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 8274.479096005969,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10101001000100010010",
+        "assignments": [
+          1,
+          2,
+          1,
+          3,
+          1,
+          2,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          24.0,
+          23.0,
+          8.0
+        ],
+        "cost": 740.9871221772221,
+        "energy": 1660.7985959973703,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10101010000010010110",
+        "assignments": [
+          1,
+          3,
+          0,
+          3,
+          1,
+          2,
+          1,
+          2,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7507.855210534081,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10101101100011001000",
+        "assignments": [
+          1,
+          3,
+          0,
+          2,
+          1,
+          1,
+          2,
+          1,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 10120.45008665423,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10110000100010001100",
+        "assignments": [
+          1,
+          3,
+          0,
+          1,
+          3,
+          3,
+          2,
+          2,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6275.249584966895,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10110100001100001010",
+        "assignments": [
+          0,
+          2,
+          1,
+          1,
+          3,
+          1,
+          2,
+          3,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6943.621311413858,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "10110101000110000010",
+        "assignments": [
+          1,
+          2,
+          0,
+          1,
+          3,
+          1,
+          3,
+          1,
+          2,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          2
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 9632.83715860749,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "11000100000001000100",
+        "assignments": [
+          1,
+          1,
+          3,
+          2,
+          3,
+          1,
+          3,
+          2,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          20.0,
+          13.0,
+          22.0
+        ],
+        "cost": 833.9463111873005,
+        "energy": 1089.661534199542,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "11010000100010010001",
+        "assignments": [
+          1,
+          1,
+          2,
+          1,
+          3,
+          2,
+          3,
+          3,
+          1,
+          2
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          26.0,
+          16.0,
+          13.0
+        ],
+        "cost": 787.822616541735,
+        "energy": 1318.3362881641442,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "11010000111010010000",
+        "assignments": [
+          0,
+          1,
+          2,
+          1,
+          3,
+          2,
+          3,
+          3,
+          1,
+          1
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 6940.297732960798,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "11010010101010010010",
+        "assignments": [
+          0,
+          1,
+          2,
+          1,
+          3,
+          2,
+          1,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 14208.034440325162,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "11010100100000001000",
+        "assignments": [
+          1,
+          1,
+          3,
+          1,
+          3,
+          1,
+          2,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          33.0,
+          2.0,
+          20.0
+        ],
+        "cost": 962.6445596660901,
+        "energy": 3737.345561604863,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "11010100101000000010",
+        "assignments": [
+          0,
+          1,
+          3,
+          1,
+          3,
+          1,
+          3,
+          3,
+          0,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0,
+          8
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 12866.132969352904,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "11010100111010000000",
+        "assignments": [
+          0,
+          1,
+          2,
+          1,
+          3,
+          1,
+          3,
+          3,
+          1,
+          1
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 8245.136820440544,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "11100010101001010000",
+        "assignments": [
+          0,
+          1,
+          1,
+          2,
+          3,
+          2,
+          1,
+          3,
+          1,
+          3
+        ],
+        "assignment_valid": false,
+        "invalid_customers": [
+          0
+        ],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": null,
+        "cost": null,
+        "energy": 7618.395581842282,
+        "count": 1,
+        "probability": null
+      },
+      {
+        "bits": "11101000000001010000",
+        "assignments": [
+          1,
+          1,
+          1,
+          2,
+          1,
+          2,
+          3,
+          3,
+          3,
+          3
+        ],
+        "assignment_valid": true,
+        "invalid_customers": [],
+        "capacity_feasible": false,
+        "feasible": false,
+        "loads": [
+          24.0,
+          12.0,
+          19.0
+        ],
+        "cost": 808.317377533827,
+        "energy": 1224.331695568666,
+        "count": 1,
+        "probability": null
+      }
+    ]
+  }
+}
