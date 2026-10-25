@@ -418,6 +418,32 @@ Pasqal’s solver also uses mean target detuning when DMM is disabled, with its 
 \delta_f=-\gamma\bar m
 ```
 
+## Pulse Functions
+
+### Rabi Envelope
+```math
+\Omega(t)=\Omega_{\max}\sin^2\left(\frac{\pi t}{\tau}\right)
+
+```
+
+Where $\tau$ is the pulse duration
+
+```math
+0\le t \le \tau
+```
+
+### Detuning Endpoints
+
+```math
+\delta_i=-\gamma\max_j|M_{jj}|,
+\qquad
+\delta_f=-\frac{\gamma}{N}\sum_jM_{jj}
+```
+Therefore the linear sweep is defined as 
+
+```math
+\delta(t)=\delta_i+(\delta_f-\delta_i)\frac{t}{T}
+```
 
 
 ## Requirements
