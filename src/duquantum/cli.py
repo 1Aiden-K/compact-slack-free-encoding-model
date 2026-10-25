@@ -30,9 +30,8 @@ def main(argv=None):
     args, forwarded = parser.parse_known_args(argv)
     if args.tier == 's' and args.command == 'lambda-benchmark':
         parser.error('lambda-benchmark is only available for Tier M.')
-    if args.tier == 'm' and args.command not in ('generate', 'validate', 'classical', 'evaluate', 'lambda-benchmark'):
-        parser.error('Tier M currently supports generate, validate, classical, and evaluate. '
-                     'Quantum execution and pulse optimization are not integrated yet.')
+    if args.tier == 'm' and args.command not in ('generate', 'validate', 'classical', 'evaluate', 'lambda-benchmark', 'run'):
+        parser.error('Tier M currently supports generate, validate, classical, evaluate, lambda-benchmark, and run. ')
     module_name, prefix = COMMANDS[args.command]
     module = importlib.import_module(f'duquantum.tier_{args.tier}.{module_name}')
     old_argv = sys.argv

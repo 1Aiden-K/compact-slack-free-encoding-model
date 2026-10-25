@@ -21,6 +21,7 @@ def build_sequence(
     seed=config.EMBEDDING_SEED,
     restarts=config.EMBEDDING_RESTARTS,
     maxiter=config.MAX_ITERATIONS,
+    check_ground_states=config.CHECK_GROUND_STATES,
 ):
     """Return sequence, pulse, parameters, embedding, and final-energy diagnostics.
 
@@ -64,6 +65,7 @@ def build_sequence(
         omega_peak=omega_peak,
         delta_initial=delta_initial,
         duration_ns=duration_ns,
+        check_ground_states=False,  # Only needed to determine hardware scale.
     )
     if energy_scale is None:
         limits = [config.AUTO_SCALE_MAX]
@@ -94,6 +96,7 @@ def build_sequence(
         omega_peak=omega_peak,
         delta_initial=delta_initial,
         interaction_coeff=device.interaction_coeff,
+        check_ground_states=check_ground_states,
     )
     if channel.max_amp is not None and parameters["omega_peak"] > channel.max_amp:
         raise ValueError(
@@ -136,12 +139,12 @@ def build_sequence(
         ),
         "relative_interaction_error": embedding["relative_interaction_error"],
         "target_vs_realized": _compare_ground_states(target_matrix, realized_matrix)
-        if config.CHECK_GROUND_STATES
+        if check_ground_states
         else None,
         "global_ideal_vs_realized": _compare_ground_states(
             parameters["global_q_matrix"], realized_matrix
         )
-        if config.CHECK_GROUND_STATES
+        if check_ground_states
         else None,
         "realized_q_matrix": realized_matrix,
         "duration_with_fall_ns": total_duration,
@@ -179,5 +182,6 @@ def print_program(program, *, penalty_weight):
     print(f"Relative interaction error: {100 * d['relative_interaction_error']:.3f}%")
     print(f"Relative full-matrix error: {100 * d['relative_matrix_error']:.3f}%")
     print("Actual final-Hamiltonian ground-state checks:")
-    print(d["target_vs_realized"])
+    print(d["target_vs_realized"] if d["target_vs_realized"] is not None
+          else "Skipped exhaustive 2^N checks (Tier M).")
     print("Pulser register and sequence validation passed.")
