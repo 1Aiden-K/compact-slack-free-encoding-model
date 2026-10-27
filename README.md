@@ -1,7 +1,8 @@
-# Capacitated Vehicle Routing Quantum Clustering Optimization Using Unbalanced Penalization
+# Capacitated Vehicle Routing Quantum Clustering Optimization Using Analog Neutral Atoms with Compact Slack-Free Encoding
 
 ### Team: Psychics
 #### Challenge: Pasqal Neutral Atom Optimization — Track A (capacity-feasible clustering)
+**October 25, 2026**
 *DuQuantum 2026*
 
 We assign the customers of a Capacitated Vehicle Routing Problem (CVRP) to vehicles on an emulated neutral-atom register. Each Tier S customer is one atom: `z_i = 1` puts customer `i` in vehicle 1 and `z_i = 0` in vehicle 2. Capacity is handled without slack variables, using unbalanced penalization ([Montañez-Barrera et al., arXiv:2211.13914](https://arxiv.org/abs/2211.13914)). With two vehicles, that penalty reduces to a load-balancing term, so the full Tier S model needs only **4 atoms**. The slack-variable version needs 14.
